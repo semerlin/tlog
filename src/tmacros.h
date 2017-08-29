@@ -63,6 +63,17 @@
     #define T_UNLIKELY(expr) (expr)
 #endif
 
+/* function name */
+#if defined (__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
+    #define T_FUNCTION_NAME __func__
+#elif defined(__GNUC__) || defined(_MSC_VER)
+    #define T_FUNCTION_NAME __FUNCTION__
+#else
+    #define T_FUNCTION_NAME "unknown function"
+#endif
+
+
+
 /* export definition */
 #ifndef T_EXTERN
 #define T_EXTERN extern
