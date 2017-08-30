@@ -14,8 +14,8 @@ T_BEGIN_DECLS
                       const char  *file,
                       int          line,
                       const char  *func);
-#define T_ASSERT(condition) \
-    _tlog_assert ((condition) != 0, #condition, __FILE__, __LINE__, T_FUNCTION_NAME)
+    #define T_ASSERT(condition) \
+        _tlog_assert((condition) != 0, #condition, __FILE__, __LINE__, __FUNC__)
 #endif
 
 

@@ -65,11 +65,11 @@
 
 /* function name */
 #if defined (__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
-    #define T_FUNCTION_NAME __func__
-#elif defined(__GNUC__) || defined(_MSC_VER)
-    #define T_FUNCTION_NAME __FUNCTION__
+    #define __FUNC__ __func__
+#elif defined(__GNUC__)
+    #define __FUNC__ __PRETTY_FUNCTION__
 #else
-    #define T_FUNCTION_NAME "unknown function"
+    #define __FUNC__ "unknown function"
 #endif
 
 
