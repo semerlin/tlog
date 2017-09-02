@@ -3,6 +3,8 @@
 #include "tsysdeps.h"
 
 
+
+#ifdef T_ENABLE_ASSERT
 void _tlog_assert(tbool condition, const tchar *condition_text, 
                   const tchar *file, tint line, const tchar *func)
 {
@@ -10,3 +12,4 @@ void _tlog_assert(tbool condition, const tchar *condition_text,
             condition_text, file, line, func);
     t_abort();
 }
+#endif
