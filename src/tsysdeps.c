@@ -12,7 +12,6 @@ void t_exit(tint code)
 
 void t_print_backtrace (void)
 {
-#if defined(HAVE_BACKTRACE) && defined(T_BUILT_R_DYNAMIC)
     void *bt[64];
     tint bt_size = 0;
     tint i = 0;
@@ -29,11 +28,6 @@ void t_print_backtrace (void)
     fflush (stderr);
 
     free (syms);
-#elif defined(HAVE_BACKTRACE) && !defined(T_BUILT_R_DYNAMIC)
-    fprintf (stderr, "tlog not built with -rdynamic so unable to print a backtrace with function name\n");
-#else
-    fprintf (stderr, "tlog not compiled with backtrace support so unable to print a backtrace\n");
-#endif
 }
 
 
