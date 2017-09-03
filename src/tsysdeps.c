@@ -33,7 +33,6 @@ void t_print_backtrace (void)
 
 void t_abort (void)
 {
-    const char *s;
     t_print_backtrace();
 
     abort();
