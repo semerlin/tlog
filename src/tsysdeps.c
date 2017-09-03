@@ -4,12 +4,19 @@
 #include <unistd.h>
 #include <execinfo.h>
 
+/**
+ * @brief exit function of tlog
+ * @param code - exit code
+ */
 void t_exit(tint code)
 {
     /* use exit( instead _exit() if you want to flush I/O buffer)*/
     _exit(code);
 }
 
+/**
+ * @brief print backtrace
+ */
 void t_print_backtrace (void)
 {
     void *bt[64];
@@ -31,6 +38,9 @@ void t_print_backtrace (void)
 }
 
 
+/**
+ * @brief abort function of tlog
+ */
 void t_abort (void)
 {
     t_print_backtrace();
