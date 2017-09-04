@@ -8,7 +8,7 @@ T_BEGIN_DECLS
 
 typedef _tkeyfile tkeyfile;
 
-T_EXTERN tkeyfile *t_keyfile_new();
+T_EXTERN tkeyfile *t_keyfile_new(void);
 T_EXTERN void t_Keyfile_free(tkeyfile *file);
 T_EXTERN tint t_keyfile_load_from_file(tkeyfile *key_file, const tchar *file);
 T_EXTERN tint t_keyfile_load_from_data(tkeyfile *key_file, const tchar *data);

@@ -12,6 +12,9 @@ struct _tkeyfile
 
 tkeyfile *t_keyfile_new()
 {
+    tkeyfile *key_file = (tkeyfile *)malloc(sizeof(tkeyfile));
+    t_shareptr_init((tshareptr *)key_file);
+    return key_file;
 }
 
 
