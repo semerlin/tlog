@@ -51,8 +51,15 @@
 #define T_N_ELEMENTS(arr)		(sizeof(arr) / sizeof((arr)[0]))
 
 /* handling structure */
-#define T_STRUCT_OFFSET(struct_type, member)	\
-        ((unsigned long)&((struct_type*)0)->member)
+#define T_OFFSET_OF(struct_type, member)    \
+    ((unsigned long)&((struct_type *)0)->member)
+
+/* get struct address */
+#define T_CONTAINER_OF(member_ptr, struct_type, member)                     \
+    ({                                                                      \   
+         const typeof(((struct_type *)0)->member) *__mptr = (member_ptr);   \
+         (type *)((char *)__mptr - T_OFFSET_OF(struct_type, member));       \
+     })  
 
 /* likely and unlikely */
 #if defined(__GNUC__) && (__GNUC__ > 2) && defined(__OPTIMIZE__)
