@@ -75,16 +75,17 @@ void t_slist_remove_all(tslist *head, tlist *node)
     T_ASSERT(NULL != head);
     T_ASSERT(NULL != node);
 
-    tslist *prev, *next;
-    for (prev = head, next = head->next; next != head; 
-            prev = next, next = next->next)
+    tslist *cur, *next;
+    for (cur = head, next = head->next; next != head; 
+            cur = next, next = next->next)
     {
         if (next == node)
         {
-            prev->next = next->next;
+            cur->next = next->next;
         }
     }
 }
+
 
 /**
  * @brief judge if list is empty

@@ -14,15 +14,16 @@ struct _tslist
 };
 
 
-T_EXTERN void t_slist_init_head(tlist *head)
-T_EXTERN void t_slist_prepend(tlist *head, tlist *node)
-T_EXTERN void t_slist_append(tlist *head, tlist *node)
-T_EXTERN void t_slist_remove(tlist *head, tlist *node)
-T_EXTERN void t_slist_remove_all(tlist *head, tlist *node)
-T_EXTERN tbool t_slist_is_empty(tlist *head)
-T_EXTERN tbool t_slist_is_last(tlist *head, tlist *node)
-T_EXTERN tbool t_slist_is_first(tlist *head, tlist *node)
-T_EXTERN tint t_slist_legth(tlist *head)
+T_EXTERN void t_slist_init_head(tlist *head);
+T_EXTERN void t_slist_prepend(tlist *head, tlist *node);
+T_EXTERN void t_slist_append(tlist *head, tlist *node);
+T_EXTERN void t_slist_remove(tlist *head, tlist *node);
+T_EXTERN void t_slist_remove_all(tlist *head, tlist *node);
+T_EXTERN void t_slist_free(tlist *head);
+T_EXTERN tbool t_slist_is_empty(tlist *head);
+T_EXTERN tbool t_slist_is_last(tlist *head, tlist *node);
+T_EXTERN tbool t_slist_is_first(tlist *head, tlist *node);
+T_EXTERN tint t_slist_legth(tlist *head);
 
 /**
  * @brief get list node entry
