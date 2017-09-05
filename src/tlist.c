@@ -56,8 +56,8 @@ void t_list_remove(tlist *head, tlist *node)
     T_ASSERT(NULL != head);
     T_ASSERT(NULL != node);
 
-    tlist *temp = head;
-    for (; temp->next != head; temp = temp->next)
+    tlist *temp = head->next;
+    for (; temp != head; temp = temp->next)
     {
         if (temp == node)
         {
@@ -78,8 +78,8 @@ void t_list_remove_all(tlist *head, tlist *node)
     T_ASSERT(NULL != head);
     T_ASSERT(NULL != node);
 
-    tlist *temp = head;
-    for (; temp->next != head; temp = temp->next)
+    tlist *temp = head->next;
+    for (; temp != head; temp = temp->next)
     {
         if (temp == node)
         {
@@ -142,8 +142,8 @@ tint t_list_legth(tlist *head)
     T_ASSERT(NULL != head);
 
     tint length = 0;
-    tlist *temp = head;
-    for (; temp->next != head; temp = temp->next)
+    tlist *temp = head->next;
+    for (; temp != head; temp = temp->next)
     {
         ++length;
     }
@@ -151,6 +151,24 @@ tint t_list_legth(tlist *head)
     return length;
 }
 
+/**
+ * @brief free all node in list except head
+ * @param head - list head
+ * @param free_func - resource free function
+ */
+void t_list_free(tlist *head, tfree_callback free_func)
+{
+    T_ASSERT(NULL != head);
+    T_ASSERT(NULL != free_func);
 
+    tlist *cur = head->next;
+    tlist *temp = NULL;
+    while (cur != head)
+    {
+        temp = cur->next;
+        free_func(cur);
+        cur = temp;
+    }
+}
 
 

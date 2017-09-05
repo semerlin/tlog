@@ -2,6 +2,7 @@
 #define _TLIST_H_
 
 #include "ttypes.h"
+#include "tcommon.h"
 
 T_BEGIN_DECLS
 
@@ -24,6 +25,7 @@ T_EXTERN tbool t_list_is_empty(tlist *head);
 T_EXTERN tbool t_list_is_last(tlist *head, tlist *node);
 T_EXTERN tbool t_list_is_first(tlist *head, tlist *node);
 T_EXTERN tint t_list_legth(tlist *head);
+T_EXTERN void t_list_free(tlist *head, tfree_callback free_func);
 
 /**
  * @brief get list node entry

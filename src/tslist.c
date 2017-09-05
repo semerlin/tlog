@@ -37,8 +37,8 @@ void t_slist_append(tslist *head, tslist *node)
     T_ASSERT(NULL != head);
     T_ASSERT(NULL != node);
 
-    tslist *last_node = head;
-    for (; last_node->next != head; last_node = last_node->next);
+    tslist *last_node = head->next;
+    for (; last_node != head; last_node = last_node->next);
     last_node->next = node;
     node->next = head;
 }
@@ -53,13 +53,13 @@ void t_slist_remove(tslist *head, tslist *node)
     T_ASSERT(NULL != head);
     T_ASSERT(NULL != node);
 
-    tslist *prev, *next;
-    for (prev = head, next = head->next; next != head; 
-            prev = next, next = next->next)
+    tslist *cur = head->next;
+    tslist *prev = head;
+    for (; cur != head; prev = cur, cur = cur->next)
     {
-        if (next == node)
+        if (cur == node)
         {
-            prev->next = next->next;
+            prev->next = cur->next;
             break;
         }
     }
@@ -75,13 +75,13 @@ void t_slist_remove_all(tslist *head, tslist *node)
     T_ASSERT(NULL != head);
     T_ASSERT(NULL != node);
 
-    tslist *cur, *next;
-    for (cur = head, next = head->next; next != head; 
-            cur = next, next = next->next)
+    tslist *cur = head->next;
+    tslist *prev = head;
+    for (; cur != head; prev = cur, cur = cur->next)
     {
-        if (next == node)
+        if (cur == node)
         {
-            cur->next = next->next;
+            prev->next = cur->next;
         }
     }
 }
@@ -139,8 +139,8 @@ tint t_slist_legth(tslist *head)
     T_ASSERT(NULL != head);
 
     tint length = 0;
-    tslist *temp = head;
-    for (; temp->next != head; temp = temp->next)
+    tslist *temp = head->next;
+    for (; temp != head; temp = temp->next)
     {
         ++length;
     }
@@ -149,4 +149,23 @@ tint t_slist_legth(tslist *head)
 }
 
 
+/**
+ * @brief free all node in list except head
+ * @param head - list head
+ * @param free_func - resource free function
+ */
+void t_slist_free(tslist *head, tfree_callback free_func)
+{
+    T_ASSERT(NULL != head);
+    T_ASSERT(NULL != free_func);
+
+    tslist *cur = head->next;
+    tslist *temp = NULL;
+    while (cur != head)
+    {
+        temp = cur->next;
+        free_func(cur);
+        cur = temp;
+    }
+}
 

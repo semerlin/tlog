@@ -2,6 +2,7 @@
 #define _TSLIST_H_
 
 #include "ttypes.h"
+#include "tcommon.h"
 
 T_BEGIN_DECLS
 
@@ -19,11 +20,11 @@ T_EXTERN void t_slist_prepend(tslist *head, tslist *node);
 T_EXTERN void t_slist_append(tslist *head, tslist *node);
 T_EXTERN void t_slist_remove(tslist *head, tslist *node);
 T_EXTERN void t_slist_remove_all(tslist *head, tslist *node);
-T_EXTERN void t_slist_free(tslist *head);
 T_EXTERN tbool t_slist_is_empty(tslist *head);
 T_EXTERN tbool t_slist_is_last(tslist *head, tslist *node);
 T_EXTERN tbool t_slist_is_first(tslist *head, tslist *node);
 T_EXTERN tint t_slist_legth(tslist *head);
+T_EXTERN void t_slist_free(tslist *head, tfree_callback free_func);
 
 /**
  * @brief get list node entry
