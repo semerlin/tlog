@@ -56,10 +56,10 @@
 
 /* get struct address */
 #define T_CONTAINER_OF(member_ptr, struct_type, member)                     \
-    ({                                                                      \   
+    ({                                                                      \
          const typeof(((struct_type *)0)->member) *__mptr = (member_ptr);   \
          (type *)((char *)__mptr - T_OFFSET_OF(struct_type, member));       \
-     })  
+     })
 
 /* likely and unlikely */
 #if defined(__GNUC__) && (__GNUC__ > 2) && defined(__OPTIMIZE__)

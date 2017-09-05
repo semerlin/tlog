@@ -18,7 +18,7 @@ void t_slist_init_head(tslist *head)
  * @param head - list head
  * @param node - node to prepend
  */
-void t_slist_prepend(tslist *head, tlist *node)
+void t_slist_prepend(tslist *head, tslist *node)
 {
     T_ASSERT(NULL != head);
     T_ASSERT(NULL != node);
@@ -32,7 +32,7 @@ void t_slist_prepend(tslist *head, tlist *node)
  * @param head - list head
  * @param node - node to append
  */
-void t_slist_append(tslist *head, tlist *node)
+void t_slist_append(tslist *head, tslist *node)
 {
     T_ASSERT(NULL != head);
     T_ASSERT(NULL != node);
@@ -48,7 +48,7 @@ void t_slist_append(tslist *head, tlist *node)
  * @param head - list head
  * @param node - node to remove
  */
-void t_slist_remove(tslist *head, tlist *node)
+void t_slist_remove(tslist *head, tslist *node)
 {
     T_ASSERT(NULL != head);
     T_ASSERT(NULL != node);
@@ -70,7 +70,7 @@ void t_slist_remove(tslist *head, tlist *node)
  * @param head - list head
  * @param node - node to remove
  */
-void t_slist_remove_all(tslist *head, tlist *node)
+void t_slist_remove_all(tslist *head, tslist *node)
 {
     T_ASSERT(NULL != head);
     T_ASSERT(NULL != node);
@@ -107,7 +107,7 @@ tbool t_slist_is_empty(tslist *head)
  * @return TRUE - yes
  *         FALSE - no
  */
-tbool t_slist_is_last(tslist *head, tlist *node)
+tbool t_slist_is_last(tslist *head, tslist *node)
 {
     T_ASSERT(NULL != head);
 
@@ -122,7 +122,7 @@ tbool t_slist_is_last(tslist *head, tlist *node)
  * @return TRUE - yes
  *         FALSE - no
  */
-tbool t_slist_is_first(tslist *head, tlist *node)
+tbool t_slist_is_first(tslist *head, tslist *node)
 {
     T_ASSERT(NULL != head);
 

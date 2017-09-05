@@ -1,5 +1,6 @@
-#include "tsahreptr.h"
+#include "tshareptr.h"
 #include "tassert.h"
+#include <stdlib.h>
 
 
 /**
@@ -29,10 +30,10 @@ tshareptr *t_shareptr_ref(tshareptr *ptr)
  * @brief unreference pointer count, if reachs zero then free pointer
  * @param ptr - data pointer
  */
-void t_shareptr_unref(tshareptr *ptr);
+void t_shareptr_unref(tshareptr *ptr)
 {
     T_ASSERT(NULL != ptr);
-    T_ASSEET(ptr->ref_count > 0);
+    T_ASSERT(ptr->ref_count > 0);
 
     ptr->ref_count --;
     if (0 == ptr->ref_count)

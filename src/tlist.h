@@ -6,7 +6,7 @@
 T_BEGIN_DECLS
 
 
-typedef _tlist tlist;
+typedef struct _tlist tlist;
 
 struct _tlist
 {
