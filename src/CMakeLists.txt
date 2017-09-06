@@ -5,7 +5,7 @@ set(SRC_LIST
     tlist.c
     tslist.c
     tshareptr.c
-    thash.c)
+    thlist.c)
 
 add_library(tlog SHARED ${SRC_LIST})
     
