@@ -14,6 +14,16 @@ void t_slist_init_head(tslist *head)
 }
 
 /**
+ * @brief init list node
+ * @param node - list node pointer
+ */
+void t_slist_init_node(tslist *node)
+{
+    T_ASSERT(NULL != node);
+    node->next = NULL;
+}
+
+/**
  * @brief prepend node to list
  * @param head - list head
  * @param node - node to prepend
@@ -60,32 +70,11 @@ void t_slist_remove(tslist *head, tslist *node)
         if (cur == node)
         {
             prev->next = cur->next;
+            node->next = NULL;
             break;
         }
     }
 }
-
-/**
- * @brief remove all node equal to node from list
- * @param head - list head
- * @param node - node to remove
- */
-void t_slist_remove_all(tslist *head, tslist *node)
-{
-    T_ASSERT(NULL != head);
-    T_ASSERT(NULL != node);
-
-    tslist *cur = head->next;
-    tslist *prev = head;
-    for (; cur != head; prev = cur, cur = cur->next)
-    {
-        if (cur == node)
-        {
-            prev->next = cur->next;
-        }
-    }
-}
-
 
 /**
  * @brief judge if list is empty

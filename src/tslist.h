@@ -16,10 +16,10 @@ struct _tslist
 
 
 T_EXTERN void t_slist_init_head(tslist *head);
+T_EXTERN void t_slist_init_node(tslist *node);
 T_EXTERN void t_slist_prepend(tslist *head, tslist *node);
 T_EXTERN void t_slist_append(tslist *head, tslist *node);
 T_EXTERN void t_slist_remove(tslist *head, tslist *node);
-T_EXTERN void t_slist_remove_all(tslist *head, tslist *node);
 T_EXTERN tbool t_slist_is_empty(tslist *head);
 T_EXTERN tbool t_slist_is_last(tslist *head, tslist *node);
 T_EXTERN tbool t_slist_is_first(tslist *head, tslist *node);

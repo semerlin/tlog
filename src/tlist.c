@@ -5,13 +5,24 @@
 
 /**
  * @brief init list head
- * @param head - list head pointer
+ * @param head - list head
  */
 void t_list_init_head(tlist *head)
 {
     T_ASSERT(NULL != head);
     head->prev = head;
     head->next = head;
+}
+
+/**
+ * @brief init list node
+ * @param node - list node
+ */
+void t_list_init_node(tlist *node)
+{
+    T_ASSERT(NULL != node);
+    node->prev = NULL;
+    node->next = NULL;
 }
 
 /**
@@ -47,47 +58,19 @@ void t_list_append(tlist *head, tlist *node)
 }
 
 /**
- * @brief remove first node equal to node from list
- * @param head - list head
+ * @brief remove node from list
  * @param node - node to remove
  */
-void t_list_remove(tlist *head, tlist *node)
+void t_list_remove(tlist *node)
 {
+    T_ASSERT(NULL != node->prev);
+    T_ASSERT(NULL != node->next);
     T_ASSERT(NULL != head);
-    T_ASSERT(NULL != node);
 
-    tlist *temp = head->next;
-    for (; temp != head; temp = temp->next)
-    {
-        if (temp == node)
-        {
-            temp->prev->next = temp->next;
-            temp->next->prev = temp->prev;
-            break;
-        }
-    }
-}
-
-/**
- * @brief remove all node equal to node from list
- * @param head - list head
- * @param node - node to remove
- */
-void t_list_remove_all(tlist *head, tlist *node)
-{
-    T_ASSERT(NULL != head);
-    T_ASSERT(NULL != node);
-
-    tlist *temp = head->next;
-    for (; temp != head; temp = temp->next)
-    {
-        if (temp == node)
-        {
-            temp->prev->next = temp->next;
-            temp->next->prev = temp->prev;
-        }
-    }
-
+    node->prev->next = node->next;
+    node->next->prev = node->prev;
+    node->next = NULL;
+    node->prev = NULL;
 }
 
 /**
