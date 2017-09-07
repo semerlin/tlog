@@ -29,6 +29,24 @@ struct _thlist_node
 T_EXTERN void t_hlist_insert(thlist_head *head, thlist_node *node);
 T_EXTERN void t_hlist_remove(thlist_node *node);
 
+/**
+ * @brief get hlist node entry
+ * @param member_ptr - node pointer
+ * @param struct_type - entry struct type
+ * @param member - node name
+ */
+#define t_hlist_entry(member_ptr, struct_type, member) \
+        T_CONTAINER_OF(member_ptr, struct_type, member)
+
+/**
+ * @brief list foreach
+ * @param pos - current node pointer
+ * @param head - list head
+ */
+#define t_hlist_foreach(pos, head) \
+        for (pos = (head)->first; pos != NULL; pos = pos->next)
+
+
 
 T_END_DECLS
 
