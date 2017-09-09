@@ -1,6 +1,10 @@
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/gtest/include)
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/gtest/lib)
+set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+find_package (GTEST)
 
-add_executable(test_assert test_assert.cpp)
+if (GTEST_FOUND)
+    add_executable(test_assert test_assert.cpp)
+    target_link_libraries(test_assert gtest pthread)
+endif (GTEST_FOUND)
 
-target_link_libraries(test_assert gtest gtest_main pthread)
+
+
