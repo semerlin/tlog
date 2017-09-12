@@ -6,7 +6,7 @@
 T_BEGIN_DECLS
 
 
-#ifdef T_ENABLE_ASSERT
+#ifndef T_ENABLE_ASSERT
     #define T_ASSERT(condition) do { } while (0)
 #else
     void _tlog_assert(tbool condition,

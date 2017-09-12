@@ -72,7 +72,6 @@ thash_string *t_hash_string_new(void)
 void t_hash_string_insert(thash_string *hash_string, thash_string_node *node)
 {
     T_ASSERT(NULL != hash_string);
-    T_ASSERT(NULL != key);
     T_ASSERT(NULL != node);
 
     tuint32 hash_val = t_hash_string_hash(hash_string, node->key);
@@ -191,7 +190,7 @@ tbool t_hash_string_contain(thash_string *hash_string, const char *key)
  */
 void t_hash_string_free(thash_string *hash_string, tfree_callback free_func)
 {
-    T_ASSERT(NULL != head);
+    T_ASSERT(NULL != hash_string);
     T_ASSERT(NULL != free_func);
 
     thlist_head *head = NULL;

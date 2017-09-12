@@ -65,7 +65,6 @@ void t_list_remove(tlist *node)
 {
     T_ASSERT(NULL != node->prev);
     T_ASSERT(NULL != node->next);
-    T_ASSERT(NULL != head);
 
     node->prev->next = node->next;
     node->next->prev = node->prev;
