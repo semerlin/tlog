@@ -36,7 +36,7 @@ void t_shareptr_unref(tshareptr *ptr)
     T_ASSERT(ptr->ref_count > 0);
 
     ptr->ref_count --;
-    if (0 == ptr->ref_count)
+    if (0 >= ptr->ref_count)
     {
         free(ptr);
     }
