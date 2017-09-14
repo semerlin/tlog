@@ -153,7 +153,10 @@ void t_slist_free(tslist *head, tfree_callback free_func)
     while (cur != head)
     {
         temp = cur->next;
-        free_func(cur);
+        if (NULL != free_func)
+        {
+            free_func(cur);
+        }
         cur = temp;
     }
 }
