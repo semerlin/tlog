@@ -9,11 +9,11 @@ T_BEGIN_DECLS
 #ifndef T_ENABLE_ASSERT
     #define T_ASSERT(condition) do { } while (0)
 #else
-    void _tlog_assert(tbool condition,
-                      const char  *condition_text,
-                      const char  *file,
-                      int          line,
-                      const char  *func);
+    T_EXTERN void _tlog_assert(tbool condition,
+                               const char  *condition_text,
+                               const char  *file,
+                               int          line,
+                               const char  *func);
     #define T_ASSERT(condition) \
         _tlog_assert((condition) != 0, #condition, __FILE__, __LINE__, __FUNC__)
 #endif
