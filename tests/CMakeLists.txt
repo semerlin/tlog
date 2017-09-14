@@ -20,6 +20,12 @@ if (GTEST_FOUND)
     target_link_libraries(test_assert ${LIB_LIST})
 
     #test shareptr
+    add_executable(test_shareptr test_shareptr.cpp 
+                                 ../src/tshareptr.c
+                                 ${COMMON_SRC_LIST})
+    target_link_libraries(test_shareptr ${LIB_LIST})
+
+
 endif (GTEST_FOUND)
 
 
