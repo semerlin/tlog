@@ -5,10 +5,21 @@ if (GTEST_FOUND)
     include_directories(../src)
     include_directories(${GTEST_INCLUDE_DIR})
 
+    set(LIB_LIST
+        ${GTEST_LIBRARY}
+        pthread)
+
+    set(COMMON_SRC_LIST
+        ../src/tassert.c
+        ../src/tsysdeps.c)
+
+
+    #test assert
     add_executable(test_assert test_assert.cpp 
-                               ../src/tassert.c
-                               ../src/tsysdeps.c)
-    target_link_libraries(test_assert ${GTEST_LIBRARY} pthread)
+                               ${COMMON_SRC_LIST})
+    target_link_libraries(test_assert ${LIB_LIST})
+
+    #test shareptr
 endif (GTEST_FOUND)
 
 
