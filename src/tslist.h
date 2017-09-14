@@ -23,7 +23,7 @@ T_EXTERN void t_slist_remove(tslist *head, tslist *node);
 T_EXTERN tbool t_slist_is_empty(tslist *head);
 T_EXTERN tbool t_slist_is_last(tslist *head, tslist *node);
 T_EXTERN tbool t_slist_is_first(tslist *head, tslist *node);
-T_EXTERN tint t_slist_legth(tslist *head);
+T_EXTERN tint t_slist_length(tslist *head);
 T_EXTERN void t_slist_free(tslist *head, tfree_callback free_func);
 
 /**

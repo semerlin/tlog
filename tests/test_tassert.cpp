@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "../src/tassert.h"
 
+#ifdef T_ENABLE_ASSERT
 int AssertFunc(int val)
 {
     T_ASSERT(val == 3);
@@ -8,11 +9,12 @@ int AssertFunc(int val)
     return 2;
 }
 
-TEST(AssertTest, Assert)
+TEST(TAssertTest, Death)
 {
     ASSERT_DEATH(AssertFunc(2), "");
     ASSERT_EQ(2, AssertFunc(3));
 }
+#endif
 
 
 int main(int argc, char **argv)

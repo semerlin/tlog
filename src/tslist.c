@@ -123,7 +123,7 @@ tbool t_slist_is_first(tslist *head, tslist *node)
  * @param head - list head
  * @return list length
  */
-tint t_slist_legth(tslist *head)
+tint t_slist_length(tslist *head)
 {
     T_ASSERT(NULL != head);
 
@@ -146,7 +146,6 @@ tint t_slist_legth(tslist *head)
 void t_slist_free(tslist *head, tfree_callback free_func)
 {
     T_ASSERT(NULL != head);
-    T_ASSERT(NULL != free_func);
 
     tslist *cur = head->next;
     tslist *temp = NULL;
