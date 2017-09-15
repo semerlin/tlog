@@ -1,13 +1,14 @@
 #include "gtest/gtest.h"
 #include "../src/tslist.h"
 
-
-/*struct _tlist
+struct num_list
 {
-    tlist *prev;
-    tlist *next;
+    int num;
+    tslist node;
 };
-*/
+
+
+
 #ifdef T_ENABLE_ASSERT
 TEST(TslistTest, Death)
 {
@@ -74,6 +75,30 @@ TEST(TslistTest, Remove)
     EXPECT_EQ(NULL, node2.next);
 }
 
+TEST(TslistTest, Foreach)
+{
+    tslist head;
+    struct num_list node1, node2, node3;
+    node1.num = 1;
+    node2.num = 2;
+    node3.num = 3;
+    t_slist_init_head(&head);
+    t_slist_init_node(&node1.node);
+    t_slist_init_node(&node2.node);
+    t_slist_init_node(&node3.node);
+    t_slist_append(&head, &node1.node);
+    t_slist_append(&head, &node2.node);
+    t_slist_append(&head, &node3.node);
+
+    tslist *pos;
+    int i = 0;
+    t_slist_foreach(pos, &head)
+    {
+        ++i;
+        EXPECT_EQ(i, t_slist_entry(pos, num_list, node)->num);
+    }
+}
+
 TEST(TslistTest, Check)
 {
     tslist head, node1, node2, node3;
@@ -96,6 +121,7 @@ TEST(TslistTest, Check)
     EXPECT_TRUE(t_slist_is_first(&head, &node1));
     EXPECT_EQ(2, t_slist_length(&head));
 }
+
 
 int main(int argc, char **argv)
 {
