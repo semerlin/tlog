@@ -47,8 +47,8 @@ void t_slist_append(tslist *head, tslist *node)
     T_ASSERT(NULL != head);
     T_ASSERT(NULL != node);
 
-    tslist *last_node = head->next;
-    for (; last_node != head; last_node = last_node->next);
+    tslist *last_node = head;
+    for (; last_node->next != head; last_node = last_node->next);
     last_node->next = node;
     node->next = head;
 }
