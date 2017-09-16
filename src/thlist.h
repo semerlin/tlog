@@ -28,6 +28,9 @@ struct _thlist_node
 }
 T_EXTERN void t_hlist_insert(thlist_head *head, thlist_node *node);
 T_EXTERN void t_hlist_remove(thlist_node *node);
+T_EXTERN tbool t_hlist_is_empty(thlist_head *head);
+T_EXTERN tint t_hlist_length(thlist_head *head);
+
 
 /**
  * @brief get hlist node entry
