@@ -23,8 +23,8 @@ struct _thlist_node
 #define t_hlist_init_head(head) ((head)->first = NULL)
 #define t_hlist_init_node(node) \
 {                               \
-    node->next = NULL;          \
-    node->pprev = NULL;         \
+    (node)->next = NULL;        \
+    (node)->pprev = NULL;       \
 }
 T_EXTERN void t_hlist_insert(thlist_head *head, thlist_node *node);
 T_EXTERN void t_hlist_remove(thlist_node *node);

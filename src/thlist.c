@@ -15,7 +15,7 @@ void t_hlist_insert(thlist_head *head, thlist_node *node)
     node->next = head->first;
     if (NULL != head->first)
     {
-        head->first->pprev = &node;
+        head->first->pprev = &node->next;
     }
     head->first = node;
     node->pprev = &head->first;
@@ -28,10 +28,16 @@ void t_hlist_insert(thlist_head *head, thlist_node *node)
 void t_hlist_remove(thlist_node *node)
 {
     T_ASSERT(NULL != node);
-    (*(node->pprev))->next = node->next;
-    node->next->pprev = node->pprev;
-    node->next = NULL;
+    thlist_node **pprev = node->pprev;
+    *(node->pprev) = node->next;
+
+    if (NULL != node->next)
+    {
+        node->next->pprev = pprev;
+    }
+
     node->pprev = NULL;
+    node->next = NULL;
 }
 
 
