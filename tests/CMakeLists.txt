@@ -43,6 +43,13 @@ if (GTEST_FOUND)
                                  ${COMMON_SRC_LIST})
     target_link_libraries(test_thlist ${LIB_LIST})
 
+    #test thash_string
+    add_executable(test_thash_string test_thash_string.cpp 
+                                 ../src/thlist.c
+                                 ../src/thash_string.c
+                                 ${COMMON_SRC_LIST})
+    target_link_libraries(test_thash_string ${LIB_LIST})
+
 
 endif (GTEST_FOUND)
 

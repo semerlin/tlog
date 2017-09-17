@@ -33,6 +33,23 @@ static tuint32 t_hash_string_hash(const thash_string *hash_string, const char *k
 
 }
 
+/**
+ * @brief init string hash node
+ * @param node - string hash node
+ * @param key - key string
+ */
+void t_hash_string_init_node(thash_string_node *node, const char *key)
+{
+    T_ASSERT(NULL != node);
+    
+    if (NULL != key)
+    {
+        node->key = malloc(strlen(key));
+        strcpy((node)->key, key);
+    }
+    t_hlist_init_node(&node->node);
+}
+
 
 /**
  * @brief create new hash table
@@ -191,7 +208,6 @@ tbool t_hash_string_contain(thash_string *hash_string, const char *key)
 void t_hash_string_free(thash_string *hash_string, tfree_callback free_func)
 {
     T_ASSERT(NULL != hash_string);
-    T_ASSERT(NULL != free_func);
 
     thlist_head *head = NULL;
     tuint32 i = 0;
@@ -204,7 +220,10 @@ void t_hash_string_free(thash_string *hash_string, tfree_callback free_func)
         while (cur != NULL)
         {
             temp = cur->next;
-            free_func(t_hlist_entry(cur, thash_string_node, node));
+            if (NULL != free_func)
+            {
+                free_func(t_hlist_entry(cur, thash_string_node, node));
+            }
             cur = temp;
         }
     }
