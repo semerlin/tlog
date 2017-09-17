@@ -142,7 +142,7 @@ thash_string *t_hash_string_new(void)
  * @param hash_string - hash table
  * @param node - node to insert
  */
-void t_hash_string_insert(thash_string *hash_string, thash_string_node *node)
+thash_string *t_hash_string_insert(thash_string *hash_string, thash_string_node *node)
 {
     T_ASSERT(NULL != hash_string);
     T_ASSERT(NULL != node);
@@ -157,7 +157,7 @@ void t_hash_string_insert(thash_string *hash_string, thash_string_node *node)
         string_node = t_hlist_entry(hlist_node, thash_string_node, node);
         if (0 == strcmp(string_node->key, node->key))
         {
-            return ;
+            return hash_string;
         }
     }
 
@@ -168,8 +168,14 @@ void t_hash_string_insert(thash_string *hash_string, thash_string_node *node)
     //check if need rehash 
     if (hash_string->element_count > (hash_string->table_size * 1.2))
     {
-        t_hash_string_rehash(hash_string, hash_string->table_size * 2);
+        thash_string *new_hash_string = t_hash_string_rehash(hash_string, hash_string->table_size * 2);
+        if (NULL != new_hash_string)
+        {
+            return new_hash_string;
+        }
     }
+
+    return hash_string;
 }
 
 /**
@@ -259,6 +265,18 @@ tbool t_hash_string_contain(thash_string *hash_string, const char *key)
     return FALSE;
 }
 
+
+/**
+ * @brief get hash table element count
+ * @param hash_string - hash table pointer
+ * @return hash table element count
+ */
+tuint32 t_hash_string_count(thash_string *hash_string)
+{
+    T_ASSERT(NULL != hash_string);
+
+    return hash_string->element_count;
+}
 
 /**
  * @brief free all node in hash table 
