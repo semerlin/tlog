@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define DEFAULT_TABLE_SIZE    (20)
+#define DEFAULT_TABLE_SIZE    (10)
 
 struct _thash_string
 {
@@ -171,6 +171,9 @@ thash_string *t_hash_string_insert(thash_string *hash_string, thash_string_node 
         thash_string *new_hash_string = t_hash_string_rehash(hash_string, hash_string->table_size * 2);
         if (NULL != new_hash_string)
         {
+            //delete old hash string
+            free(hash_string->head); 
+            free(hash_string);
             return new_hash_string;
         }
     }
@@ -276,6 +279,18 @@ tuint32 t_hash_string_count(thash_string *hash_string)
     T_ASSERT(NULL != hash_string);
 
     return hash_string->element_count;
+}
+
+/**
+ * @brief get hash table table size
+ * @param hash_string - hash table pointer
+ * @return hash table table size
+ */
+tuint32 t_hash_string_capacity(thash_string *hash_string)
+{
+    T_ASSERT(NULL != hash_string);
+
+    return hash_string->table_size;
 }
 
 /**
