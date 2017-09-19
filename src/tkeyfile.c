@@ -1,11 +1,30 @@
 #include "tkeyfile.h"
 #include "tassert.h"
 #include "tshareptr.h"
+#include "thash_string.h"
+#include "tlist.h"
+#include <errno.h>
 
+//key-value node
+typedef struct
+{
+    char *value;
+    thash_string_node node;
+}
 
+//group node
+typedef struct
+{
+    thash_string *child;
+    char *group_name;
+    tlist node;
+}group_node;
+
+//keyfile structure
 struct _tkeyfile
 {
     tshareptr ptr;
+    tlist groups;
 };
 
 
@@ -22,8 +41,33 @@ void t_Keyfile_free(tkeyfile *file)
 {
 }
 
+static tbool parse_group(const char *data, char *group)
+{
+    return TRUE;
+}
+
 tint t_keyfile_load_from_file(tkeyfile *key_file, const tchar *file)
 {
+    T_ASSERT(NULL != key_file);
+    char buf[1024];
+    char *line_str = NULL;
+
+    if (NULL == file)
+    {
+    }
+
+    FILE *fp = fopen(file, "r");
+    if (NULL == fp)
+    {
+        return errno;
+    }
+
+    tbool start_group = FALSE;
+    do
+    {
+        line_str = fgets(buf, 1024, fp);
+
+    }while(NULL != line_str);
 }
 
 tint t_keyfile_load_from_data(tkeyfile *key_file, const tchar *data)
