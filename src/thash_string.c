@@ -234,11 +234,11 @@ thash_string_node *t_hash_string_get(thash_string *hash_string, const char *key)
         string_node = t_hlist_entry(hlist_node, thash_string_node, node);
         if (0 == strcmp(string_node->key, key))
         {
-            break; 
+            return string_node;
         }
     }
 
-    return string_node;
+    return NULL;
 }
 
 /**
