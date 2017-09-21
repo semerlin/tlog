@@ -50,6 +50,14 @@ if (GTEST_FOUND)
                                  ${COMMON_SRC_LIST})
     target_link_libraries(test_thash_string ${LIB_LIST})
 
+    #test tstring
+    add_executable(test_tstring test_tstring.cpp 
+                                 ../src/tstring.c
+                                 ${COMMON_SRC_LIST})
+    target_link_libraries(test_tstring ${LIB_LIST})
+
+
+
 
 endif (GTEST_FOUND)
 
