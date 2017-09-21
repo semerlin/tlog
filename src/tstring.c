@@ -334,4 +334,88 @@ tint t_string_find_string_reverse(const tchar *str, tuint32 index, const tchar *
     return ret;
 }
 
+/**
+ * @brief trimmed space in string head and tail
+ * @param str - string to trim
+ * @param out - trimmed string
+ */
+void t_string_trimmed(const tchar *str, tchar *out)
+{
+    T_ASSERT(NULL != str);
+    T_ASSERT(NULL != out);
+    while ('\0' != *str)
+    {
+        if (' ' == *str)
+        {
+            str++;
+        }
+        else
+        {
+            break;
+        }
+    }
+    tint len = strlen(str);
+    while(0 != len)
+    {
+        if (' ' == str[len - 1])
+        {
+            len--;
+        }
+        else
+        {
+            break;
+        }
+    }
+    strncpy(out, str, len);
+    out[len] = '\0';
+}
+
+/**
+ * @brief trimmed space in string head
+ * @param str - string to trim
+ * @param out - trimmed string
+ */
+void t_string_trimmed_head(const tchar *str, tchar *out)
+{
+    T_ASSERT(NULL != str);
+    T_ASSERT(NULL != out);
+    while ('\0' != *str)
+    {
+        if (' ' == *str)
+        {
+            str++;
+        }
+        else
+        {
+            break;
+        }
+    }
+    strcpy(out, str);
+}
+
+/**
+ * @brief trimmed space in string tail
+ * @param str - string to trim
+ * @param out - trimmed string
+ */
+void t_string_trimmed_tail(const tchar *str, tchar *out)
+{
+    T_ASSERT(NULL != str);
+    T_ASSERT(NULL != out);
+    tint len = strlen(str);
+    while(0 != len)
+    {
+        if (' ' == str[len - 1])
+        {
+            len--;
+        }
+        else
+        {
+            break;
+        }
+    }
+    strncpy(out, str, len);
+    out[len] = '\0';
+}
+
 

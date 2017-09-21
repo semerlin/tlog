@@ -16,6 +16,9 @@ T_EXTERN tint t_string_find_char_reverse(const tchar *str, tuint32 index, tchar 
 T_EXTERN tbool t_string_contain_string(const tchar *str, const tchar *check, tbool cs);
 T_EXTERN tint t_string_find_string(const tchar *str, tuint32 index, const tchar *check, tbool cs);
 T_EXTERN tint t_string_find_string_reverse(const tchar *str, tuint32 index, const tchar *check, tbool cs);
+T_EXTERN void t_string_trimmed(const tchar *str, tchar *out);
+T_EXTERN void t_string_trimmed_head(const tchar *str, tchar *out);
+T_EXTERN void t_string_trimmed_tail(const tchar *str, tchar *out);
 
 
 

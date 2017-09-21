@@ -97,6 +97,35 @@ TEST(TstringTest, Find)
                 "jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj", TRUE));
 }
 
+TEST(TstringTest, Trimmed)
+{
+    char test_str1[] = "    ";
+    char test_str2[] = "";
+    char test_str3[] = "  asdf   ";
+
+    char out[20];
+    t_string_trimmed(test_str1, out);
+    EXPECT_STREQ("", out);
+    t_string_trimmed_head(test_str1, out);
+    EXPECT_STREQ("", out);
+    t_string_trimmed_tail(test_str1, out);
+    EXPECT_STREQ("", out);
+
+    t_string_trimmed(test_str2, out);
+    EXPECT_STREQ("", out);
+    t_string_trimmed_head(test_str2, out);
+    EXPECT_STREQ("", out);
+    t_string_trimmed_tail(test_str2, out);
+    EXPECT_STREQ("", out);
+
+    t_string_trimmed(test_str3, out);
+    EXPECT_STREQ("asdf", out);
+    t_string_trimmed_head(test_str3, out);
+    EXPECT_STREQ("asdf   ", out);
+    t_string_trimmed_tail(test_str3, out);
+    EXPECT_STREQ("  asdf", out);
+}
+
 int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);
