@@ -4,6 +4,12 @@
 #include <ctype.h>
 
 
+/**
+ * @brief get string left data
+ * @param str - source string
+ * @param len - left length
+ * @param left - output string
+ */
 void t_string_left(const tchar *str, tuint32 len, tchar *left)
 {
     T_ASSERT(NULL != str);
@@ -13,6 +19,12 @@ void t_string_left(const tchar *str, tuint32 len, tchar *left)
     strncpy(left, str, ((str_len > len) ? str_len : len));
 }
 
+/**
+ * @brief get string right data
+ * @param str - source string
+ * @param len - right length
+ * @param right - output string
+ */
 void t_string_right(const tchar *str, tuint32 len, tchar *right)
 {
     T_ASSERT(NULL != str);
@@ -23,6 +35,13 @@ void t_string_right(const tchar *str, tuint32 len, tchar *right)
     strncpy(right, str + index, len);
 }
 
+/**
+ * @brief get string middle data
+ * @param str - source string
+ * @param index - start position
+ * @param len - middle string length
+ * @param mid - output string
+ */
 void t_string_mid(const tchar *str, tuint32 index, tuint32 len, tchar *mid)
 {
     T_ASSERT(NULL != str);
@@ -36,6 +55,13 @@ void t_string_mid(const tchar *str, tuint32 index, tuint32 len, tchar *mid)
     t_string_left(str + index, len, mid);
 }
 
+/**
+ * @brief check if string contain given character
+ * @param str - source string
+ * @param check - given character
+ * @param cs - TRUE: ignore case of characters
+ *             FALSE: case sensitive
+ */
 tbool t_string_contain_char(const tchar *str, tchar check, tbool cs)
 {
     T_ASSERT(NULL != str);
@@ -44,8 +70,8 @@ tbool t_string_contain_char(const tchar *str, tchar check, tbool cs)
     tbool ret = FALSE;
     while(0 != (cur = *str++))
     {
-        cur = (cs ? tolower(cur) : cur);
-        check = (cs ? tolower(check) : check);
+        cur = (cs ? cur : tolower(cur));
+        check = (cs ? check : tolower(check));
         if (cur == check)
         {
             ret = TRUE;
@@ -56,6 +82,15 @@ tbool t_string_contain_char(const tchar *str, tchar check, tbool cs)
     return ret;
 }
 
+/**
+ * @brief find given character forward from string
+ * @param str - source string
+ * @param index - start find position
+ * @param check - given character
+ * @param cs - TRUE: ignore case of characters
+ *             FALSE: case sensitive
+ * @return given character position base of 0, -1 means can not find
+ */
 tint t_string_find_char(const tchar *str, tuint32 index, tchar check, tbool cs)
 {
     T_ASSERT(NULL != str);
@@ -84,6 +119,15 @@ tint t_string_find_char(const tchar *str, tuint32 index, tchar check, tbool cs)
     return ret;
 }
 
+/**
+ * @brief find given character backward from string
+ * @param str - source string
+ * @param index - start find position
+ * @param check - given character
+ * @param cs - true: ignore case of characters
+ *             false: case sensitive
+ * @return given character position base of 0, -1 means can not find
+ */
 tint t_string_find_char_reverse(const tchar *str, tuint32 index, tchar check, tbool cs)
 {
     T_ASSERT(NULL != str);
@@ -111,6 +155,13 @@ tint t_string_find_char_reverse(const tchar *str, tuint32 index, tchar check, tb
     return ret;
 }
 
+/**
+ * @brief check if string contain given string
+ * @param str - source string
+ * @param check - given string
+ * @param cs - TRUE: ignore case of characters
+ *             FALSE: case sensitive
+ */
 tbool t_string_contain_string(const tchar *str, const tchar *check, tbool cs)
 {
     T_ASSERT(NULL != str);
@@ -160,6 +211,15 @@ tbool t_string_contain_string(const tchar *str, const tchar *check, tbool cs)
     return ret;
 }
 
+/**
+ * @brief find given string forward from string
+ * @param str - source string
+ * @param index - start find position
+ * @param check - given string
+ * @param cs - TRUE: ignore case of characters
+ *             FALSE: case sensitive
+ * @return given string position base of 0, -1 means can not find
+ */
 tint t_string_find_string(const tchar *str, tuint32 index, const tchar *check, tbool cs)
 {
     T_ASSERT(NULL != str);
@@ -212,6 +272,15 @@ tint t_string_find_string(const tchar *str, tuint32 index, const tchar *check, t
     return ret;
 }
 
+/**
+ * @brief find given string backward from string
+ * @param str - source string
+ * @param index - start find position
+ * @param check - given string
+ * @param cs - TRUE: ignore case of characters
+ *             FALSE: case sensitive
+ * @return given string position base of 0, -1 means can not find
+ */
 tint t_string_find_string_reverse(const tchar *str, tuint32 index, const tchar *check, tbool cs)
 {
     T_ASSERT(NULL != str);
