@@ -9,7 +9,7 @@ typedef struct _thash_string thash_string;
 
 typedef struct 
 {
-    char *key;
+    tchar *key;
     thlist_node node;
 }thash_string_node;
 
@@ -24,6 +24,17 @@ T_EXTERN tbool t_hash_string_contain(thash_string *hash_string, const char *key)
 T_EXTERN tuint32 t_hash_string_count(thash_string *hash_string);
 T_EXTERN tuint32 t_hash_string_capacity(thash_string *hash_string);
 T_EXTERN void t_hash_string_free(thash_string *hash_string, tfree_callback free_func);
+
+/**
+ * @brief get string hash node entry
+ * @param member_ptr - node pointer
+ * @param struct_type - entry struct type
+ * @param member - node name
+ */
+#define t_hash_string_entry(member_ptr, struct_type, member) \
+        T_CONTAINER_OF(member_ptr, struct_type, member)
+
+
 
 T_END_DECLS
 
