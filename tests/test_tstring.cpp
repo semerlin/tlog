@@ -151,6 +151,8 @@ TEST(TstringTest, Trimmed)
 
     t_string_remove_linebreak(test_str4, out);
     EXPECT_STREQ("aaa", out);
+    t_string_remove_linebreak(test_str3, out);
+    EXPECT_STREQ("  asdf   ", out);
 }
 
 int main(int argc, char **argv)
