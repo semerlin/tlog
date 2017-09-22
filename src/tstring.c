@@ -355,9 +355,15 @@ void t_string_trimmed(const tchar *str, tchar *out)
         }
     }
     tint len = strlen(str);
+    tbool has_return = FALSE;
+    if ('\n' == str[len - 1])
+    {
+        len--;
+        has_return = TRUE;
+    }
     while(0 != len)
     {
-        if (' ' == str[len - 1])
+        if ((' ' == str[len - 1]) || ('\t' == str[len - 1]))
         {
             len--;
         }
@@ -367,8 +373,14 @@ void t_string_trimmed(const tchar *str, tchar *out)
         }
     }
     strncpy(out, str, len);
+    if (has_return)
+    {
+        out[len] = '\n';
+        len++;
+    }
     out[len] = '\0';
 }
+
 
 /**
  * @brief trimmed space in string head
@@ -494,4 +506,29 @@ tbool t_string_to_bool(const tchar *str, tbool *out)
     return TRUE;
 }
 
+/**
+ * @brief remove line breaks in string
+ * @param str - string to remove line break
+ * @param out - string removed line break
+ */
+void t_string_remove_linebreak(const tchar *str, tchar *out)
+{
+    T_ASSERT(NULL != str);
+    T_ASSERT(NULL != out);
 
+    tint len = strlen(str);
+    while (0 != len)
+    {
+        if (('\n' == str[len - 1]) || ('\r' == str[len - 1]))
+        {
+            len--;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    strncpy(out, str, len);
+    out[len] = '\0';
+}

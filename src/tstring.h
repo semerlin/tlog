@@ -21,6 +21,7 @@ T_EXTERN void t_string_trimmed_head(const tchar *str, tchar *out);
 T_EXTERN void t_string_trimmed_tail(const tchar *str, tchar *out);
 T_EXTERN tbool t_string_to_int(const tchar *str, tint *out);
 T_EXTERN tbool t_string_to_bool(const tchar *str, tbool *out);
+T_EXTERN void t_string_remove_linebreak(const tchar *str, tchar *out);
 
 
 

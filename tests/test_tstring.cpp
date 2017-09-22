@@ -125,6 +125,7 @@ TEST(TstringTest, Trimmed)
     char test_str1[] = "    ";
     char test_str2[] = "";
     char test_str3[] = "  asdf   ";
+    char test_str4[] = "aaa\n";
 
     char out[20];
     t_string_trimmed(test_str1, out);
@@ -147,6 +148,9 @@ TEST(TstringTest, Trimmed)
     EXPECT_STREQ("asdf   ", out);
     t_string_trimmed_tail(test_str3, out);
     EXPECT_STREQ("  asdf", out);
+
+    t_string_remove_linebreak(test_str4, out);
+    EXPECT_STREQ("aaa", out);
 }
 
 int main(int argc, char **argv)
