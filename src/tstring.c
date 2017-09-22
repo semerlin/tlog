@@ -419,3 +419,79 @@ void t_string_trimmed_tail(const tchar *str, tchar *out)
 }
 
 
+/**
+ * @brief convert string to int
+ * @param str - string to convert
+ * @param out - output int
+ * @return TRUE: success FALSE: failed
+ */
+tbool t_string_to_int(const tchar *str, tint *out)
+{
+    T_ASSERT(NULL != str);
+    T_ASSERT(NULL != out);
+
+    *out = 0;
+    if ('\0' == *str)
+    {
+        return FALSE;
+    }
+
+    if (('-' == *str) && ('\0' == str[1]))
+    {
+        return FALSE;
+    }
+
+    tint sign = 1;
+    if ('-' == *str)
+    {
+        sign = -1;
+        str++;
+    }
+
+    while ('\0' != *str)
+    {
+        if((*str >= '0') && (*str <= '9'))
+        {
+            *out *= 10;
+            *out += *str - 0x30;
+            str++;
+        }
+        else
+        {
+            return FALSE;
+        }
+    }
+
+    *out *= sign;
+
+    return TRUE;
+}
+
+/**
+ * @brief convert string to bool 
+ * @param str - string to convert
+ * @param out - output bool
+ * @return TRUE: success FALSE: failed
+ */
+tbool t_string_to_bool(const tchar *str, tbool *out)
+{
+    T_ASSERT(NULL != str);
+    T_ASSERT(NULL != out);
+
+    if (0 == strcasecmp(str, "false"))
+    {
+        *out = FALSE;
+    }
+    else if (0 == strcasecmp(str, "true"))
+    {
+        *out = TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+

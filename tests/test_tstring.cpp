@@ -97,6 +97,29 @@ TEST(TstringTest, Find)
                 "jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj", TRUE));
 }
 
+TEST(TstringTest, Convert)
+{
+    int int_val;
+    tbool bool_val;
+    EXPECT_TRUE(t_string_to_int("123", &int_val));
+    EXPECT_EQ(123, int_val);
+    EXPECT_FALSE(t_string_to_int("123a", &int_val));
+    EXPECT_FALSE(t_string_to_int("-", &int_val));
+    EXPECT_TRUE(t_string_to_int("-12", &int_val));
+    EXPECT_EQ(-12, int_val);
+
+    EXPECT_TRUE(t_string_to_bool("TruE", &bool_val));
+    EXPECT_EQ(TRUE, bool_val);
+    EXPECT_TRUE(t_string_to_bool("true", &bool_val));
+    EXPECT_EQ(TRUE, bool_val);
+    EXPECT_FALSE(t_string_to_bool("true1", &bool_val));
+    EXPECT_FALSE(t_string_to_bool("false1", &bool_val));
+    EXPECT_TRUE(t_string_to_bool("FALSE", &bool_val));
+    EXPECT_EQ(FALSE, bool_val);
+    EXPECT_TRUE(t_string_to_bool("fALse", &bool_val));
+    EXPECT_EQ(FALSE, bool_val);
+}
+
 TEST(TstringTest, Trimmed)
 {
     char test_str1[] = "    ";
