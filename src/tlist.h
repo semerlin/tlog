@@ -2,7 +2,6 @@
 #define _TLIST_H_
 
 #include "ttypes.h"
-#include "tcommon.h"
 
 T_BEGIN_DECLS
 

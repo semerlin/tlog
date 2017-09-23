@@ -39,6 +39,10 @@ typedef double  tdouble;
 #endif
 #endif
 
+
+/* callback function */
+typedef void (*tfree_callback)(void *ptr);
+
 T_END_DECLS
 
 #endif /* TTYPES_H_ */
