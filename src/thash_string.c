@@ -2,12 +2,15 @@
 #include "tassert.h"
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 
 #define DEFAULT_TABLE_SIZE    (10)
+#define REHASH_FACTOR         (1.2)
 
 struct _thash_string
 {
     tuint32 table_size;
+    tuint32 max_table_size;
     tuint32 element_count;
     thlist_head *head;
 };
@@ -49,6 +52,8 @@ static thash_string *t_hash_string_new_size(tuint32 table_size)
             hash->table_size = table_size;
             hash->element_count = 0;
             tuint32 i = 0;
+            tdouble max_size = REHASH_FACTOR * hash->table_size;
+            hash->max_table_size = round(max_size);
             for (; i < table_size; ++i)
             {
                 t_hlist_init_head(&hash->head[i]);
@@ -166,7 +171,7 @@ thash_string *t_hash_string_insert(thash_string *hash_string, thash_string_node 
     hash_string->element_count++;
 
     //check if need rehash 
-    if (hash_string->element_count > (hash_string->table_size * 1.2f))
+    if (hash_string->element_count > hash_string->max_table_size)
     {
         thash_string *new_hash_string = t_hash_string_rehash(hash_string, hash_string->table_size * 2);
         if (NULL != new_hash_string)
