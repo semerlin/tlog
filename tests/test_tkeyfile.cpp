@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "../src/tkeyfile.h"
 
+char filename[128] = {0};
 
 #ifdef T_ENABLE_ASSERT
 TEST(TkeyfileTest, Death)
@@ -22,7 +23,7 @@ TEST(TkeyfileTest, Function)
 {
     tkeyfile *keyfile = t_keyfile_new();
     ASSERT_NE((void *)0, keyfile);
-    int ret = t_keyfile_load_from_file(keyfile, "./test.conf");
+    int ret = t_keyfile_load_from_file(keyfile, filename);
     ASSERT_EQ(0, ret);
     EXPECT_TRUE(t_keyfile_has_group(keyfile, "test1"));
     EXPECT_TRUE(t_keyfile_has_group(keyfile, "test2"));
@@ -56,6 +57,10 @@ TEST(TkeyfileTest, Function)
 
 int main(int argc, char **argv)
 {
+    if (argc > 1)
+    {
+        strcpy(filename, argv[1]);
+    }
     testing::InitGoogleTest(&argc, argv);
     testing::FLAGS_gtest_death_test_style = "fast";
     return RUN_ALL_TESTS();
