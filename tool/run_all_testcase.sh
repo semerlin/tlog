@@ -1,11 +1,14 @@
 #!/bin/bash
 
 # check folder validation
-if [ $# -eq 0 ]
+if [ $# -lt 2 ]
 then
-    echo "usage: $0 <excutable folder>"
+    echo "usage: $0 <excutable folder> <configure file>"
     exit 1
 fi
+
+# get configure file absolute path
+conf_file=`readlink -f $2`
 
 # cd into exectuable folder
 cd $1
@@ -18,7 +21,7 @@ exec_status=""
 
 run_exec()
 {
-    ./$1
+    ./$1 $2
     err_code=$?
     if [ ${err_code} -ne 0 ]
     then
@@ -33,7 +36,7 @@ for exec_name in ${files}
 do
     if [ -x "${exec_name}" ]
     then
-        run_exec ${exec_name}
+        run_exec ${exec_name} ${conf_file}
     fi
 done
 
