@@ -77,6 +77,7 @@ max_status_len=$(( max_status_len+2 ))
 max_code_len=$(( max_code_len+2 ))
 
 # output test status
+echo ""
 printf "\e[33m %-${max_name_len}s %-${max_status_len}s %-${max_code_len}s\e[0m\n" "name" "status" "code" 
 for exec_detail in ${exec_status}
 do
