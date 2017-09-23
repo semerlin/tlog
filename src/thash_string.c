@@ -166,7 +166,7 @@ thash_string *t_hash_string_insert(thash_string *hash_string, thash_string_node 
     hash_string->element_count++;
 
     //check if need rehash 
-    if (hash_string->element_count > (hash_string->table_size * 1.2))
+    if (hash_string->element_count > (hash_string->table_size * 1.2f))
     {
         thash_string *new_hash_string = t_hash_string_rehash(hash_string, hash_string->table_size * 2);
         if (NULL != new_hash_string)

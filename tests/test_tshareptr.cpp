@@ -22,7 +22,6 @@ TEST(TShareptrTest, RefAndUnref)
     EXPECT_EQ(2, test_ptr->ref_count);
     t_shareptr_unref(&test_ptr);
     t_shareptr_unref(&test_ptr);
-    //EXPECT_DEATH(t_shareptr_unref(test_ptr), "");
 }
 
 int main(int argc, char **argv)

@@ -86,7 +86,7 @@ TEST(Thash_stringTest, Rehash)
     ASSERT_NE((void *)0, hash_string);
     thash_string_node *node;
 
-    char str_val[4];
+    char str_val[4] = {0, 0, 0, 0};
     for (int i = 0; i < 12; ++i)
     {
         node = new thash_string_node;
@@ -95,6 +95,7 @@ TEST(Thash_stringTest, Rehash)
         strcpy(node->key, str_val);
         t_hash_string_insert(hash_string, node);
     }
+    
 
     EXPECT_EQ(12, t_hash_string_count(hash_string));
     EXPECT_EQ(10, t_hash_string_capacity(hash_string));
