@@ -8,17 +8,20 @@ option(TLOG_BUILD_TESTS "Build the tlog test programs" ON)
 #-------------------------------------------------
 # compiler flags 
 #-------------------------------------------------
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -fPIC -fsigned-char")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -fsigned-char")
+set(COMMON_FLAGS "-Wall -Werror -fsigned-char")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS} -Wstrict-prototypes -fPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS}")
 message(STATUS "Build Type: " ${CMAKE_BUILD_TYPE})
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS} -O0 -g -ggdb -DT_ENABLE_ASSERT")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -g -ggdb -DT_ENABLE_ASSERT")
-    message(STATUS "Build Flags:" ${CMAKE_C_FLAGS_DEBUG})
+    message(STATUS "C Flags:" ${CMAKE_C_FLAGS_DEBUG})
+    message(STATUS "CXX Flags:" ${CMAKE_CXX_FLAGS_DEBUG})
 else(CMAKE_BUILD_TYPE STREQUAL "Release")
     set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS} -O3 -DNDEBUG")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -DNDEBUG")
-    message(STATUS "Build Flags:" ${CMAKE_C_FLAGS_RELEASE})
+    message(STATUS "C Flags:" ${CMAKE_C_FLAGS_RELEASE})
+    message(STATUS "CXX Flags:" ${CMAKE_CXX_FLAGS_RELEASE})
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 
