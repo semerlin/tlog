@@ -177,7 +177,7 @@ static tbool t_keyfile_parse_group(const tchar *data, tchar *group)
 
 /**
  * @brief find key and value in string
- * @param data - parse string
+ * @param data - trimmed parse string
  * @param key - output key name
  * @param value - output value name
  * @return TRUE: find key and value
@@ -192,7 +192,7 @@ static tbool t_keyfile_parse_key_value(const tchar *data,
         tchar temp[512];
         //get key
         t_string_left(data, index, key);
-        t_string_trimmed(key, temp);
+        t_string_trimmed_tail(key, temp);
         if (0 == strlen(key))
         {
             return FALSE;
@@ -200,7 +200,7 @@ static tbool t_keyfile_parse_key_value(const tchar *data,
         strcpy(key, temp);
         //get value
         t_string_right(data, strlen(data) - index - 1, value);
-        t_string_trimmed(value, temp);
+        t_string_trimmed_head(value, temp);
         if (0 == strlen(value))
         {
             return FALSE;
@@ -252,8 +252,11 @@ tint t_keyfile_load_from_file(tkeyfile *keyfile, const tchar *file)
         }
         
         t_string_trimmed(key, trimmed);
-        //find group
-        if (t_keyfile_parse_group(trimmed, key))
+        if ('#' == trimmed[0]) /* comment check */
+        {
+            continue;
+        }
+        else if (t_keyfile_parse_group(trimmed, key)) /* find group */
         {
             //check if already has this names group
             group_node *node = t_keyfile_find_group(keyfile, key);
