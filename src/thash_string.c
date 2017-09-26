@@ -10,7 +10,7 @@
 struct _thash_string
 {
     tuint32 table_size;
-    tuint32 max_table_size;
+    tuint32 max_element_size;
     tuint32 element_count;
     thlist_head *head;
 };
@@ -53,7 +53,7 @@ static thash_string *t_hash_string_new_size(tuint32 table_size)
             hash->element_count = 0;
             tuint32 i = 0;
             tdouble max_size = REHASH_FACTOR * hash->table_size;
-            hash->max_table_size = round(max_size);
+            hash->max_element_size = round(max_size);
             for (; i < table_size; ++i)
             {
                 t_hlist_init_head(&hash->head[i]);
@@ -171,7 +171,7 @@ thash_string *t_hash_string_insert(thash_string *hash_string, thash_string_node 
     hash_string->element_count++;
 
     //check if need rehash 
-    if (hash_string->element_count > hash_string->max_table_size)
+    if (hash_string->element_count > hash_string->max_element_size)
     {
         thash_string *new_hash_string = t_hash_string_rehash(hash_string, hash_string->table_size * 2);
         if (NULL != new_hash_string)
@@ -244,6 +244,34 @@ thash_string_node *t_hash_string_get(thash_string *hash_string, const char *key)
     }
 
     return NULL;
+}
+
+
+/**
+ * @brief get hash table all keys
+ * @param hash_string - string hash table
+ * @param keys - output key buffers
+ */
+void t_hash_string_keys(thash_string *hash_string, char **keys)
+{
+    T_ASSERT(NULL != hash_string);
+    T_ASSERT(NULL != keys);
+
+    thlist_node *hlist_node = NULL;
+    thash_string_node *string_node = NULL;
+
+
+    tuint32 index = 0, i = 0;
+    for (i = 0; i < hash_string->table_size; ++i)
+    {
+        t_hlist_foreach(hlist_node, &hash_string->head[i])
+        {
+            string_node = t_hlist_entry(hlist_node, thash_string_node, node);
+            strcpy(keys[index], string_node->key);
+            index ++;
+        }
+    }
+    keys[index] = NULL;
 }
 
 /**

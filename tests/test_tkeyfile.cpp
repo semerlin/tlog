@@ -50,6 +50,42 @@ TEST(TkeyfileTest, Function)
     EXPECT_FALSE(t_keyfile_get_bool(keyfile, "test2", "flag3", true));
     EXPECT_EQ(-22, t_keyfile_get_int(keyfile, "test2", "flag4", 8));
 
+
+    char *groups[3] = {0};
+    for (int i = 0; i < 3; ++i)
+    {
+        groups[i] = new char[16];
+    }
+    t_keyfile_groups(keyfile, groups);
+
+    EXPECT_STREQ("test1", groups[0]);
+    EXPECT_STREQ("test2", groups[1]);
+
+    char *keys[8] = {0};
+    for (int i = 0; i < 8; ++i)
+    {
+        keys[i] = new char[16];
+    }
+    t_keyfile_keys(keyfile, groups[0], keys);
+
+    EXPECT_STREQ("flag2", keys[0]);
+    EXPECT_STREQ("flag3", keys[1]);
+    EXPECT_STREQ("flag4", keys[2]);
+    EXPECT_STREQ("flag5", keys[3]);
+    EXPECT_STREQ("flag6", keys[4]);
+    EXPECT_STREQ("flag1", keys[5]);
+
+
+    for (int i = 0; i < 3; ++i)
+    {
+        delete []groups[i];
+    }
+
+    for (int i = 0; i < 8; ++i)
+    {
+        delete []keys[i];
+    }
+
     t_keyfile_free(keyfile);
 }
 

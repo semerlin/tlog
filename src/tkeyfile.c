@@ -420,6 +420,62 @@ tbool t_keyfile_get_bool(const tkeyfile *keyfile, const tchar *group,
 }
 
 /**
+ * @brief get keyfile all group names
+ * @param keyfile - keyfile handle
+ * @param groups - groups output buffer
+ */
+void t_keyfile_groups(const tkeyfile *keyfile, tchar **groups)
+{
+    T_ASSERT(NULL != keyfile);
+    T_ASSERT(NULL != groups);
+    tlist *node;
+    group_node *group;
+    tuint32 index = 0;
+    t_list_foreach(node, &keyfile->groups) 
+    {
+        group = t_list_entry(node, group_node, node);
+        strcpy(groups[index], group->group_name);
+        index++;
+    }
+    groups[index] = NULL;
+}
+
+/**
+ * @brief get keyfile specific group's keys
+ * @param keyfile - keyfile handle
+ * @param group - group name
+ * @param keys - keys output buffer
+ */
+void t_keyfile_keys(const tkeyfile *keyfile, const tchar *group_name, tchar **keys)
+{
+    T_ASSERT(NULL != keyfile);
+    T_ASSERT(NULL != group_name);
+    T_ASSERT(NULL != keys);
+
+    tlist *node;
+    group_node *group;
+    t_list_foreach(node, &keyfile->groups) 
+    {
+        group = t_list_entry(node, group_node, node);
+        if (0 == strcmp(group->group_name, group_name))
+        {
+            break;
+        }
+        group = NULL;
+    }
+
+    if (NULL != group)
+    {
+        t_hash_string_keys(group->kv, keys);
+    }
+    else
+    {
+        keys[0] = NULL;
+    }
+}
+
+
+/**
  * @brief check if keyfile has specified group
  * @param keyfile - keyfile handle
  * @param group - group name

@@ -37,14 +37,30 @@ TEST(Thash_stringTest, Insert)
     thash_string_node node1, node2, node3;
     ASSERT_NE((void *)0, hash_string);
     t_hash_string_init_node(&node1, "abc");
-    t_hash_string_init_node(&node2, "def");
-    t_hash_string_init_node(&node3, "123");
+    t_hash_string_init_node(&node2, "defhh");
+    t_hash_string_init_node(&node3, "1234567");
     t_hash_string_insert(hash_string, &node1);
     t_hash_string_insert(hash_string, &node2);
     t_hash_string_insert(hash_string, &node3);
     EXPECT_EQ(0, strcmp(t_hash_string_get(hash_string, "abc")->key, "abc"));
-    EXPECT_EQ(0, strcmp(t_hash_string_get(hash_string, "def")->key, "def"));
-    EXPECT_EQ(0, strcmp(t_hash_string_get(hash_string, "123")->key, "123"));
+    EXPECT_EQ(0, strcmp(t_hash_string_get(hash_string, "defhh")->key, "defhh"));
+    EXPECT_EQ(0, strcmp(t_hash_string_get(hash_string, "1234567")->key, "1234567"));
+
+    char *key[5] = {0};
+    for (int i = 0; i < 5; ++i)
+    {
+        key[i] = new char[16];
+    }
+    t_hash_string_keys(hash_string, key);
+
+    EXPECT_EQ(0, strcmp(key[0], "1234567"));
+    EXPECT_EQ(0, strcmp(key[1], "abc"));
+    EXPECT_EQ(0, strcmp(key[2], "defhh"));
+
+    for (int i = 0; i < 5; ++i)
+    {
+        delete []key[i];
+    }
 }
 
 TEST(Thash_stringTest, Remove)

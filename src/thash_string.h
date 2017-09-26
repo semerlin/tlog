@@ -20,6 +20,7 @@ T_EXTERN thash_string *t_hash_string_insert(thash_string *hash_string, thash_str
 T_EXTERN thash_string_node *t_hash_string_remove(thash_string *hash_string, const char *key);
 T_EXTERN void t_hash_string_remove_node(thash_string_node *node);
 T_EXTERN thash_string_node *t_hash_string_get(thash_string *hash_string, const char *key);
+T_EXTERN void t_hash_string_keys(thash_string *hash_string, char **keys);
 T_EXTERN tbool t_hash_string_contain(thash_string *hash_string, const char *key);
 T_EXTERN tuint32 t_hash_string_count(thash_string *hash_string);
 T_EXTERN tuint32 t_hash_string_capacity(thash_string *hash_string);
