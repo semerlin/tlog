@@ -9,7 +9,7 @@ option(TLOG_BUILD_TESTS "Build the tlog test programs" ON)
 # compiler flags 
 #-------------------------------------------------
 set(COMMON_FLAGS "-Wall -Werror -fsigned-char")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS} -Wstrict-prototypes -fPIC")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS} -std=c99 -Wstrict-prototypes -fPIC")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS}")
 message(STATUS "Build Type: " ${CMAKE_BUILD_TYPE})
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
