@@ -526,7 +526,7 @@ tuint32 t_keyfile_key_count(const tkeyfile *keyfile, const tchar *group_name)
  * @return TRUE: has
  *         FALSE: can not find
  */
-tbool t_keyfile_has_group(tkeyfile *keyfile, const tchar *group)
+tbool t_keyfile_contains_group(tkeyfile *keyfile, const tchar *group)
 {
     T_ASSERT(NULL != keyfile);
     T_ASSERT(NULL != group);
@@ -541,7 +541,7 @@ tbool t_keyfile_has_group(tkeyfile *keyfile, const tchar *group)
  * @return TRUE: has
  *         FALSE: can not find
  */
-tbool t_keyfile_has_key(tkeyfile *keyfile, const tchar *group, const tchar *key)
+tbool t_keyfile_contains_key(tkeyfile *keyfile, const tchar *group, const tchar *key)
 {
     T_ASSERT(NULL != keyfile);
     T_ASSERT(NULL != group);
