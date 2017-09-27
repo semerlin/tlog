@@ -126,10 +126,32 @@ void t_hash_string_init_node(thash_string_node *node, const char *key)
     
     if (NULL != key)
     {
-        node->key = malloc(strlen(key));
-        strcpy((node)->key, key);
+        node->key = malloc(strlen(key) + 1);
+        strcpy(node->key, key);
     }
     t_hlist_init_node(&node->node);
+}
+
+
+/**
+ * @brief new string hash node
+ * @param key - key string
+ * @return node pointer
+ */
+thash_string_node *t_hash_string_new_node(const tchar *key)
+{
+    thash_string_node *node = malloc(sizeof(thash_string_node));
+    if (NULL != node)
+    {
+        if (NULL != key)
+        {
+            node->key = malloc(strlen(key) + 1);
+            strcpy(node->key, key);
+        }
+        t_hlist_init_node(&node->node);
+    }
+
+    return node;
 }
 
 
