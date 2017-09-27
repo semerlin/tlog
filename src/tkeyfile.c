@@ -419,12 +419,41 @@ tbool t_keyfile_get_bool(const tkeyfile *keyfile, const tchar *group,
     return default_value;
 }
 
+
+/**
+ * @brief get keyfile group hash table
+ * @param keyfile - keyfile handle
+ * @param group_name - group name
+ * @return group hash table handle
+ */
+void t_keyfile_group_foreach(const tkeyfile *keyfile, const tchar *group_name,
+        tgeneral_callback cb_func)
+{
+    T_ASSERT(NULL != keyfile);
+    T_ASSERT(NULL != group_name);
+    tlist *list_node;
+    group_node *group = NULL;
+    t_list_foreach(list_node, &keyfile->groups) 
+    {
+        group = t_list_entry(list_node, group_node, node);
+        if (0 == strcmp(group->group_name, group_name))
+        {
+           break;
+        }
+    }
+
+    if (NULL != group)
+    {
+        t_hash_string_foreach(group->kv, cb_func);
+    }
+}
+
 /**
  * @brief get keyfile all group names
  * @param keyfile - keyfile handle
  * @param groups - groups output buffer
  */
-void t_keyfile_groups(const tkeyfile *keyfile, tchar **groups)
+void t_keyfile_group_names(const tkeyfile *keyfile, tchar **groups)
 {
     T_ASSERT(NULL != keyfile);
     T_ASSERT(NULL != groups);
@@ -446,7 +475,7 @@ void t_keyfile_groups(const tkeyfile *keyfile, tchar **groups)
  * @param group - group name
  * @param keys - keys output buffer
  */
-void t_keyfile_keys(const tkeyfile *keyfile, const tchar *group_name, tchar **keys)
+void t_keyfile_key_names(const tkeyfile *keyfile, const tchar *group_name, tchar **keys)
 {
     T_ASSERT(NULL != keyfile);
     T_ASSERT(NULL != group_name);

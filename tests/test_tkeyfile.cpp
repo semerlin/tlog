@@ -56,7 +56,7 @@ TEST(TkeyfileTest, Function)
     {
         groups[i] = new char[16];
     }
-    t_keyfile_groups(keyfile, groups);
+    t_keyfile_group_names(keyfile, groups);
 
     EXPECT_STREQ("test1", groups[0]);
     EXPECT_STREQ("test2", groups[1]);
@@ -66,7 +66,7 @@ TEST(TkeyfileTest, Function)
     {
         keys[i] = new char[16];
     }
-    t_keyfile_keys(keyfile, groups[0], keys);
+    t_keyfile_key_names(keyfile, groups[0], keys);
 
     EXPECT_STREQ("flag2", keys[0]);
     EXPECT_STREQ("flag3", keys[1]);
