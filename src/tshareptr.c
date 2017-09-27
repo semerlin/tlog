@@ -6,7 +6,7 @@
 /**
  * @brief init shared pointer struct
  */
-void t_shareptr_init(tshareptr *ptr, tfree_callback free_func, void *userdata)
+void t_shareptr_init(tshareptr *ptr, tfree_func free_func, void *userdata)
 {
     T_ASSERT(NULL != ptr);
     ptr->ref_count = 1;

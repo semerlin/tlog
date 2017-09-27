@@ -143,7 +143,7 @@ tuint32 t_slist_length(const tslist *head)
  * @param head - list head
  * @param free_func - resource free function
  */
-void t_slist_free(tslist *head, tfree_callback free_func)
+void t_slist_free(tslist *head, tfree_func free_func)
 {
     T_ASSERT(NULL != head);
 

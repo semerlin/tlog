@@ -23,7 +23,7 @@ T_EXTERN tbool t_slist_is_empty(const tslist *head);
 T_EXTERN tbool t_slist_is_last(const tslist *head, const tslist *node);
 T_EXTERN tbool t_slist_is_first(const tslist *head, const tslist *node);
 T_EXTERN tuint32 t_slist_length(const tslist *head);
-T_EXTERN void t_slist_free(tslist *head, tfree_callback free_func);
+T_EXTERN void t_slist_free(tslist *head, tfree_func free_func);
 
 /**
  * @brief get list node entry

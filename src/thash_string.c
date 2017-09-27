@@ -301,7 +301,7 @@ void t_hash_string_keys(const thash_string *hash_string, char **keys)
  * @param hash_string - hash table handle
  * @param cb_func - callback function
  */
-void t_hash_string_foreach(const thash_string *hash_string, tgeneral_callback cb_func)
+void t_hash_string_foreach(const thash_string *hash_string, tgeneral_func cb_func)
 {
     T_ASSERT(NULL != hash_string);
 
@@ -378,7 +378,7 @@ tuint32 t_hash_string_capacity(const thash_string *hash_string)
  * @param hash_string - hash table 
  * @param free_func - resource free function
  */
-void t_hash_string_free(thash_string *hash_string, tfree_callback free_func)
+void t_hash_string_free(thash_string *hash_string, tfree_func free_func)
 {
     T_ASSERT(NULL != hash_string);
 
