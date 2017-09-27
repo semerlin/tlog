@@ -22,6 +22,7 @@ T_EXTERN thash_string_node *t_hash_string_remove(thash_string *hash_string, cons
 T_EXTERN void t_hash_string_remove_node(thash_string_node *node);
 T_EXTERN thash_string_node *t_hash_string_get(const thash_string *hash_string, const char *key);
 T_EXTERN void t_hash_string_keys(const thash_string *hash_string, char **keys);
+T_EXTERN void t_hash_string_foreach(const thash_string *hash_string, tgeneral_callback cb_func);
 T_EXTERN tbool t_hash_string_contain(const thash_string *hash_string, const char *key);
 T_EXTERN tuint32 t_hash_string_count(const thash_string *hash_string);
 T_EXTERN tuint32 t_hash_string_capacity(const thash_string *hash_string);

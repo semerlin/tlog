@@ -283,8 +283,8 @@ void t_hash_string_keys(const thash_string *hash_string, char **keys)
     thash_string_node *string_node = NULL;
 
 
-    tuint32 index = 0, i = 0;
-    for (i = 0; i < hash_string->table_size; ++i)
+    tuint32 index = 0;
+    for (tuint32 i = 0; i < hash_string->table_size; ++i)
     {
         t_hlist_foreach(hlist_node, &hash_string->head[i])
         {
@@ -294,6 +294,31 @@ void t_hash_string_keys(const thash_string *hash_string, char **keys)
         }
     }
     keys[index] = NULL;
+}
+
+/**
+ * @brief iterator all node in hash table
+ * @param hash_string - hash table handle
+ * @param cb_func - callback function
+ */
+void t_hash_string_foreach(const thash_string *hash_string, tgeneral_callback cb_func)
+{
+    T_ASSERT(NULL != hash_string);
+
+    thlist_node *hlist_node = NULL;
+    thash_string_node *string_node = NULL;
+
+    for (tuint32 i = 0; i < hash_string->table_size; ++i)
+    {
+        t_hlist_foreach(hlist_node, &hash_string->head[i])
+        {
+            string_node = t_hlist_entry(hlist_node, thash_string_node, node);
+            if (NULL != cb_func)
+            {
+                cb_func(string_node);
+            }
+        }
+    }
 }
 
 /**
