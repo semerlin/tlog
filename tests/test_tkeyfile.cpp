@@ -11,8 +11,8 @@ TEST(TkeyfileTest, Death)
     EXPECT_DEATH(t_keyfile_get_string(NULL, NULL, NULL, NULL, NULL), "");
     EXPECT_DEATH(t_keyfile_get_int(NULL, NULL, NULL, 0), "");
     EXPECT_DEATH(t_keyfile_get_bool(NULL, NULL, NULL, true), "");
-    EXPECT_DEATH(t_keyfile_has_group(NULL, NULL), "");
-    EXPECT_DEATH(t_keyfile_has_key(NULL, NULL, NULL), "");
+    EXPECT_DEATH(t_keyfile_contains_group(NULL, NULL), "");
+    EXPECT_DEATH(t_keyfile_contains_key(NULL, NULL, NULL), "");
     EXPECT_DEATH(t_keyfile_ref(NULL), "");
     EXPECT_DEATH(t_keyfile_unref(NULL), "");
 }
@@ -25,10 +25,10 @@ TEST(TkeyfileTest, Function)
     ASSERT_NE((void *)0, keyfile);
     int ret = t_keyfile_load_from_file(keyfile, filename);
     ASSERT_EQ(0, ret);
-    EXPECT_TRUE(t_keyfile_has_group(keyfile, "test1"));
-    EXPECT_TRUE(t_keyfile_has_group(keyfile, "test2"));
-    EXPECT_FALSE(t_keyfile_has_group(keyfile, "test"));
-    EXPECT_TRUE(t_keyfile_has_key(keyfile, "test1", "flag3"));
+    EXPECT_TRUE(t_keyfile_contains_group(keyfile, "test1"));
+    EXPECT_TRUE(t_keyfile_contains_group(keyfile, "test2"));
+    EXPECT_FALSE(t_keyfile_contains_group(keyfile, "test"));
+    EXPECT_TRUE(t_keyfile_contains_key(keyfile, "test1", "flag3"));
     char out[12];
 
     t_keyfile_get_string(keyfile, "test1", "flag1", out, "sss");
