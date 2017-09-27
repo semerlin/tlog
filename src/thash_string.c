@@ -225,7 +225,7 @@ void t_hash_string_remove_node(thash_string_node *node)
  * @param key - key to find
  * @return hash node
  */
-thash_string_node *t_hash_string_get(thash_string *hash_string, const char *key)
+thash_string_node *t_hash_string_get(const thash_string *hash_string, const char *key)
 {
     T_ASSERT(NULL != hash_string);
     T_ASSERT(NULL != key);
@@ -252,7 +252,7 @@ thash_string_node *t_hash_string_get(thash_string *hash_string, const char *key)
  * @param hash_string - string hash table
  * @param keys - output key buffers
  */
-void t_hash_string_keys(thash_string *hash_string, char **keys)
+void t_hash_string_keys(const thash_string *hash_string, char **keys)
 {
     T_ASSERT(NULL != hash_string);
     T_ASSERT(NULL != keys);
@@ -280,7 +280,7 @@ void t_hash_string_keys(thash_string *hash_string, char **keys)
  * @param key - key to find
  * @return check value TRUE: contain FALSE: can't find
  */
-tbool t_hash_string_contain(thash_string *hash_string, const char *key)
+tbool t_hash_string_contain(const thash_string *hash_string, const char *key)
 {
     T_ASSERT(NULL != hash_string);
     T_ASSERT(NULL != key);
@@ -307,7 +307,7 @@ tbool t_hash_string_contain(thash_string *hash_string, const char *key)
  * @param hash_string - hash table pointer
  * @return hash table element count
  */
-tuint32 t_hash_string_count(thash_string *hash_string)
+tuint32 t_hash_string_count(const thash_string *hash_string)
 {
     T_ASSERT(NULL != hash_string);
 
@@ -319,7 +319,7 @@ tuint32 t_hash_string_count(thash_string *hash_string)
  * @param hash_string - hash table pointer
  * @return hash table table size
  */
-tuint32 t_hash_string_capacity(thash_string *hash_string)
+tuint32 t_hash_string_capacity(const thash_string *hash_string)
 {
     T_ASSERT(NULL != hash_string);
 

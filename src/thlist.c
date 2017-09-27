@@ -46,7 +46,7 @@ void t_hlist_remove(thlist_node *node)
  * @return TRUE - empty
  *         FALSE - not empty
  */
-tbool t_hlist_is_empty(thlist_head *head)
+tbool t_hlist_is_empty(const thlist_head *head)
 {
     T_ASSERT(NULL != head);
     
@@ -59,7 +59,7 @@ tbool t_hlist_is_empty(thlist_head *head)
  * @param head - list head
  * @return list length
  */
-tint t_hlist_length(thlist_head *head)
+tuint32 t_hlist_length(const thlist_head *head)
 {
     T_ASSERT(NULL != head);
 

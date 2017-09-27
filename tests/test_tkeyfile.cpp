@@ -75,6 +75,9 @@ TEST(TkeyfileTest, Function)
     EXPECT_STREQ("flag6", keys[4]);
     EXPECT_STREQ("flag1", keys[5]);
 
+    EXPECT_EQ(2, t_keyfile_group_count(keyfile));
+    EXPECT_EQ(6, t_keyfile_key_count(keyfile, groups[0]));
+    EXPECT_EQ(4, t_keyfile_key_count(keyfile, groups[1]));
 
     for (int i = 0; i < 3; ++i)
     {
@@ -85,6 +88,7 @@ TEST(TkeyfileTest, Function)
     {
         delete []keys[i];
     }
+
 
     t_keyfile_free(keyfile);
 }

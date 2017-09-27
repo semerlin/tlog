@@ -82,7 +82,7 @@ void t_slist_remove(tslist *head, tslist *node)
  * @return TRUE - empty
  *         FALSE - not empty
  */
-tbool t_slist_is_empty(tslist *head)
+tbool t_slist_is_empty(const tslist *head)
 {
     T_ASSERT(NULL != head);
 
@@ -96,7 +96,7 @@ tbool t_slist_is_empty(tslist *head)
  * @return TRUE - yes
  *         FALSE - no
  */
-tbool t_slist_is_last(tslist *head, tslist *node)
+tbool t_slist_is_last(const tslist *head, const tslist *node)
 {
     T_ASSERT(NULL != head);
 
@@ -111,7 +111,7 @@ tbool t_slist_is_last(tslist *head, tslist *node)
  * @return TRUE - yes
  *         FALSE - no
  */
-tbool t_slist_is_first(tslist *head, tslist *node)
+tbool t_slist_is_first(const tslist *head, const tslist *node)
 {
     T_ASSERT(NULL != head);
 
@@ -123,7 +123,7 @@ tbool t_slist_is_first(tslist *head, tslist *node)
  * @param head - list head
  * @return list length
  */
-tint t_slist_length(tslist *head)
+tuint32 t_slist_length(const tslist *head)
 {
     T_ASSERT(NULL != head);
 

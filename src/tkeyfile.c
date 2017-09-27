@@ -474,6 +474,50 @@ void t_keyfile_keys(const tkeyfile *keyfile, const tchar *group_name, tchar **ke
     }
 }
 
+/**
+ * @brief get keyfile group count
+ * @param keyfile - keyfile handle
+ * @return keyfile group count
+ */
+tuint32 t_keyfile_group_count(const tkeyfile *keyfile)
+{
+    T_ASSERT(NULL != keyfile);
+    return t_list_length(&keyfile->groups);
+}
+
+/**
+ * @brief get keyfile key count in specific group
+ * @param keyfile - keyfile handle
+ * @param group_name - group name
+ * @return keyfile key count in specific group
+ */
+tuint32 t_keyfile_key_count(const tkeyfile *keyfile, const tchar *group_name)
+{
+    T_ASSERT(NULL != keyfile);
+    T_ASSERT(NULL != group_name);
+
+    tlist *node;
+    group_node *group;
+    t_list_foreach(node, &keyfile->groups) 
+    {
+        group = t_list_entry(node, group_node, node);
+        if (0 == strcmp(group->group_name, group_name))
+        {
+            break;
+        }
+        group = NULL;
+    }
+
+    if (NULL != group)
+    {
+        return t_hash_string_count(group->kv);
+    }
+    else
+    {
+        return 0;
+    }
+
+}
 
 /**
  * @brief check if keyfile has specified group
