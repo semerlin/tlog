@@ -215,10 +215,6 @@ static tbool t_keyfile_parse_key_value(const tchar *data,
         //get value
         t_string_right(data, strlen(data) - index - 1, value);
         t_string_trimmed_head(value, temp);
-        if (0 == strlen(value))
-        {
-            return FALSE;
-        }
         strcpy(value, temp);
         t_string_remove_linebreak(value, temp);
         strcpy(value, temp);
