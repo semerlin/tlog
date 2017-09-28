@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include <errno.h>
 
 #define DEFAULT_TABLE_SIZE    (10)
 #define REHASH_FACTOR         (1.2)
@@ -120,16 +121,27 @@ static thash_string *t_hash_string_rehash(thash_string *hash_string, tuint32 tab
  * @param node - string hash node
  * @param key - key string
  */
-void t_hash_string_init_node(thash_string_node *node, const char *key)
+tint t_hash_string_init_node(thash_string_node *node, const char *key)
 {
     T_ASSERT(NULL != node);
     
     if (NULL != key)
     {
-        node->key = malloc(strlen(key) + 1);
-        strcpy(node->key, key);
+        /* new key */
+        tchar *temp_key = malloc(strlen(key) + 1);
+        if (NULL != temp_key)
+        {
+            node->key = temp_key;
+            strcpy(node->key, key);
+        }
+        else
+        {
+            return -ENOMEM;
+        }
     }
     t_hlist_init_node(&node->node);
+
+    return 0;
 }
 
 
