@@ -44,10 +44,10 @@ typedef double  tdouble;
 typedef void (*tfree_func)(void *data);
 
 /* general callback function */
-typedef void (*tgeneral_func)(void *data);
+typedef tint (*tgeneral_func)(void *data);
 
 /* key value callback fucntion */
-typedef void (*tkey_value_func)(void *key, void *value);
+typedef tint (*tkey_value_func)(void *key, void *value);
 
 
 T_END_DECLS

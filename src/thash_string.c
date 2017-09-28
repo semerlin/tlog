@@ -312,13 +312,15 @@ void t_hash_string_keys(const thash_string *hash_string, char **keys)
  * @brief iterator all node in hash table
  * @param hash_string - hash table handle
  * @param cb_func - callback function
+ * @return error code, 0 means no error happend
  */
-void t_hash_string_foreach(const thash_string *hash_string, tgeneral_func cb_func)
+tint t_hash_string_foreach(const thash_string *hash_string, tgeneral_func cb_func)
 {
     T_ASSERT(NULL != hash_string);
 
     thlist_node *hlist_node = NULL;
     thash_string_node *string_node = NULL;
+    tint err = 0;
 
     for (tuint32 i = 0; i < hash_string->table_size; ++i)
     {
@@ -327,10 +329,16 @@ void t_hash_string_foreach(const thash_string *hash_string, tgeneral_func cb_fun
             string_node = t_hlist_entry(hlist_node, thash_string_node, node);
             if (NULL != cb_func)
             {
-                cb_func(string_node);
+                err = cb_func(string_node);
+                if (0 != err)
+                {
+                    break;
+                }
             }
         }
     }
+
+    return err;
 }
 
 /**

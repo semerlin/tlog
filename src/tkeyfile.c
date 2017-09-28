@@ -437,14 +437,16 @@ tbool t_keyfile_get_bool(const tkeyfile *keyfile, const tchar *group,
  * @brief hash table node iterator callback
  * @param data - hash table node
  */
-static void hash_string_foreach(void *data)
+static tint hash_string_foreach(void *data)
 {
     thash_string_node *string_node = data;
     kv_node *kv = t_hash_string_entry(string_node, kv_node, node);
+    tint err = 0;
     if (NULL != key_value_func)
     {
-        key_value_func(kv->node.key, kv->value);
+        err = key_value_func(kv->node.key, kv->value);
     }
+    return err;
 }
 
 /**
@@ -452,15 +454,16 @@ static void hash_string_foreach(void *data)
  * @param keyfile - keyfile handle
  * @param group_name - group name
  * @param kv_func - callback function
- * @return group hash table handle
+ * @return error code, 0 means no error happend
  */
-void t_keyfile_group_foreach(const tkeyfile *keyfile, const tchar *group_name,
+tint t_keyfile_group_foreach(const tkeyfile *keyfile, const tchar *group_name,
         tkey_value_func kv_func)
 {
     T_ASSERT(NULL != keyfile);
     T_ASSERT(NULL != group_name);
     tlist *list_node;
     group_node *group = NULL;
+    tint err = 0;
     t_list_foreach(list_node, &keyfile->groups) 
     {
         group = t_list_entry(list_node, group_node, node);
@@ -473,9 +476,11 @@ void t_keyfile_group_foreach(const tkeyfile *keyfile, const tchar *group_name,
     if (NULL != group)
     {
         key_value_func = kv_func;
-        t_hash_string_foreach(group->kv, hash_string_foreach);
+        err = t_hash_string_foreach(group->kv, hash_string_foreach);
         key_value_func = NULL;
     }
+
+    return err;
 }
 
 /**
