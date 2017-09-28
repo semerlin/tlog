@@ -19,6 +19,34 @@ TEST(TkeyfileTest, Death)
 
 #endif
 
+static void kv_cb(void *key, void *value)
+{
+    if (0 == strcmp((const char *)key, "flag2"))
+    {
+        EXPECT_STREQ("b", (char *)value);
+    }
+    else if (0 == strcmp((const char *)key, "flag3"))
+    {
+        EXPECT_STREQ("c", (char *)value);
+    }
+    else if (0 == strcmp((const char *)key, "flag4"))
+    {
+        EXPECT_STREQ("d", (char *)value);
+    }
+    else if (0 == strcmp((const char *)key, "flag5"))
+    {
+        EXPECT_STREQ("true", (char *)value);
+    }
+    else if (0 == strcmp((const char *)key, "flag6"))
+    {
+        EXPECT_STREQ("234", (char *)value);
+    }
+    else if (0 == strcmp((const char *)key, "flag1"))
+    {
+        EXPECT_STREQ("a", (char *)value);
+    }
+}
+
 TEST(TkeyfileTest, Function)
 {
     tkeyfile *keyfile = t_keyfile_new();
@@ -79,6 +107,9 @@ TEST(TkeyfileTest, Function)
     EXPECT_EQ(6, t_keyfile_key_count(keyfile, groups[0]));
     EXPECT_EQ(4, t_keyfile_key_count(keyfile, groups[1]));
 
+    // foreach test
+    t_keyfile_group_foreach(keyfile, groups[0], kv_cb);
+
     for (int i = 0; i < 3; ++i)
     {
         delete []groups[i];
@@ -88,7 +119,6 @@ TEST(TkeyfileTest, Function)
     {
         delete []keys[i];
     }
-
 
     t_keyfile_free(keyfile);
 }

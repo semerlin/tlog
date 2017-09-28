@@ -9,15 +9,17 @@
 #include "tlist.h"
 #include "tstring.h"
 
-
-//key-value node
+/****************************************************
+ * struct definition
+ ****************************************************/
+/* key-value node */
 typedef struct
 {
     tchar *value;
     thash_string_node node;
 }kv_node;
 
-//group node
+/* group node */
 typedef struct
 {
     thash_string *kv;
@@ -25,14 +27,26 @@ typedef struct
     tlist node;
 }group_node;
 
-//keyfile structure
+/* keyfile structure */
 struct _tkeyfile
 {
     tshareptr ptr;
     tlist groups;
 };
 
+/****************************************************
+ * static variable
+ ****************************************************/
+static tkey_value_func key_value_func = NULL;
 
+/****************************************************
+ * functions
+ ****************************************************/
+
+/**
+ * @brief keyfile destroy callback function
+ * @param data - keyfile handle
+ */
 static void t_keyfile_destroy(void *data)
 {
     t_keyfile_free((tkeyfile *)data);
@@ -419,15 +433,29 @@ tbool t_keyfile_get_bool(const tkeyfile *keyfile, const tchar *group,
     return default_value;
 }
 
+/**
+ * @brief hash table node iterator callback
+ * @param data - hash table node
+ */
+static void hash_string_foreach(void *data)
+{
+    thash_string_node *string_node = data;
+    kv_node *kv = t_hash_string_entry(string_node, kv_node, node);
+    if (NULL != key_value_func)
+    {
+        key_value_func(kv->node.key, kv->value);
+    }
+}
 
 /**
  * @brief get keyfile group hash table
  * @param keyfile - keyfile handle
  * @param group_name - group name
+ * @param kv_func - callback function
  * @return group hash table handle
  */
 void t_keyfile_group_foreach(const tkeyfile *keyfile, const tchar *group_name,
-        tgeneral_callback cb_func)
+        tkey_value_func kv_func)
 {
     T_ASSERT(NULL != keyfile);
     T_ASSERT(NULL != group_name);
@@ -444,7 +472,9 @@ void t_keyfile_group_foreach(const tkeyfile *keyfile, const tchar *group_name,
 
     if (NULL != group)
     {
-        t_hash_string_foreach(group->kv, cb_func);
+        key_value_func = kv_func;
+        t_hash_string_foreach(group->kv, hash_string_foreach);
+        key_value_func = NULL;
     }
 }
 
