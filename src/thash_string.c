@@ -24,9 +24,6 @@ struct _thash_string
  */
 static tuint32 t_hash_string_hash(const thash_string *hash_string, const char *key)
 {
-    T_ASSERT(NULL != key);
-    T_ASSERT(NULL != hash_string);
-    
     tuint32 hash_val = 0;
     while (*key != '\0')
     {
@@ -80,8 +77,6 @@ static thash_string *t_hash_string_new_size(tuint32 table_size)
  */
 static thash_string *t_hash_string_rehash(thash_string *hash_string, tuint32 table_size)
 {
-    T_ASSERT(NULL != hash_string);
-
     if (table_size < DEFAULT_TABLE_SIZE)
     {
         table_size = DEFAULT_TABLE_SIZE;
@@ -185,6 +180,7 @@ thash_string *t_hash_string_insert(thash_string *hash_string, thash_string_node 
 {
     T_ASSERT(NULL != hash_string);
     T_ASSERT(NULL != node);
+    T_ASSERT(NULL != node->key);
 
     tuint32 hash_val = t_hash_string_hash(hash_string, node->key);
     //check if already contain
