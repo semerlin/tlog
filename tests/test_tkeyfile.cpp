@@ -115,6 +115,8 @@ TEST(TkeyfileTest, Function)
     EXPECT_STREQ("f", out);
     EXPECT_FALSE(t_keyfile_get_bool(keyfile, "test2", "flag3", true));
     EXPECT_EQ(-22, t_keyfile_get_int(keyfile, "test2", "flag4", 8));
+    t_keyfile_get_string(keyfile, "test2", "flag5", out, "sss");
+    EXPECT_STREQ("", out);
 
 
     char *groups[3] = {0};
@@ -143,7 +145,7 @@ TEST(TkeyfileTest, Function)
 
     EXPECT_EQ(2, t_keyfile_group_count(keyfile));
     EXPECT_EQ(6, t_keyfile_key_count(keyfile, groups[0]));
-    EXPECT_EQ(4, t_keyfile_key_count(keyfile, groups[1]));
+    EXPECT_EQ(5, t_keyfile_key_count(keyfile, groups[1]));
 
     // foreach test
     EXPECT_EQ(0, t_keyfile_group_foreach(keyfile, groups[0], kv_cb));
