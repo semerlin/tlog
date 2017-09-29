@@ -6,6 +6,7 @@
 #include "tassert.h"
 #include "tkeyfile.h"
 #include "thash_string.h"
+#include <stdio.h>
 
 /****************************************************
  * macros definition
@@ -41,7 +42,7 @@ struct _string_node
 typedef struct _string_node format_node;
 
 /* output node */
-typedef struct _string_node format_node;
+typedef struct _string_node output_node;
 
 struct
 {
@@ -108,7 +109,7 @@ static tuint32 log_level_convert(const tchar *level)
     }
     else if(('*' == plevel[0]) && ('\0' == plevel[1]))
     {
-        return log_level_info[info_count].level;
+        return log_level_info[info_count - 1].level;
     }
     else if('\0' != *plevel)
     {
@@ -540,6 +541,44 @@ static tint filter_config_file(tkeyfile *keyfile)
     return 0;
 }
 
+#if 1
+static tint level_print(void *data)
+{
+    level_node *level = t_hash_string_entry((thash_string_node *)data, level_node, node);
+    printf("category = %s, level = 0x%x\n", level->node.key, level->level);
+    return 0;
+}
+
+static tint format_print(void *data)
+{
+    format_node *format = t_hash_string_entry((thash_string_node *)data, format_node, node);
+    printf("category = %s, format = %s\n", format->node.key, format->value);
+    return 0;
+}
+
+static tint output_print(void *data)
+{
+    output_node *output = t_hash_string_entry((thash_string_node *)data, output_node, node);
+    printf("category = %s, output = %s\n", output->node.key, output->value);
+    return 0;
+}
+
+static void print_level(void)
+{
+    t_hash_string_foreach(category_level, level_print);
+}
+
+static void print_format(void)
+{
+    t_hash_string_foreach(category_format, format_print);
+}
+
+static void print_output(void)
+{
+    t_hash_string_foreach(category_output, output_print);
+}
+#endif
+
 /**
  * @brief init tlog environment
  * @param cfg_file - configure file path
@@ -573,5 +612,8 @@ int tlog_init(const char *cfg_file)
         return ret;
     }
     
+    print_level();
+    print_format();
+    print_output();
     return 0;
 }
