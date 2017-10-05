@@ -532,6 +532,39 @@ static tint filter_config_file(tkeyfile *keyfile)
         {
             return err;
         }
+       
+        if (0 == t_hash_string_count(category_level))
+        {
+            err = add_level(category_level, DEFAULT_CATEGORY_NAME, DEFAULT_LEVEL);
+            if (0 != err)
+            {
+                return err;
+            }
+        }
+
+        if (0 == t_hash_string_count(category_format))
+        {
+            const tchar *format = get_format(format_group, DEFAULT_FORMAT_NAME);
+            if (NULL == format)
+            {
+                format = DEFAULT_FORMAT;
+            }
+            err = add_format(category_format, DEFAULT_CATEGORY_NAME, format);
+            if (0 != err)
+            {
+                return err;
+            }
+        }
+
+        if (0 == t_hash_string_count(category_output))
+        {
+            err = add_output(category_output, DEFAULT_CATEGORY_NAME, DEFAULT_OUTPUT);
+            if (0 != err)
+            {
+                return err;
+            }
+        }
+
     }
     else
     {

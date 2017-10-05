@@ -67,6 +67,17 @@ if (GTEST_FOUND)
                                  ${COMMON_SRC_LIST})
     target_link_libraries(test_tkeyfile ${LIB_LIST})
 
+    #test tlog
+    add_executable(test_tlog test_tlog.cpp 
+                                 ../src/thlist.c
+                                 ../src/tlist.c
+                                 ../src/tshareptr.c
+                                 ../src/tstring.c
+                                 ../src/thash_string.c
+                                 ../src/tkeyfile.c
+                                 ../src/tlog.c
+                                 ${COMMON_SRC_LIST})
+    target_link_libraries(test_tlog ${LIB_LIST})
 
 
 endif (GTEST_FOUND)

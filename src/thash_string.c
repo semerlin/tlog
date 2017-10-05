@@ -312,7 +312,10 @@ void t_hash_string_keys(const thash_string *hash_string, char **keys)
  */
 tint t_hash_string_foreach(const thash_string *hash_string, tgeneral_func cb_func)
 {
-    T_ASSERT(NULL != hash_string);
+    if (NULL == hash_string)
+    {
+        return 0;
+    }
 
     thlist_node *hlist_node = NULL;
     thash_string_node *string_node = NULL;
