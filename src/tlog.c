@@ -513,6 +513,9 @@ int tlog_init(const char *cfg_file)
     {
         return ret;
     }
+
+    /* free keyfile */
+    t_keyfile_free(keyfile);
     
     print_category();
     return 0;

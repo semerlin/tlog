@@ -87,7 +87,10 @@ static void t_keyfile_free_group_node(void *data)
 {
     tlist *list = (tlist *)data;
     group_node *group = t_list_entry(list, group_node, node);
-    t_hash_string_free(group->kv, t_keyfile_free_hash_node);
+    if (NULL != group->kv)
+    {
+        t_hash_string_free(group->kv, t_keyfile_free_hash_node);
+    }
     free(group->group_name);
     free(group);
 }
