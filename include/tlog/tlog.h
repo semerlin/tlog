@@ -14,6 +14,9 @@ typedef enum
     TLOG_FATAL = 0x10
 }tlog_level;
 
+
+typedef struct _tlog_category tlog_category;
+
 extern int tlog_init(const char *cfg_file);
 
 

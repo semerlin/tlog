@@ -24,26 +24,14 @@
 /****************************************************
  * struct definition
  ****************************************************/
-/* level node */
+/* format node */
 typedef struct
-{
-    tuint32 level;
-    thash_string_node node;
-}level_node;
-
-/* string node */
-struct _string_node
 {
     tchar *value;
     thash_string_node node;
-};
+}format_node;
 
-/* foramt */
-typedef struct _string_node format_node;
-
-/* output node */
-typedef struct _string_node output_node;
-
+/* level map */
 struct
 {
     const tchar name[16];
@@ -58,17 +46,28 @@ struct
     {"", TLOG_DEBUG | TLOG_INFO | TLOG_WARN | TLOG_ERROR | TLOG_FATAL}
 };
 
+/* category detail */
+struct _tlog_category
+{
+    tlog_level level;
+    const char *format;
+    char *output;
+};
+
+/* category node */
+typedef struct
+{
+    tlog_category category;
+    thash_string_node node;
+}category_node;
+
 /****************************************************
  * static variable 
  ****************************************************/
 /* key = format name, value = format */
 static thash_string *format_group = NULL;
-/* key = category name, value = level */
-static thash_string *category_level = NULL;
-/* key = category name, value = format */
-static thash_string *category_format = NULL;
-/* key = category name, value = output position */
-static thash_string *category_output = NULL;
+/* key = category name, value = category_node */
+static thash_string *category_detail = NULL;
 
 
 /****************************************************
@@ -155,6 +154,28 @@ static tuint32 log_level_convert(const tchar *level)
 }
 
 /**
+ * @brief get format value from hash table
+ * @param hash - hash table handle
+ * @param name - category name 
+ * @return format value
+ */
+static const tchar *get_format(thash_string *hash, const tchar *name)
+{
+    T_ASSERT(NULL != hash);
+    T_ASSERT(NULL != name);
+
+    thash_string_node *string_node = t_hash_string_get(hash, name);
+    if (NULL == string_node)
+    {
+        return NULL;
+    }
+
+    format_node *node = t_hash_string_entry(string_node, format_node, node);
+
+    return node->value;
+}
+
+/**
  * @brief filter general group
  * @param keyfile - keyfile handle
  * @return error code, 0 means no error
@@ -172,28 +193,29 @@ static tint filter_group_general(tkeyfile *keyfile)
 }
 
 /**
- * @brief add string value to hash table
+ * @brief add format value to hash table
  * @param hash - hash table handle
- * @param key - key string
- * @param value - value string
+ * @param name - category name 
+ * @param format - format string
  */
-static tint add_value(thash_string *hash, const tchar *key, const tchar *value)
+static tint add_format(thash_string *hash, const tchar *name, const tchar *format)
 {
     T_ASSERT(NULL != hash);
-    T_ASSERT(NULL != key);
+    T_ASSERT(NULL != name);
+    T_ASSERT(NULL != format);
 
     tint err = 0;
-    struct _string_node *node = malloc(sizeof(struct _string_node));
+    format_node *node = malloc(sizeof(format_node));
     if (NULL != node)
     {
-        err = t_hash_string_init_node(&node->node, key);
+        err = t_hash_string_init_node(&node->node, name);
         if (0 == err)
         {
-            node->value = malloc(strlen(value) + 1);;
+            /* add format */
+            node->value = malloc(strlen(format) + 1);;
             if (NULL != node->value)
             {
-                strcpy(node->value, value);
-                hash = t_hash_string_insert(hash, &node->node);
+                strcpy(node->value, format);
             }
             else
             {
@@ -201,6 +223,7 @@ static tint add_value(thash_string *hash, const tchar *key, const tchar *value)
                 free(node);
                 err = -ENOMEM;
             }
+            hash = t_hash_string_insert(hash, &node->node);
         }
     }
     else
@@ -214,23 +237,53 @@ static tint add_value(thash_string *hash, const tchar *key, const tchar *value)
 /**
  * @brief add level value to hash table
  * @param hash - hash table handle
- * @param name -category name 
+ * @param name - category name 
  * @param level - level string
+ * @param format - format string
+ * @param output - output string
  */
-static tint add_level(thash_string *hash, const tchar *name, const tchar *level)
+static tint add_category(thash_string *hash, const tchar *name, const tchar *level,
+        const tchar *format, const tchar *output)
 {
     T_ASSERT(NULL != hash);
     T_ASSERT(NULL != name);
-    T_ASSERT(NULL != level);
 
     tint err = 0;
-    level_node *node = malloc(sizeof(level_node));
+    category_node *node = malloc(sizeof(category_node));
     if (NULL != node)
     {
         err = t_hash_string_init_node(&node->node, name);
         if (0 == err)
         {
-            node->level = log_level_convert(level);
+            /* add level */
+            node->category.level = log_level_convert(level);
+
+            /* add format */
+            node->category.format = get_format(format_group, format);
+            if (NULL == node->category.format)
+            {
+                node->category.format = DEFAULT_FORMAT;
+            }
+
+            /* add output */
+            node->category.output = malloc(strlen(output) + 1);;
+            if (NULL != node->category.output)
+            {
+                if (0 == strcmp(output, ""))
+                {
+                    strcpy(node->category.output, DEFAULT_OUTPUT);
+                }
+                else
+                {
+                    strcpy(node->category.output, output);
+                }
+            }
+            else
+            {
+                free(node->node.key);
+                free(node);
+                err = -ENOMEM;
+            }
             hash = t_hash_string_insert(hash, &node->node);
         }
     }
@@ -241,99 +294,6 @@ static tint add_level(thash_string *hash, const tchar *name, const tchar *level)
 
     return err;
 }
-
-/**
- * @brief add format value to hash table
- * @param hash - hash table handle
- * @param name -category name 
- * @param format - format string
- */
-static tint add_format(thash_string *hash, const tchar *name, const tchar *format)
-{
-    return add_value(hash, name, format);
-}
-
-/**
- * @brief add output value to hash table
- * @param hash - hash table handle
- * @param name -category name 
- * @param output - output string
- */
-static tint add_output(thash_string *hash, const tchar *name, const tchar *output)
-{
-    return add_value(hash, name, output);
-}
-
-/**
- * @brief get string value from hash table
- * @param hash - hash table handle
- * @param key - key value
- * @return value string
- */
-static const tchar *get_value(thash_string *hash, const tchar *key)
-{
-    T_ASSERT(NULL != hash);
-    T_ASSERT(NULL != key);
-
-    thash_string_node *string_node = t_hash_string_get(hash, key);
-    if (NULL == string_node)
-    {
-        return NULL;
-    }
-
-    struct _string_node *node = t_hash_string_entry(string_node, struct _string_node, node);
-
-    return node->value;
-}
-
-#if 0
-/**
- * @brief get level value from hash table
- * @param hash - hash table handle
- * @param name - category name 
- * @return level value
- */
-static tuint32 get_level(thash_string *hash, const tchar *name)
-{
-    T_ASSERT(NULL != hash);
-    T_ASSERT(NULL != name);
-
-    thash_string_node *string_node = t_hash_string_get(hash, name);
-    if (NULL == string_node)
-    {
-        return 0;
-    }
-
-    level_node *node = t_hash_string_entry(string_node, level_node, node);
-
-    return node->level;
-}
-#endif
-
-/**
- * @brief get format value from hash table
- * @param hash - hash table handle
- * @param name - category name 
- * @return format value
- */
-static const tchar *get_format(thash_string *hash, const tchar *name)
-{
-    return get_value(hash, name);
-}
-
-#if 0
-/**
- * @brief get output value from hash table
- * @param hash - hash table handle
- * @param name - category name 
- * @return output value
- */
-static const tchar *get_output(thash_string *hash, const tchar *name)
-{
-    return get_value(hash, name);
-}
-#endif
-
 
 /**
  * @brief insert key and value to format hash table
@@ -370,36 +330,11 @@ static void split_rules(const tchar *rules, tchar *level, tchar *format, tchar *
 /* level;format;output */
 static tint rules_process(void *key, void *value)
 {
-    tint err = 0;
     tchar level[256];
     tchar format[256];
     tchar output[256];
     split_rules((const tchar *)value, level, format, output);
-    err = add_level(category_level, (const char *)key, level);
-    if (0 != err)
-    {
-        return err;
-    }
-
-    const tchar *format_real = get_format(format_group, format);
-    if (NULL == format_real)
-    {
-        format_real = DEFAULT_FORMAT;
-    }
-    err = add_format(category_format, (const char *)key, format_real);
-    if (0 != err)
-    {
-        return err;
-    }
-
-
-    if (0 == strcmp(output, ""))
-    {
-        strcpy(output, DEFAULT_OUTPUT);
-    }
-    err = add_output(category_output, (const char *)key, output);
-
-    return err;
+    return add_category(category_detail, key, level, format, output);
 }
 
 /**
@@ -426,6 +361,7 @@ static tint filter_group_format(tkeyfile *keyfile)
 
     if (0 == err)
     {
+        /* add default format */
         if (!t_hash_string_contain(format_group, DEFAULT_FORMAT_NAME))
         {
             err = add_format(format_group, DEFAULT_FORMAT_NAME, DEFAULT_FORMAT);
@@ -439,9 +375,7 @@ static tint filter_group_format(tkeyfile *keyfile)
 static tint filter_group_rules(tkeyfile *keyfile)
 { 
     T_ASSERT(NULL != keyfile);
-    T_ASSERT(NULL != category_level);
-    T_ASSERT(NULL != category_format);
-    T_ASSERT(NULL != category_output);
+    T_ASSERT(NULL != category_detail);
     T_ASSERT(NULL != format_group);
 
     tint err = 0;
@@ -452,27 +386,14 @@ static tint filter_group_rules(tkeyfile *keyfile)
     }
     else
     {
-        err = add_level(category_level, DEFAULT_CATEGORY_NAME, DEFAULT_LEVEL);
-        if (0 != err)
-        {
-            return err;
-        }
-        
         const tchar *format = get_format(format_group, DEFAULT_FORMAT_NAME);
         if (NULL == format)
         {
             format = DEFAULT_FORMAT;
         }
-        err = add_format(category_format, DEFAULT_CATEGORY_NAME, format);
-        if (0 != err)
-        {
-            return err;
-        }
-        err = add_output(category_output, DEFAULT_CATEGORY_NAME, DEFAULT_OUTPUT);
-        if (0 != err)
-        {
-            return err;
-        }
+ 
+        err = add_category(category_detail, DEFAULT_CATEGORY_NAME, DEFAULT_LEVEL,
+                DEFAULT_FORMAT, DEFAULT_OUTPUT);
     }
 
     return err;
@@ -489,26 +410,15 @@ static tint filter_config_file(tkeyfile *keyfile)
     T_ASSERT(NULL != keyfile);
     tint err = 0;
 
-    if ((NULL == category_level) &&
-        (NULL == category_format) &&
-        (NULL == category_output) &&
+    if ((NULL == category_detail) &&
         (NULL == format_group))
     {
-        category_level = t_hash_string_new();
-        if (NULL == category_level)
+        category_detail = t_hash_string_new();
+        if (NULL == category_detail)
         {
             return -ENOMEM;
         }
-        category_format = t_hash_string_new();
-        if (NULL == category_format)
-        {
-            return -ENOMEM;
-        }
-        category_output = t_hash_string_new();
-        if (NULL == category_output)
-        {
-            return -ENOMEM;
-        }
+
         format_group = t_hash_string_new();
         if (NULL == format_group)
         {
@@ -533,38 +443,17 @@ static tint filter_config_file(tkeyfile *keyfile)
             return err;
         }
        
-        if (0 == t_hash_string_count(category_level))
-        {
-            err = add_level(category_level, DEFAULT_CATEGORY_NAME, DEFAULT_LEVEL);
-            if (0 != err)
-            {
-                return err;
-            }
-        }
-
-        if (0 == t_hash_string_count(category_format))
+        if (0 == t_hash_string_count(category_detail))
         {
             const tchar *format = get_format(format_group, DEFAULT_FORMAT_NAME);
             if (NULL == format)
             {
                 format = DEFAULT_FORMAT;
             }
-            err = add_format(category_format, DEFAULT_CATEGORY_NAME, format);
-            if (0 != err)
-            {
-                return err;
-            }
+     
+            err = add_category(category_detail, DEFAULT_CATEGORY_NAME, DEFAULT_LEVEL,
+                    DEFAULT_FORMAT, DEFAULT_OUTPUT);
         }
-
-        if (0 == t_hash_string_count(category_output))
-        {
-            err = add_output(category_output, DEFAULT_CATEGORY_NAME, DEFAULT_OUTPUT);
-            if (0 != err)
-            {
-                return err;
-            }
-        }
-
     }
     else
     {
@@ -575,41 +464,21 @@ static tint filter_config_file(tkeyfile *keyfile)
 }
 
 #if 1
-static tint level_print(void *data)
+static tint category_print(void *data)
 {
-    level_node *level = t_hash_string_entry((thash_string_node *)data, level_node, node);
-    printf("category = %s, level = 0x%x\n", level->node.key, level->level);
+    category_node *category = t_hash_string_entry((thash_string_node *)data, category_node, node);
+    printf("category = %s\n", category->node.key);
+    printf("  level = 0x%x\n", category->category.level);
+    printf("  format = %s\n", category->category.format);
+    printf("  output = %s\n", category->category.output);
     return 0;
 }
 
-static tint format_print(void *data)
+static void print_category(void)
 {
-    format_node *format = t_hash_string_entry((thash_string_node *)data, format_node, node);
-    printf("category = %s, format = %s\n", format->node.key, format->value);
-    return 0;
+    t_hash_string_foreach(category_detail, category_print);
 }
 
-static tint output_print(void *data)
-{
-    output_node *output = t_hash_string_entry((thash_string_node *)data, output_node, node);
-    printf("category = %s, output = %s\n", output->node.key, output->value);
-    return 0;
-}
-
-static void print_level(void)
-{
-    t_hash_string_foreach(category_level, level_print);
-}
-
-static void print_format(void)
-{
-    t_hash_string_foreach(category_format, format_print);
-}
-
-static void print_output(void)
-{
-    t_hash_string_foreach(category_output, output_print);
-}
 #endif
 
 /**
@@ -645,8 +514,6 @@ int tlog_init(const char *cfg_file)
         return ret;
     }
     
-    print_level();
-    print_format();
-    print_output();
+    print_category();
     return 0;
 }
