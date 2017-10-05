@@ -517,3 +517,27 @@ int tlog_init(const char *cfg_file)
     print_category();
     return 0;
 }
+
+
+/**
+ * @brief get category named 'name'
+ * @return category handle
+ */
+const tlog_category *tlog_get_category(const tchar *name)
+{
+    if ((NULL == name) || (NULL == category_detail))
+    {
+        return NULL;
+    }
+
+    thash_string_node *string_node = t_hash_string_get(category_detail, name);
+    category_node *category = t_hash_string_entry(string_node, category_node, node);
+    if (NULL != category)
+    {
+        return &category->category;
+    }
+    else
+    {
+        return NULL;
+    }
+}

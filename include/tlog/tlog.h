@@ -18,6 +18,7 @@ typedef enum
 typedef struct _tlog_category tlog_category;
 
 extern int tlog_init(const char *cfg_file);
+extern const tlog_category *tlog_get_category(const char *name);
 
 
 #ifdef  __cplusplus
