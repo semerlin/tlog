@@ -9,9 +9,10 @@ typedef enum
 {
     TLOG_DEBUG = 0x01,
     TLOG_INFO = 0x02,
-    TLOG_WARN = 0x04,
-    TLOG_ERROR = 0x08,
-    TLOG_FATAL = 0x10
+    TLOG_NOTICE = 0x04,
+    TLOG_WARN = 0x08,
+    TLOG_ERROR = 0x10,
+    TLOG_FATAL = 0x20,
 }tlog_level;
 
 

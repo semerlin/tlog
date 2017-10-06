@@ -40,10 +40,11 @@ struct
 {
     {"debug", TLOG_DEBUG},
     {"info", TLOG_INFO},
+    {"notice", TLOG_NOTICE},
     {"warn", TLOG_WARN},
     {"error", TLOG_ERROR},
     {"fatal", TLOG_FATAL},
-    {"", TLOG_DEBUG | TLOG_INFO | TLOG_WARN | TLOG_ERROR | TLOG_FATAL}
+    {"", TLOG_DEBUG | TLOG_INFO | TLOG_NOTICE | TLOG_WARN | TLOG_ERROR | TLOG_FATAL}
 };
 
 /* category detail */
