@@ -723,6 +723,7 @@ int tlog_init(const char *cfg_file)
     }
 
     /* load configure file */
+    t_keyfile_use_last_sep(TRUE);
     tint ret = t_keyfile_load_from_file(keyfile, cfg_file);
     if (0 != ret)
     {

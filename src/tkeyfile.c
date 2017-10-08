@@ -38,6 +38,7 @@ struct _tkeyfile
  * static variable
  ****************************************************/
 static tkey_value_func key_value_func = NULL;
+static tbool use_last_sep = FALSE;
 
 /****************************************************
  * functions
@@ -203,7 +204,16 @@ static tbool t_keyfile_parse_group(const tchar *data, tchar *group)
 static tbool t_keyfile_parse_key_value(const tchar *data, 
         tchar *key, tchar *value)
 {
-    tint index = t_string_find_char(data, 0, '=', TRUE);
+    tint index = -1;
+    if (use_last_sep)
+    {
+        index = t_string_find_char_reverse(data, 0, '=', TRUE);
+    }
+    else
+    {
+        index = t_string_find_char(data, 0, '=', TRUE);
+    }
+
     if (-1 != index)
     {
         tchar temp[512];
@@ -225,6 +235,17 @@ static tbool t_keyfile_parse_key_value(const tchar *data,
     }
 
     return FALSE;
+}
+
+
+/**
+ * @brief use last '=' to seperate key and value
+ * @param TRUE: use
+ *        FALSE: usr first '='
+ */
+void t_keyfile_use_last_sep(tbool flag)
+{
+    use_last_sep = flag;
 }
 
 /**
