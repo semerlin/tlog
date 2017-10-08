@@ -685,7 +685,7 @@ static tint filter_config_file(tkeyfile *keyfile)
 static tint category_print(void *data)
 {
     category_node *category = t_hash_string_entry((thash_string_node *)data, category_node, node);
-    printf("category = %s\n", category->category.name);
+    printf("category = %s(%d)\n", category->category.name, category->category.count);
     for (tuint32 i = 0; i < category->category.count; ++i)
     {
         printf("  level = 0x%x\n", category->category.rules[i].level);
@@ -767,3 +767,10 @@ const tlog_category *tlog_get_category(const tchar *name)
         return NULL;
     }
 }
+
+void tlog(const tlog_category *cat, const char *file,
+        int line, const char *func, int level, const char *fmt, ...)
+{
+}
+
+
