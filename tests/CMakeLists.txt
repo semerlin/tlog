@@ -71,6 +71,7 @@ if (GTEST_FOUND)
     add_executable(test_tlog test_tlog.cpp 
                                  ../src/thlist.c
                                  ../src/tlist.c
+                                 ../src/tslist.c
                                  ../src/tshareptr.c
                                  ../src/tstring.c
                                  ../src/thash_string.c
