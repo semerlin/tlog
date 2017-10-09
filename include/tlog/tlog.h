@@ -25,17 +25,17 @@ extern void tlog(const tlog_category *cat, const char *file,
 
 /* useful macros */
 #define zlog_debug(cat, ...) \
-    tlog(cat, __FILE__, __LINE__, __func__, TLOG_DEBUG, __VA_ARGS__)
+    tlog(cat, __FILE__, __LINE__, __func__, TLOG_DEBUG, ##__VA_ARGS__)
 #define zlog_info(cat, ...) \
-    tlog(cat, __FILE__, __LINE__, __func__, TLOG_INFO, __VA_ARGS__)
+    tlog(cat, __FILE__, __LINE__, __func__, TLOG_INFO, ##__VA_ARGS__)
 #define zlog_notice(cat, ...) \
-    tlog(cat, __FILE__, __LINE__, __func__, TLOG_NOTICE, __VA_ARGS__)
+    tlog(cat, __FILE__, __LINE__, __func__, TLOG_NOTICE, ##__VA_ARGS__)
 #define zlog_warn(cat, ...) \
-    tlog(cat, __FILE__, __LINE__, __func__, TLOG_WARN, __VA_ARGS__)
+    tlog(cat, __FILE__, __LINE__, __func__, TLOG_WARN, ##__VA_ARGS__)
 #define zlog_error(cat, ...) \
-    tlog(cat, __FILE__, __LINE__, __func__, TLOG_ERROR, __VA_ARGS__)
+    tlog(cat, __FILE__, __LINE__, __func__, TLOG_ERROR, ##__VA_ARGS__)
 #define zlog_fatal(cat, ...) \
-    tlog(cat, __FILE__, __LINE__, __func__, TLOG_FATAL, __VA_ARGS__)
+    tlog(cat, __FILE__, __LINE__, __func__, TLOG_FATAL, ##__VA_ARGS__)
 
 
 
