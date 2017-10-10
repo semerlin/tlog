@@ -23,6 +23,7 @@ TEST(FormatTest, Format)
     filter_format(keyfile, format);
 
     EXPECT_STREQ("[%t]", get_format(format, "default"));
+    EXPECT_STREQ("\"%d(%y-%m-%n %T)\"", get_format(format, "simple"));
 }
 
 
