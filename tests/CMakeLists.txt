@@ -82,6 +82,12 @@ if (GTEST_FOUND)
                                  ${COMMON_SRC_LIST})
     target_link_libraries(test_tlog ${LIB_LIST})
 
+    #test level
+    add_executable(test_level test_level.cpp 
+                                 ../src/level.c
+                                 ${COMMON_SRC_LIST})
+    target_link_libraries(test_level ${LIB_LIST})
+
 
 endif (GTEST_FOUND)
 
