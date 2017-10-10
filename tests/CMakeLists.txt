@@ -88,6 +88,18 @@ if (GTEST_FOUND)
                                  ${COMMON_SRC_LIST})
     target_link_libraries(test_level ${LIB_LIST})
 
+    #test format 
+    add_executable(test_format test_format.cpp 
+                                 ../src/thlist.c
+                                 ../src/tlist.c
+                                 ../src/tshareptr.c
+                                 ../src/tstring.c
+                                 ../src/thash_string.c
+                                 ../src/tkeyfile.c
+                                 ../src/format.c
+                                 ${COMMON_SRC_LIST})
+    target_link_libraries(test_format ${LIB_LIST})
+
 
 endif (GTEST_FOUND)
 
