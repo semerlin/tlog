@@ -4,6 +4,7 @@
 #include "format.h"
 #include "tassert.h"
 #include "thash_string.h"
+#include "global.h"
 
 
 /****************************************************

@@ -11,16 +11,7 @@
 #include "tstring.h"
 #include "level.h"
 #include "format.h"
-
-/****************************************************
- * macros definition
- ****************************************************/
-#define GROUP_NAME_GENRAL    "general"
-#define GROUP_NAME_RULES     "rules"
-
-#define DEFAULT_OUTPUT           ">stdout"
-#define DEFAULT_LEVEL            "*"
-#define DEFAULT_CATEGORY_NAME    "*"
+#include "global.h"
 
 /****************************************************
  * struct definition
