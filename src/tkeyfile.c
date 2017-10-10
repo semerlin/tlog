@@ -34,10 +34,16 @@ struct _tkeyfile
     tlist groups;
 };
 
+/* key-value foreach userdata */
+typedef struct
+{
+    tkey_value_func kv_func;
+    void *userdata;
+}kv_userdata;
+
 /****************************************************
  * static variable
  ****************************************************/
-static tkey_value_func key_value_func = NULL;
 static tbool use_last_sep = FALSE;
 
 /****************************************************
@@ -456,15 +462,20 @@ tbool t_keyfile_get_bool(const tkeyfile *keyfile, const tchar *group,
 /**
  * @brief hash table node iterator callback
  * @param data - hash table node
+ * @para userdata - user data
  */
-static tint hash_string_foreach(void *data)
+static tint hash_string_foreach(void *data, void *userdata)
 {
+    T_ASSERT(NULL != data);
+    T_ASSERT(NULL != userdata);
+
+    kv_userdata *kv_data = (kv_userdata *)userdata;
     thash_string_node *string_node = data;
     kv_node *kv = t_hash_string_entry(string_node, kv_node, node);
     tint err = 0;
-    if (NULL != key_value_func)
+    if (NULL != kv_data->kv_func)
     {
-        err = key_value_func(kv->node.key, kv->value);
+        err = kv_data->kv_func(kv->node.key, kv->value, kv_data->userdata);
     }
     return err;
 }
@@ -477,7 +488,7 @@ static tint hash_string_foreach(void *data)
  * @return error code, 0 means no error happend
  */
 tint t_keyfile_group_foreach(const tkeyfile *keyfile, const tchar *group_name,
-        tkey_value_func kv_func)
+        tkey_value_func kv_func, void *userdata)
 {
     T_ASSERT(NULL != keyfile);
     T_ASSERT(NULL != group_name);
@@ -495,9 +506,8 @@ tint t_keyfile_group_foreach(const tkeyfile *keyfile, const tchar *group_name,
 
     if (NULL != group)
     {
-        key_value_func = kv_func;
-        err = t_hash_string_foreach(group->kv, hash_string_foreach);
-        key_value_func = NULL;
+        kv_userdata data = {kv_func, userdata};
+        err = t_hash_string_foreach(group->kv, hash_string_foreach, &data);
     }
 
     return err;
@@ -610,7 +620,7 @@ tuint32 t_keyfile_key_count(const tkeyfile *keyfile, const tchar *group_name)
  * @return TRUE: has
  *         FALSE: can not find
  */
-tbool t_keyfile_contains_group(tkeyfile *keyfile, const tchar *group)
+tbool t_keyfile_contains_group(const tkeyfile *keyfile, const tchar *group)
 {
     T_ASSERT(NULL != keyfile);
     T_ASSERT(NULL != group);
@@ -625,7 +635,7 @@ tbool t_keyfile_contains_group(tkeyfile *keyfile, const tchar *group)
  * @return TRUE: has
  *         FALSE: can not find
  */
-tbool t_keyfile_contains_key(tkeyfile *keyfile, const tchar *group, const tchar *key)
+tbool t_keyfile_contains_key(const tkeyfile *keyfile, const tchar *group, const tchar *key)
 {
     T_ASSERT(NULL != keyfile);
     T_ASSERT(NULL != group);

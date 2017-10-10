@@ -19,7 +19,7 @@ TEST(TkeyfileTest, Death)
 
 #endif
 
-static tint kv_cb(void *key, void *value)
+static tint kv_cb(void *key, void *value, void *userdata)
 {
     if (0 == strcmp((const char *)key, "flag2"))
     {
@@ -53,7 +53,7 @@ static tint kv_cb(void *key, void *value)
     return 0;
 }
 
-static tint kv_failed_cb(void *key, void *value)
+static tint kv_failed_cb(void *key, void *value, void *userdata)
 {
     if (0 == strcmp((const char *)key, "flag2"))
     {
@@ -148,8 +148,8 @@ TEST(TkeyfileTest, Function)
     EXPECT_EQ(5, t_keyfile_key_count(keyfile, groups[1]));
 
     // foreach test
-    EXPECT_EQ(0, t_keyfile_group_foreach(keyfile, groups[0], kv_cb));
-    EXPECT_EQ(-1, t_keyfile_group_foreach(keyfile, groups[0], kv_failed_cb));
+    EXPECT_EQ(0, t_keyfile_group_foreach(keyfile, groups[0], kv_cb, NULL));
+    EXPECT_EQ(-1, t_keyfile_group_foreach(keyfile, groups[0], kv_failed_cb, NULL));
 
     for (int i = 0; i < 3; ++i)
     {

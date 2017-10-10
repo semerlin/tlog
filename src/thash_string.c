@@ -307,10 +307,10 @@ void t_hash_string_keys(const thash_string *hash_string, char **keys)
 /**
  * @brief iterator all node in hash table
  * @param hash_string - hash table handle
- * @param cb_func - callback function
+ * @param hash_func - hash callback function
  * @return error code, 0 means no error happend
  */
-tint t_hash_string_foreach(const thash_string *hash_string, tgeneral_func cb_func)
+tint t_hash_string_foreach(const thash_string *hash_string, thash_func hash_func, void *userdata)
 {
     if (NULL == hash_string)
     {
@@ -326,9 +326,9 @@ tint t_hash_string_foreach(const thash_string *hash_string, tgeneral_func cb_fun
         t_hlist_foreach(hlist_node, &hash_string->head[i])
         {
             string_node = t_hlist_entry(hlist_node, thash_string_node, node);
-            if (NULL != cb_func)
+            if (NULL != hash_func)
             {
-                err = cb_func(string_node);
+                err = hash_func(string_node, userdata);
                 if (0 != err)
                 {
                     break;
@@ -402,8 +402,7 @@ void t_hash_string_free(thash_string *hash_string, tfree_func free_func)
     T_ASSERT(NULL != hash_string);
 
     thlist_head *head = NULL;
-    tuint32 i = 0;
-    for (; i < hash_string->table_size; ++i)
+    for (tuint32 i = 0; i < hash_string->table_size; ++i)
     {
         head = &hash_string->head[i];
 
@@ -419,6 +418,56 @@ void t_hash_string_free(thash_string *hash_string, tfree_func free_func)
             cur = temp;
         }
     }
+
+    free(hash_string->head);
+    free(hash_string);
+}
+
+
+/**
+ * @brief free all node in hash table then free hash table memory
+ * @param hash_string - hash table 
+ * @param free_func - resource free function
+ */
+void t_hash_string_empty(thash_string *hash_string, tfree_func free_func)
+{
+    T_ASSERT(NULL != hash_string);
+
+    thlist_head *head = NULL;
+    /* free node first */
+    for (tuint32 i = 0; i < hash_string->table_size; ++i)
+    {
+        head = &hash_string->head[i];
+
+        thlist_node *cur = head->first;
+        thlist_node *temp = NULL;
+        while (cur != NULL)
+        {
+            temp = cur->next;
+            if (NULL != free_func)
+            {
+                free_func(t_hlist_entry(cur, thash_string_node, node));
+            }
+            cur = temp;
+        }
+    }
+
+    /* free head */
+    for (tuint32 i = DEFAULT_TABLE_SIZE; i < hash_string->table_size; ++i)
+    {
+        free(&hash_string->head[i]);
+    }
+
+    /* init head */
+    for (tuint32 i = 0; i < hash_string->table_size; ++i)
+    {
+        t_hlist_init_head(&hash_string->head[i]);
+    }
+
+    hash_string->table_size = DEFAULT_TABLE_SIZE;
+    hash_string->element_count = 0;
+    tdouble max_size = REHASH_FACTOR * hash_string->table_size;
+    hash_string->max_element_size = round(max_size);
 }
 
 

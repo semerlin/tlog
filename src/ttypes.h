@@ -46,8 +46,11 @@ typedef void (*tfree_func)(void *data);
 /* general callback function */
 typedef tint (*tgeneral_func)(void *data);
 
+/* hash table callback function */
+typedef tint (*thash_func)(void *data, void *userdata);
+
 /* key value callback fucntion */
-typedef tint (*tkey_value_func)(void *key, void *value);
+typedef tint (*tkey_value_func)(void *key, void *value, void *userdata);
 
 
 T_END_DECLS
