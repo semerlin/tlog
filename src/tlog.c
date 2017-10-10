@@ -1,14 +1,15 @@
-#include "../include/tlog/tlog.h"
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+#include "../include/tlog/tlog.h"
 #include "ttypes.h"
 #include "tassert.h"
 #include "tkeyfile.h"
 #include "thash_string.h"
 #include "tslist.h"
 #include "tstring.h"
-#include <stdio.h>
+#include "level.h"
 
 /****************************************************
  * macros definition
@@ -32,22 +33,6 @@ typedef struct
     tchar *value;
     thash_string_node node;
 }format_node;
-
-/* level map */
-struct
-{
-    const tchar name[16];
-    const tlog_level level;
-}log_level_info[] = 
-{
-    {"debug", TLOG_DEBUG},
-    {"info", TLOG_INFO},
-    {"notice", TLOG_NOTICE},
-    {"warn", TLOG_WARN},
-    {"error", TLOG_ERROR},
-    {"fatal", TLOG_FATAL},
-    {"", TLOG_DEBUG | TLOG_INFO | TLOG_NOTICE | TLOG_WARN | TLOG_ERROR | TLOG_FATAL}
-};
 
 /* category detail */
 typedef struct 
@@ -94,85 +79,6 @@ static tslist category_name_list_head;
 /****************************************************
  * functions 
  ****************************************************/
-
-/**
- * @brief convert level string to level int value
- * @param level - level string
- * @return level int value
- */
-static tuint32 log_level_convert(const tchar *level)
-{
-    T_ASSERT(NULL != level);
-
-    const tchar *plevel = level;
-
-    /* get level flag */
-    tuint8 level_flag = 0;
-    tuint8 start_index = 0;
-    tuint8 info_count = sizeof(log_level_info) / sizeof(log_level_info[0]);
-
-    if ('>' == *plevel)
-    {
-        plevel++;
-        level_flag = 2;
-        start_index = 1;
-        if ('=' == *plevel)
-        {
-            level_flag++;
-            start_index++;
-        }
-    }
-    else if('=' == *plevel)
-    {
-        level_flag = 1;
-        start_index = 1;
-    }
-    else if(('*' == plevel[0]) && ('\0' == plevel[1]))
-    {
-        return log_level_info[info_count - 1].level;
-    }
-    else if('\0' != *plevel)
-    {
-        level_flag = 3;
-        start_index = 0;
-    }
-    else
-    {
-        return 0;
-    }
-
-    tuint32 level_value = 0;
-    /* get level text */
-    level += start_index;
-
-    for (tuint8 i = 0; i < info_count; ++i)
-    {
-        if (0 == strcmp(log_level_info[i].name, level))
-        {
-            switch(level_flag)
-            {
-            case 1:
-                /* "=" */
-                level_value = log_level_info[i].level;
-                break;
-            case 2:
-                /* ">" */
-                level_value = log_level_info[info_count - 1].level;
-                level_value &= ~(((log_level_info[i].level - 1) << 1) + 1);
-                break;
-            case 3:
-            default:
-                /* ">=" */
-                level_value = log_level_info[info_count - 1].level;
-                level_value &= ~(log_level_info[i].level - 1);
-                break;
-            }
-            break;
-        }
-    }
-
-    return level_value;
-}
 
 /**
  * @brief get format value from hash table
@@ -591,11 +497,11 @@ static tint filter_group_rules(tkeyfile *keyfile)
     T_ASSERT(NULL != format_group);
 
     tint err = 0;
+    t_slist_init_head(&category_name_list_head);
     /* check group exists first */
     if (t_keyfile_contains_group(keyfile, GROUP_NAME_RULES))
     {
         /* statistics key count */
-        t_slist_init_head(&category_name_list_head);
         err = t_keyfile_group_foreach(keyfile, GROUP_NAME_RULES, category_name_count);
         /* process rules */
         err = t_keyfile_group_foreach(keyfile, GROUP_NAME_RULES, rules_process);

@@ -76,6 +76,7 @@ if (GTEST_FOUND)
                                  ../src/tstring.c
                                  ../src/thash_string.c
                                  ../src/tkeyfile.c
+                                 ../src/level.c
                                  ../src/tlog.c
                                  ${COMMON_SRC_LIST})
     target_link_libraries(test_tlog ${LIB_LIST})
