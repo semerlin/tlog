@@ -320,9 +320,11 @@ tlog_category *get_category(const thash_string *hash, const tchar *name)
     }
 }
 
-
-
-#if 1
+/**
+ * @brief print category infomation to stdout
+ * @param data - hash node
+ * @param userdata - userdata
+ */
 static tint category_print(void *data, void *userdata)
 {
     category_node *category = t_hash_string_entry((thash_string_node *)data, category_node, node);
@@ -337,12 +339,14 @@ static tint category_print(void *data, void *userdata)
     return 0;
 }
 
+/**
+ * @brief print category infomation to stdout
+ * @param hash - category hash table
+ */
 void print_category(const thash_string *hash)
 {
     T_ASSERT(NULL != hash);
     t_hash_string_foreach(hash, category_print, NULL);
 }
-
-#endif
 
 
