@@ -119,8 +119,8 @@ TEST(TkeyfileTest, Function)
     EXPECT_STREQ("", out);
 
 
-    char *groups[3] = {0};
-    for (int i = 0; i < 3; ++i)
+    char *groups[8] = {0};
+    for (int i = 0; i < 8; ++i)
     {
         groups[i] = new char[16];
     }
@@ -129,7 +129,7 @@ TEST(TkeyfileTest, Function)
     EXPECT_STREQ("test1", groups[0]);
     EXPECT_STREQ("test2", groups[1]);
 
-    char *keys[8] = {0};
+    char *keys[16] = {0};
     for (int i = 0; i < 8; ++i)
     {
         keys[i] = new char[16];
@@ -143,7 +143,7 @@ TEST(TkeyfileTest, Function)
     EXPECT_STREQ("flag6", keys[4]);
     EXPECT_STREQ("flag1", keys[5]);
 
-    EXPECT_EQ(2, t_keyfile_group_count(keyfile));
+    EXPECT_EQ(5, t_keyfile_group_count(keyfile));
     EXPECT_EQ(6, t_keyfile_key_count(keyfile, groups[0]));
     EXPECT_EQ(5, t_keyfile_key_count(keyfile, groups[1]));
 
@@ -151,12 +151,12 @@ TEST(TkeyfileTest, Function)
     EXPECT_EQ(0, t_keyfile_group_foreach(keyfile, groups[0], kv_cb, NULL));
     EXPECT_EQ(-1, t_keyfile_group_foreach(keyfile, groups[0], kv_failed_cb, NULL));
 
-    for (int i = 0; i < 3; ++i)
+    for (int i = 0; i < 8; ++i)
     {
         delete []groups[i];
     }
 
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < 16; ++i)
     {
         delete []keys[i];
     }

@@ -12,31 +12,31 @@ TEST(LevelTest, Death)
 
 TEST(LevelTest, Convert)
 {
-    ASSERT_EQ(TLOG_DEBUG | TLOG_INFO | TLOG_NOTICE | TLOG_WARN | TLOG_ERROR | TLOG_FATAL, log_level_convert("*"));
+    EXPECT_EQ(TLOG_DEBUG | TLOG_INFO | TLOG_NOTICE | TLOG_WARN | TLOG_ERROR | TLOG_FATAL, log_level_convert("*"));
 
-    ASSERT_EQ(TLOG_DEBUG | TLOG_INFO | TLOG_NOTICE | TLOG_WARN | TLOG_ERROR | TLOG_FATAL, log_level_convert("debug"));
-    ASSERT_EQ(TLOG_INFO | TLOG_NOTICE | TLOG_WARN | TLOG_ERROR | TLOG_FATAL, log_level_convert(">debug"));
-    ASSERT_EQ(TLOG_DEBUG, log_level_convert("=debug"));
+    EXPECT_EQ(TLOG_DEBUG | TLOG_INFO | TLOG_NOTICE | TLOG_WARN | TLOG_ERROR | TLOG_FATAL, log_level_convert("debug"));
+    EXPECT_EQ(TLOG_INFO | TLOG_NOTICE | TLOG_WARN | TLOG_ERROR | TLOG_FATAL, log_level_convert(">debug"));
+    EXPECT_EQ(TLOG_DEBUG, log_level_convert("=debug"));
 
-    ASSERT_EQ(TLOG_INFO | TLOG_NOTICE | TLOG_WARN | TLOG_ERROR | TLOG_FATAL, log_level_convert("info"));
-    ASSERT_EQ(TLOG_NOTICE | TLOG_WARN | TLOG_ERROR | TLOG_FATAL, log_level_convert(">info"));
-    ASSERT_EQ(TLOG_INFO, log_level_convert("=info"));
+    EXPECT_EQ(TLOG_INFO | TLOG_NOTICE | TLOG_WARN | TLOG_ERROR | TLOG_FATAL, log_level_convert("info"));
+    EXPECT_EQ(TLOG_NOTICE | TLOG_WARN | TLOG_ERROR | TLOG_FATAL, log_level_convert(">info"));
+    EXPECT_EQ(TLOG_INFO, log_level_convert("=info"));
 
-    ASSERT_EQ(TLOG_NOTICE | TLOG_WARN | TLOG_ERROR | TLOG_FATAL, log_level_convert("notice"));
-    ASSERT_EQ(TLOG_WARN | TLOG_ERROR | TLOG_FATAL, log_level_convert(">notice"));
-    ASSERT_EQ(TLOG_NOTICE, log_level_convert("=notice"));
+    EXPECT_EQ(TLOG_NOTICE | TLOG_WARN | TLOG_ERROR | TLOG_FATAL, log_level_convert("notice"));
+    EXPECT_EQ(TLOG_WARN | TLOG_ERROR | TLOG_FATAL, log_level_convert(">notice"));
+    EXPECT_EQ(TLOG_NOTICE, log_level_convert("=notice"));
 
-    ASSERT_EQ(TLOG_WARN | TLOG_ERROR | TLOG_FATAL, log_level_convert("warn"));
-    ASSERT_EQ(TLOG_ERROR | TLOG_FATAL, log_level_convert(">warn"));
-    ASSERT_EQ(TLOG_WARN, log_level_convert("=warn"));
+    EXPECT_EQ(TLOG_WARN | TLOG_ERROR | TLOG_FATAL, log_level_convert("warn"));
+    EXPECT_EQ(TLOG_ERROR | TLOG_FATAL, log_level_convert(">warn"));
+    EXPECT_EQ(TLOG_WARN, log_level_convert("=warn"));
 
-    ASSERT_EQ(TLOG_ERROR | TLOG_FATAL, log_level_convert("error"));
-    ASSERT_EQ(TLOG_FATAL, log_level_convert(">error"));
-    ASSERT_EQ(TLOG_ERROR, log_level_convert("=error"));
+    EXPECT_EQ(TLOG_ERROR | TLOG_FATAL, log_level_convert("error"));
+    EXPECT_EQ(TLOG_FATAL, log_level_convert(">error"));
+    EXPECT_EQ(TLOG_ERROR, log_level_convert("=error"));
 
-    ASSERT_EQ(TLOG_FATAL, log_level_convert("fatal"));
-    ASSERT_EQ(0, log_level_convert(">fatal"));
-    ASSERT_EQ(TLOG_FATAL, log_level_convert("=fatal"));
+    EXPECT_EQ(TLOG_FATAL, log_level_convert("fatal"));
+    EXPECT_EQ(0, log_level_convert(">fatal"));
+    EXPECT_EQ(TLOG_FATAL, log_level_convert("=fatal"));
 }
 
 

@@ -12,7 +12,7 @@ TEST(FormatTest, Death)
 }
 #endif
 
-TEST(FormatTest, Convert)
+TEST(FormatTest, Format)
 {
     tkeyfile *keyfile = t_keyfile_new();
     ASSERT_NE((void *)0, keyfile);
