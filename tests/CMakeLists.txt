@@ -78,6 +78,8 @@ if (GTEST_FOUND)
                                  ../src/tkeyfile.c
                                  ../src/level.c
                                  ../src/format.c
+                                 ../src/rules.c
+                                 ../src/category.c
                                  ../src/tlog.c
                                  ${COMMON_SRC_LIST})
     target_link_libraries(test_tlog ${LIB_LIST})

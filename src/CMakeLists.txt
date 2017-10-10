@@ -9,7 +9,8 @@ set(SRC_LIST
     thash_string.c
     tstring.c
     level.c
-    format.c)
+    format.c
+    category.h)
 
 add_library(tlog SHARED ${SRC_LIST})
     
