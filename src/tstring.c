@@ -159,6 +159,41 @@ tint t_string_find_char_reverse(const tchar *str, tuint32 index, tchar check, tb
 }
 
 /**
+ * @brief find given character repeat times in string
+ * @param str - source string
+ * @param index - start find position
+ * @param check - given character
+ * @param cs - TRUE: case sensitive
+ *             FALSE: ignore case of characters
+ * @return character repeat times
+ */
+tuint32 t_string_char_count(const tchar *str, tuint32 index, tchar check, tbool cs)
+{
+    T_ASSERT(NULL != str);
+
+#ifdef T_ENABLE_ASSERT
+    tint str_len = strlen(str);
+    T_ASSERT(index <= str_len);
+#endif
+
+    str += index;
+    tchar cur = 0;
+    tuint32 count = 0;
+    while(0 != (cur = *str))
+    {
+        cur = (cs ? cur : tolower(cur));
+        check = (cs ? check : tolower(check));
+        if (cur == check)
+        {
+            count ++;
+        }
+        str++;
+    }
+
+    return count;
+}
+
+/**
  * @brief check if string contain given string
  * @param str - source string
  * @param check - given string

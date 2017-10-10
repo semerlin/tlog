@@ -19,6 +19,7 @@ TEST(TstringTest, Death)
     EXPECT_DEATH(t_string_contain_char(NULL, 0, FALSE), "");
     EXPECT_DEATH(t_string_find_char(NULL, 0, 0, FALSE), "");
     EXPECT_DEATH(t_string_find_char_reverse(NULL, 0, 0, FALSE), "");
+    EXPECT_DEATH(t_string_char_count(NULL, 0, 0, FALSE), "");
     EXPECT_DEATH(t_string_contain_string(NULL, NULL, FALSE), "");
     EXPECT_DEATH(t_string_find_string(NULL, 0, NULL, FALSE), "");
     EXPECT_DEATH(t_string_find_string_reverse(NULL, 0, NULL, FALSE), "");
@@ -50,6 +51,7 @@ TEST(TstringTest, Truncate)
     EXPECT_STREQ("abc123abcdef12345acbkkkkk", out_str);
     t_string_mid(test_str, 4, 10, out_str);
     EXPECT_STREQ("bc123abcde", out_str);
+
 }
 
 TEST(TstringTest, Contain)
@@ -66,6 +68,8 @@ TEST(TstringTest, Contain)
     EXPECT_TRUE(t_string_contain_string(test_str, "123", TRUE));
     EXPECT_TRUE(t_string_contain_string(test_str, "ABC", FALSE));
     EXPECT_FALSE(t_string_contain_string(test_str, "abc2", TRUE));
+
+    EXPECT_EQ(4, t_string_char_count(test_str, 0, 'a', FALSE));
 }
 
 TEST(TstringTest, Find)
