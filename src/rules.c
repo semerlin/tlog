@@ -107,7 +107,7 @@ static tint rules_process(void *key, void *value, void *userdata)
  * @param keyfile - configure file handle
  * @return 0 means no error
  */
-tint filter_rules(const tkeyfile *keyfile, const thash_string *format_hash, thash_string *cat_hash)
+tint filter_rules(const tkeyfile *keyfile, const thash_string *format_hash, thash_string **cat_hash)
 { 
     T_ASSERT(NULL != keyfile);
     T_ASSERT(NULL != format_hash);
@@ -129,12 +129,12 @@ tint filter_rules(const tkeyfile *keyfile, const thash_string *format_hash, thas
             format = DEFAULT_FORMAT;
         }
  
-        err = add_category(cat_hash, format_hash, DEFAULT_CATEGORY_NAME, DEFAULT_LEVEL,
+        err = add_category(*cat_hash, format_hash, DEFAULT_CATEGORY_NAME, DEFAULT_LEVEL,
                 format, DEFAULT_OUTPUT);
     }
     else
     {
-        rule_userdata data = {cat_hash, format_hash};
+        rule_userdata data = {*cat_hash, format_hash};
         err = t_keyfile_group_foreach(keyfile, GROUP_NAME_RULES, rules_process, &data);
     }
 

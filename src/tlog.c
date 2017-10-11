@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include "../include/tlog/tlog.h"
 #include "ttypes.h"
 #include "tassert.h"
@@ -78,13 +79,13 @@ static tint filter_config_file(tkeyfile *keyfile)
             return err;
         }
 
-        err = filter_format(keyfile, formats_kv);
+        err = filter_format(keyfile, &formats_kv);
         if (0 != err)
         {
             return err;
         }
 
-        err = filter_rules(keyfile, formats_kv, category_detail);
+        err = filter_rules(keyfile, formats_kv, &category_detail);
         if (0 != err)
         {
             return err;
@@ -154,9 +155,25 @@ const tlog_category *tlog_get_category(const tchar *name)
     return get_category(category_detail, name);
 }
 
+/**
+ * @brief log real output function
+ * @param cat - log category handle
+ * @param file - file name
+ * @param line - log generate line
+ * @param func - function name
+ * @param level - log level
+ * @param fmt - user log message
+ */
 void tlog(const tlog_category *cat, const char *file,
         int line, const char *func, int level, const char *fmt, ...)
 {
+    if (NULL != cat)
+    {
+        va_list args;
+        va_start(args, fmt);
+        category_gen_log(cat, file, line, func, level, fmt, args);
+        va_end(args);
+    }
 }
 
 

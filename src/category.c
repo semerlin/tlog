@@ -22,6 +22,7 @@ typedef struct
 {
     tlog_level level;
     const char *format;
+    const split_format *splits;
     char *output;
 }category_rule;
 
@@ -149,7 +150,7 @@ static tint category_free(void *data, void *userdata)
  * @param name - category name
  * @param count - category count
  */
-static category_node *add_category_node(thash_string *hash, const tchar *name, tuint32 count)
+static category_node *add_category_node(thash_string **hash, const tchar *name, tuint32 count)
 {
     T_ASSERT(NULL != hash);
     T_ASSERT(NULL != name);
@@ -177,7 +178,7 @@ static category_node *add_category_node(thash_string *hash, const tchar *name, t
 
         if (0 == t_hash_string_init_node(&cat_node->node, name))
         {
-            hash = t_hash_string_insert(hash, &cat_node->node);
+            *hash = t_hash_string_insert(*hash, &cat_node->node);
             cat_node->category.count = 0;
         }
         else
@@ -196,7 +197,7 @@ static category_node *add_category_node(thash_string *hash, const tchar *name, t
  * @param keyfile - keyfile handle
  * @param hash - category hash table
  */
-tint categories_init(const tkeyfile *keyfile, thash_string *hash)
+tint categories_init(const tkeyfile *keyfile, thash_string **hash)
 {
     tint err = 0;
     tslist name_head;
@@ -227,7 +228,7 @@ tint categories_init(const tkeyfile *keyfile, thash_string *hash)
                 if (NULL == cat_node)
                 {
                     t_slist_free(&name_head, free_name_list);
-                    t_hash_string_foreach(hash, category_free, NULL);
+                    t_hash_string_foreach(*hash, category_free, NULL);
                     return -ENOMEM;
                 }
             }
@@ -274,6 +275,7 @@ tint add_category(thash_string *cat_hash, const thash_string *format_hash,
     {
         cat_rule->format = DEFAULT_FORMAT;
     }
+    cat_rule->splits = get_format_split(format_hash, format);
 
     /* add output */
     cat_rule->output = malloc(strlen(output) + 1);;
@@ -319,6 +321,28 @@ tlog_category *get_category(const thash_string *hash, const tchar *name)
         return NULL;
     }
 }
+
+void category_gen_log(const tlog_category *cat, const char *file, 
+        int line, const char *func, int level, 
+        const char *fmt, va_list args)
+{
+    T_ASSERT(NULL != cat);
+    tchar user_msg[256];
+    tchar msg_buf[512];
+    vsprintf(user_msg, fmt, args);
+    preprocess_info pre = {file, func, line, level, user_msg};
+    for (tuint32 i = 0; i < cat->count; ++i)
+    {
+        if (0 != ((cat->rules[i].level & level) & LEVEL_MASK))
+        {
+            format_split_to_string(msg_buf, cat->rules[i].splits, &pre);
+            /* for test only */
+            printf("%s", msg_buf);
+        }
+    }
+}
+
+
 
 /**
  * @brief print category infomation to stdout

@@ -4,8 +4,6 @@
 #include "tassert.h"
 
 
-
-
 /****************************************************
  * struct definition
  ****************************************************/
@@ -60,7 +58,7 @@ tuint32 log_level_convert(const tchar *level)
     }
     else if(('*' == plevel[0]) && ('\0' == plevel[1]))
     {
-        return log_level_info[info_count - 1].level;
+        return (log_level_info[info_count - 1].level & LEVEL_MASK);
     }
     else if('\0' != *plevel)
     {
@@ -84,18 +82,18 @@ tuint32 log_level_convert(const tchar *level)
             {
             case 1:
                 /* "=" */
-                level_value = log_level_info[i].level;
+                level_value = (log_level_info[i].level & LEVEL_MASK);
                 break;
             case 2:
                 /* ">" */
-                level_value = log_level_info[info_count - 1].level;
-                level_value &= ~(((log_level_info[i].level - 1) << 1) + 1);
+                level_value = (log_level_info[info_count - 1].level & LEVEL_MASK);
+                level_value &= ~((((log_level_info[i].level & LEVEL_MASK) - 1) << 1) + 1);
                 break;
             case 3:
             default:
                 /* ">=" */
-                level_value = log_level_info[info_count - 1].level;
-                level_value &= ~(log_level_info[i].level - 1);
+                level_value = (log_level_info[info_count - 1].level & LEVEL_MASK);
+                level_value &= ~((log_level_info[i].level & LEVEL_MASK) - 1);
                 break;
             }
             break;

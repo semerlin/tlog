@@ -5,6 +5,9 @@
 
 T_BEGIN_DECLS
 
+/* level mask definition */
+#define LEVEL_MASK  0xff00
+
 T_EXTERN tuint32 log_level_convert(const tchar *level);
 
 T_END_DECLS

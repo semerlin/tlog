@@ -7,12 +7,12 @@ extern "C" {
 
 typedef enum 
 {
-    TLOG_DEBUG = 0x01,
-    TLOG_INFO = 0x02,
-    TLOG_NOTICE = 0x04,
-    TLOG_WARN = 0x08,
-    TLOG_ERROR = 0x10,
-    TLOG_FATAL = 0x20,
+    TLOG_DEBUG = 0x0100,
+    TLOG_INFO = 0x0201,
+    TLOG_NOTICE = 0x0402,
+    TLOG_WARN = 0x0803,
+    TLOG_ERROR = 0x1004,
+    TLOG_FATAL = 0x2005,
 }tlog_level;
 
 

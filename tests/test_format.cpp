@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "../src/format.h"
 #include "../src/tkeyfile.h"
+#include "../src/global.h"
 
 char filename[128] = {0};
 
@@ -20,10 +21,11 @@ TEST(FormatTest, Format)
     ASSERT_EQ(0, t_keyfile_load_from_file(keyfile, filename));
     thash_string *format = format_new();
     ASSERT_NE((void *)0, format);
-    filter_format(keyfile, format);
 
-    EXPECT_STREQ("[%t]", get_format(format, "default"));
-    EXPECT_STREQ("\"%d(%y-%m-%n %T)\"", get_format(format, "simple"));
+    ASSERT_EQ(0, filter_format(keyfile, &format));
+
+    EXPECT_STREQ(DEFAULT_FORMAT, get_format(format, "default"));
+    EXPECT_STREQ("%d(%y-%m-%n %T)", get_format(format, "simple"));
 }
 
 

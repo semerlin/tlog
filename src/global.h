@@ -12,7 +12,7 @@
 #define DEFAULT_LEVEL            "*"
 #define DEFAULT_CATEGORY_NAME    "*"
 #define DEFAULT_FORMAT_NAME      "default"
-#define DEFAULT_FORMAT           "[%t]"
+#define DEFAULT_FORMAT           "%d(%y-%m-%d %T) %-5v %m%n"
 
 
 #endif /* _GLOBAL_H_ */

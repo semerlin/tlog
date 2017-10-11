@@ -349,7 +349,7 @@ tint t_keyfile_load_from_file(tkeyfile *keyfile, const tchar *file)
 
                     strcpy(keyvalue_node->node.key, key);
                     strcpy(keyvalue_node->value, value);
-                    t_hash_string_insert(cur_group->kv, &keyvalue_node->node);
+                    cur_group->kv = t_hash_string_insert(cur_group->kv, &keyvalue_node->node);
                 }
             }
         }
