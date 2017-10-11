@@ -13,9 +13,11 @@
  * struct definition
  ****************************************************/
 /* split format */
-typedef tuint32 (*splitformat_write)(tchar *buf, const tchar *data, const preprocess_info *pre);
+typedef struct _split_format_single split_format_single;
 
-typedef struct
+typedef tuint32 (*splitformat_write)(tchar *buf, const split_format_single *split_single, const preprocess_info *pre);
+
+struct _split_format_single
 {
     tchar *data;
     /* 
@@ -27,7 +29,7 @@ typedef struct
     /* -1: unlimit */
     tint8 width_max;
     splitformat_write write_buf;
-}split_format_single;
+};
 
 struct _split_format
 {
@@ -73,49 +75,49 @@ static tchar *lower_level[] =
  * functions 
  ****************************************************/
 
-static tuint32 write_direct(tchar *buf, const tchar *data, 
+static tuint32 write_direct(tchar *buf, const split_format_single *split_single,
         const preprocess_info *line)
 {
-    strcpy(buf, (const tchar *)data);
-    return strlen(data);
+    strcpy(buf, split_single->data);
+    return strlen(split_single->data);
 }
 
-static tuint32 write_time(tchar *buf, const tchar *data, 
+static tuint32 write_time(tchar *buf,  const split_format_single *split_single,
         const preprocess_info *line)
 {
     return 0;
 }
 
-static tuint32 write_filename(tchar *buf, const tchar *data, 
+static tuint32 write_filename(tchar *buf,  const split_format_single *split_single,
         const preprocess_info *line)
 {
     return 0;
 }
-static tuint32 write_filename_full(tchar *buf, const tchar *data, 
-        const preprocess_info *line)
-{
-    return 0;
-}
-
-static tuint32 write_line(tchar *buf, const tchar *data, 
+static tuint32 write_filename_full(tchar *buf, const split_format_single *split_single,
         const preprocess_info *line)
 {
     return 0;
 }
 
-static tuint32 write_message(tchar *buf, const tchar *data, 
+static tuint32 write_line(tchar *buf, const split_format_single *split_single,
         const preprocess_info *line)
 {
     return 0;
 }
 
-static tuint32 write_level_lower(tchar *buf, const tchar *data, 
+static tuint32 write_message(tchar *buf, const split_format_single *split_single,
         const preprocess_info *line)
 {
     return 0;
 }
 
-static tuint32 write_level_upper(tchar *buf, const tchar *data, 
+static tuint32 write_level_lower(tchar *buf, const split_format_single *split_single,
+        const preprocess_info *line)
+{
+    return 0;
+}
+
+static tuint32 write_level_upper(tchar *buf, const split_format_single *split_single,
         const preprocess_info *line)
 {
     return 0;
@@ -753,7 +755,7 @@ void format_split_to_string(tchar *buf, const split_format *splits, const prepro
     tuint32 written_len = 0;
     for (tuint32 i = 0; i < splits->count; ++i)
     {
-        written_len = splits->splits[i].write_buf(buf, splits->splits[i].data, pre);
+        written_len = splits->splits[i].write_buf(buf, &splits->splits[i], pre);
         buf += written_len;
     }
 }
