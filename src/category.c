@@ -22,9 +22,10 @@
 typedef struct 
 {
     tlog_level level;
-    const char *format;
+    const tchar *format;
     const split_format *splits;
-    char *output;
+    tchar *output;
+    FILE* fd;
 }category_rule;
 
 /* category */
@@ -242,6 +243,59 @@ tint categories_init(const tkeyfile *keyfile, thash_string **hash)
     return err;
 }
 
+static tbool output_format_validation(const tchar *output)
+{
+    T_ASSERT(NULL != output);
+    if ('>' == *output)
+    {
+        if ((0 == strcmp(">stdout", output)) ||
+            (0 == strcmp(">stderr", output)))
+        {
+            return TRUE;
+        }
+        else
+        {
+            return FALSE;
+        }
+    }
+
+    return TRUE;
+}
+
+/**
+ * @brief get output file handle
+ * @param output - output string
+ * @return file handle, -1 means error happend
+ */
+static FILE *get_output_fd(const tchar *output)
+{
+    T_ASSERT(NULL != output);
+
+    if (output_format_validation(output))
+    {
+        if (0 == strcmp(">stdout", output))
+        {
+            return stdout;
+        }
+        else if(1 == strcmp(">stderr", output))
+        {
+            return stderr;
+        }
+        else if('|' == *output)
+        {
+            /* pipeline */
+            //return popen(output + 1, "w");
+            return NULL;
+        }
+        else
+        {
+            /* file */
+            return NULL;
+        }
+    }
+
+    return NULL;
+}
 
 /**
  * @brief add level value to hash table
@@ -291,6 +345,12 @@ tint add_category(thash_string *cat_hash, const thash_string *format_hash,
         else
         {
             strcpy(cat_rule->output, output);
+        }
+
+        cat_rule->fd = get_output_fd(output);
+        if (NULL == cat_rule->fd)
+        {
+            return -EINVAL;
         }
     }
     else
@@ -348,8 +408,7 @@ void category_gen_log(const tlog_category *cat, const tchar *file,
         if (0 != ((cat->rules[i].level & level) & LEVEL_MASK))
         {
             count = format_split_to_string(msg_buf, cat->rules[i].splits, &pre);
-            /* for test only */
-            write(0, msg_buf, count);
+            fwrite(msg_buf, 1, count, cat->rules[i].fd);
         }
     }
 }
