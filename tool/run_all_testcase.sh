@@ -22,7 +22,10 @@ exec_status=""
 run_exec()
 {
     ./$1 $2
+    #get exit code
     err_code=$?
+    echo ""
+    echo ""
     if [ ${err_code} -ne 0 ]
     then
         exec_status="${exec_status}$1,fail,${err_code}"
