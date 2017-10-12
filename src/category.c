@@ -258,6 +258,20 @@ static tbool output_format_validation(const tchar *output)
             return FALSE;
         }
     }
+    else if('|' == *output)
+    {
+        output ++;
+        while(' ' == *output)
+        {
+            output++;
+        }
+        if ('\0' == *output)
+        {
+            return FALSE;
+        }
+
+        return TRUE;
+    }
 
     return TRUE;
 }
@@ -283,9 +297,13 @@ static FILE *get_output_fd(const tchar *output)
         }
         else if('|' == *output)
         {
+            output ++;
             /* pipeline */
-            //return popen(output + 1, "w");
-            return NULL;
+            while(' ' == *output)
+            {
+                output++;
+            }
+            return popen(output, "w");
         }
         else
         {
