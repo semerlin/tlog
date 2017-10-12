@@ -260,11 +260,12 @@ tint add_category(thash_string *cat_hash, const thash_string *format_hash,
     T_ASSERT(NULL != name);
     T_ASSERT(NULL != format_hash);
 
-    category_node *cat_node = t_hash_string_entry(t_hash_string_get(cat_hash, name), category_node, node);
-    if (NULL == cat_node)
+    thash_string_node *string_node = t_hash_string_get(cat_hash, name);
+    if (NULL == string_node)
     {
         return -EINVAL;
     }
+    category_node *cat_node = t_hash_string_entry(string_node, category_node, node);
 
     category_rule *cat_rule = &cat_node->category.rules[cat_node->category.count];
     /* add level */
@@ -313,15 +314,13 @@ tlog_category *get_category(const thash_string *hash, const tchar *name)
     T_ASSERT(NULL != name);
 
     thash_string_node *string_node = t_hash_string_get(hash, name);
-    category_node *category = t_hash_string_entry(string_node, category_node, node);
-    if (NULL != category)
-    {
-        return &category->category;
-    }
-    else
+    if (NULL == string_node)
     {
         return NULL;
     }
+
+    category_node *category = t_hash_string_entry(string_node, category_node, node);
+    return &category->category;
 }
 
 void category_gen_log(const tlog_category *cat, const tchar *file,
