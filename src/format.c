@@ -7,6 +7,13 @@
 #include "tstring.h"
 #include "thash_string.h"
 #include "global.h"
+#include "level.h"
+
+
+/****************************************************
+ * macros definition
+ ****************************************************/
+#define SPLIT_MAX_LEN 99
 
 
 /****************************************************
@@ -15,7 +22,7 @@
 /* split format */
 typedef struct _split_format_single split_format_single;
 
-typedef tuint32 (*splitformat_write)(tchar *buf, const split_format_single *split_single, const preprocess_info *pre);
+typedef tuint32 (*splitformat_write)(tchar *buf, split_format_single *split_single, const preprocess_info *pre);
 
 struct _split_format_single
 {
@@ -50,7 +57,7 @@ typedef struct
 /****************************************************
  * static variable 
  ****************************************************/
-/*static tchar *upper_level[] = 
+static tchar *upper_level[] = 
 {
     "DEBUG",
     "INFO",
@@ -68,59 +75,253 @@ static tchar *lower_level[] =
     "warn",
     "error",
     "fatal"
-};*/
+};
 
 
 /****************************************************
  * functions 
  ****************************************************/
 
-static tuint32 write_direct(tchar *buf, const split_format_single *split_single,
-        const preprocess_info *line)
+/**
+ * @brief write alignment data to buffer
+ * @param split_single - split handle
+ * @return success written length
+ */
+static tuint32 align_write(tchar *buf, const split_format_single *split_single)
 {
-    strcpy(buf, split_single->data);
-    return strlen(split_single->data);
+    tint data_len = strlen(split_single->data);
+    tint valid_buf_len = -1;
+
+    if (split_single->width_max >= 0)
+    {
+        T_ASSERT(split_single->width_max >= split_single->width_min);
+        if (data_len > split_single->width_max)
+        {
+            valid_buf_len = split_single->width_max;
+        }
+        else
+        {
+
+            if (data_len < split_single->width_min)
+            {
+                valid_buf_len = split_single->width_min;
+            }
+            else
+            {
+                valid_buf_len = data_len;
+            }
+        }
+    }
+    else if(split_single->width_min > 0)
+    {
+        if (data_len < split_single->width_min)
+        {
+            valid_buf_len = split_single->width_min;
+        }
+        else
+        {
+            valid_buf_len = data_len;
+        }
+    }
+    else
+    {
+        strcpy(buf, split_single->data);
+        return data_len;
+    }
+
+    /* align data */
+    if (data_len < valid_buf_len)
+    {
+        if (split_single->align == 1)
+        {
+            /* left alignment */
+            strncpy(buf, split_single->data, data_len);
+            for (tuint32 i = data_len; i < valid_buf_len; ++i)
+            {
+                buf[i] = ' ';
+            }
+        }
+        else
+        {
+            /* right alignment */
+            for (tuint32 i = 0; i < valid_buf_len - data_len; ++i)
+            {
+                buf[i] = ' ';
+            }
+            strncpy(buf + valid_buf_len - data_len, split_single->data, data_len);
+        }
+    }
+    else
+    {
+        strncpy(buf, split_single->data, valid_buf_len);
+    }
+
+    buf[valid_buf_len] = '\0';
+    return valid_buf_len;
 }
 
-static tuint32 write_time(tchar *buf,  const split_format_single *split_single,
-        const preprocess_info *line)
+/**
+ * @brief write data direct to buffer
+ * @param split_single - split handle
+ * @param pre - preprocess information handle
+ * @return success written length
+ */
+static tuint32 write_direct(tchar *buf, split_format_single *split_single,
+        const preprocess_info *pre)
 {
-    return 0;
+    return align_write(buf, split_single); 
 }
 
-static tuint32 write_filename(tchar *buf,  const split_format_single *split_single,
-        const preprocess_info *line)
+/**
+ * @brief write current time to buffer
+ * @param split_single - split handle
+ * @param pre - preprocess information handle
+ * @return success written length
+ */
+static tuint32 write_time(tchar *buf, split_format_single *split_single,
+        const preprocess_info *pre)
 {
-    return 0;
-}
-static tuint32 write_filename_full(tchar *buf, const split_format_single *split_single,
-        const preprocess_info *line)
-{
-    return 0;
+    time_t lt = time(NULL);
+    struct tm *ltm = localtime(&lt);
+    tuint32 retlen = 0;
+
+    if ((split_single->width_min > 0) || 
+        (split_single->width_max >= 0))
+    {
+        tchar temp_buf[SPLIT_MAX_LEN + 1];
+        strftime(temp_buf, SPLIT_MAX_LEN, split_single->data, ltm);
+        temp_buf[SPLIT_MAX_LEN] = '\0';
+        split_single->data = temp_buf;
+        retlen = align_write(buf, split_single);
+        split_single->data = NULL;
+    }
+    else
+    {
+        retlen = strftime(buf, SPLIT_MAX_LEN, split_single->data, ltm);
+    }
+
+    return retlen;
 }
 
-static tuint32 write_line(tchar *buf, const split_format_single *split_single,
-        const preprocess_info *line)
+/**
+ * @brief write short filename to buffer
+ * @param split_single - split handle
+ * @param pre - preprocess information handle
+ * @return success written length
+ */
+static tuint32 write_filename(tchar *buf, split_format_single *split_single,
+        const preprocess_info *pre)
 {
-    return 0;
+    tuint32 retlen = 0;
+
+    const tchar *filename = NULL;
+    tint index = t_string_find_char_reverse(pre->file, 0, '/', TRUE);
+    if (-1 != index)
+    {
+        filename = pre->file + index + 1;
+    }
+    else
+    {
+        filename = pre->file;
+    }
+
+    split_single->data = (tchar *)filename;
+    retlen = align_write(buf, split_single);
+    split_single->data = NULL;
+
+    return retlen;
 }
 
-static tuint32 write_message(tchar *buf, const split_format_single *split_single,
-        const preprocess_info *line)
+/**
+ * @brief write full filename to buffer
+ * @param split_single - split handle
+ * @param pre - preprocess information handle
+ * @return success written length
+ */
+static tuint32 write_filename_full(tchar *buf, split_format_single *split_single,
+        const preprocess_info *pre)
 {
-    return 0;
+    tuint32 retlen = 0;
+
+    split_single->data = (tchar *)pre->file;
+    retlen = align_write(buf, split_single);
+    split_single->data = NULL;
+
+    return retlen;
 }
 
-static tuint32 write_level_lower(tchar *buf, const split_format_single *split_single,
-        const preprocess_info *line)
+/**
+ * @brief write line data to buffer
+ * @param split_single - split handle
+ * @param pre - preprocess information handle
+ * @return success written length
+ */
+static tuint32 write_line(tchar *buf, split_format_single *split_single,
+        const preprocess_info *pre)
 {
-    return 0;
+    tuint32 retlen = 0;
+
+    split_single->data = (tchar *)pre->line_str;
+    retlen = align_write(buf, split_single);
+    split_single->data = NULL;
+
+    return retlen;
 }
 
-static tuint32 write_level_upper(tchar *buf, const split_format_single *split_single,
-        const preprocess_info *line)
+/**
+ * @brief write user message to buffer
+ * @param split_single - split handle
+ * @param pre - preprocess information handle
+ * @return success written length
+ */
+static tuint32 write_message(tchar *buf, split_format_single *split_single,
+        const preprocess_info *pre)
 {
-    return 0;
+    tuint32 retlen = 0;
+
+    split_single->data = (tchar *)pre->user_msg;
+    retlen = align_write(buf, split_single);
+    split_single->data = NULL;
+
+    return retlen;
+}
+
+/**
+ * @brief write lower level data to buffer
+ * @param split_single - split handle
+ * @param pre - preprocess information handle
+ * @return success written length
+ */
+static tuint32 write_level_lower(tchar *buf, split_format_single *split_single,
+        const preprocess_info *pre)
+{
+    tuint32 retlen = 0;
+
+    T_ASSERT((pre->level & LEVEL_INDEX_MASK) < 6);
+    split_single->data = lower_level[pre->level & LEVEL_INDEX_MASK];
+    retlen = align_write(buf, split_single);
+    split_single->data = NULL;
+
+    return retlen;
+}
+
+/**
+ * @brief write upper level data to buffer
+ * @param split_single - split handle
+ * @param pre - preprocess information handle
+ * @return success written length
+ */
+static tuint32 write_level_upper(tchar *buf, split_format_single *split_single,
+        const preprocess_info *pre)
+{
+    tuint32 retlen = 0;
+
+    T_ASSERT((pre->level & LEVEL_INDEX_MASK) < 6);
+    split_single->data = upper_level[pre->level & LEVEL_INDEX_MASK];
+    retlen = align_write(buf, split_single);
+    split_single->data = NULL;
+
+    return retlen;
 }
 
 
@@ -747,17 +948,21 @@ split_format *format_to_split(const tchar *format)
  * @param buf - string output buffer
  * @param split - split format handle
  * @param pre - preprocess information
+ * @return success written length
  */
-void format_split_to_string(tchar *buf, const split_format *splits, const preprocess_info *pre)
+tuint32 format_split_to_string(tchar *buf, const split_format *splits, const preprocess_info *pre)
 {
     T_ASSERT(NULL != splits);
     T_ASSERT(NULL != buf);
     tuint32 written_len = 0;
+    tchar *start = buf;
     for (tuint32 i = 0; i < splits->count; ++i)
     {
         written_len = splits->splits[i].write_buf(buf, &splits->splits[i], pre);
         buf += written_len;
     }
+
+    return buf - start;
 }
 
 

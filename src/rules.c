@@ -75,8 +75,8 @@ static void split_format_and_output(const tchar *rules, tchar *format, tchar *ou
     }
     else
     {
-        t_string_trimmed(rules, format);
-        output[0] = '\0';
+        t_string_trimmed(rules, output);
+        format[0] = '\0';
     }
 }
 

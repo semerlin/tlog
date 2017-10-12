@@ -6,6 +6,7 @@
 #include <string.h>
 #include <errno.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "tstring.h"
 #include "global.h"
 #include "level.h"
@@ -274,6 +275,7 @@ tint add_category(thash_string *cat_hash, const thash_string *format_hash,
     if (NULL == cat_rule->format)
     {
         cat_rule->format = DEFAULT_FORMAT;
+        format = DEFAULT_FORMAT_NAME;
     }
     cat_rule->splits = get_format_split(format_hash, format);
 
@@ -322,22 +324,23 @@ tlog_category *get_category(const thash_string *hash, const tchar *name)
     }
 }
 
-void category_gen_log(const tlog_category *cat, const char *file, 
-        int line, const char *func, int level, 
-        const char *fmt, va_list args)
+void category_gen_log(const tlog_category *cat, const tchar *file,
+        tint line, const tchar *func, const tchar *line_str,
+        tuint32 level, const tchar *fmt, va_list args)
 {
     T_ASSERT(NULL != cat);
     tchar user_msg[256];
     tchar msg_buf[512];
     vsprintf(user_msg, fmt, args);
-    preprocess_info pre = {file, func, line, level, user_msg};
+    preprocess_info pre = {file, func, line, line_str, level, user_msg};
+    tuint32 count = 0;
     for (tuint32 i = 0; i < cat->count; ++i)
     {
         if (0 != ((cat->rules[i].level & level) & LEVEL_MASK))
         {
-            format_split_to_string(msg_buf, cat->rules[i].splits, &pre);
+            count = format_split_to_string(msg_buf, cat->rules[i].splits, &pre);
             /* for test only */
-            printf("%s", msg_buf);
+            write(0, msg_buf, count);
         }
     }
 }

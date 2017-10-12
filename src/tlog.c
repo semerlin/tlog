@@ -136,7 +136,6 @@ int tlog_init(const char *cfg_file)
     /* free keyfile */
     t_keyfile_free(keyfile);
     
-    print_category(category_detail);
     return 0;
 }
 
@@ -165,13 +164,14 @@ const tlog_category *tlog_get_category(const tchar *name)
  * @param fmt - user log message
  */
 void tlog(const tlog_category *cat, const char *file,
-        int line, const char *func, int level, const char *fmt, ...)
+        int line, const char *func, const tchar *line_str,
+        int level, const char *fmt, ...)
 {
     if (NULL != cat)
     {
         va_list args;
         va_start(args, fmt);
-        category_gen_log(cat, file, line, func, level, fmt, args);
+        category_gen_log(cat, file, line, func, line_str, level, fmt, args);
         va_end(args);
     }
 }
