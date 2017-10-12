@@ -277,7 +277,7 @@ static FILE *get_output_fd(const tchar *output)
         {
             return stdout;
         }
-        else if(1 == strcmp(">stderr", output))
+        else if(0 == strcmp(">stderr", output))
         {
             return stderr;
         }
@@ -290,7 +290,7 @@ static FILE *get_output_fd(const tchar *output)
         else
         {
             /* file */
-            return NULL;
+            return fopen(output, "a");
         }
     }
 
