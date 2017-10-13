@@ -165,7 +165,7 @@ static group_node *t_keyfile_new_group_node(const tchar *name)
     group_node *node = malloc(sizeof(group_node));
     if (NULL != node)
     {
-        node->group_name = malloc(strlen(name));
+        node->group_name = malloc(strlen(name) + 1);
         if (NULL != node->group_name)
         {
             strcpy(node->group_name, name);
@@ -348,8 +348,8 @@ tint t_keyfile_load_from_file(tkeyfile *keyfile, const tchar *file)
                         t_keyfile_free_internal(keyfile);
                         return -ENOMEM;
                     }
-                    keyvalue_node->node.key = malloc(strlen(key));
-                    keyvalue_node->value = malloc(strlen(value));
+                    keyvalue_node->node.key = malloc(strlen(key) + 1);
+                    keyvalue_node->value = malloc(strlen(value) + 1);
                     
                     if ((NULL == keyvalue_node->node.key) ||
                         (NULL == keyvalue_node->value))

@@ -364,7 +364,16 @@ tint add_category(thash_string *cat_hash, const thash_string *format_hash,
     cat_rule->splits = get_format_split(format_hash, format);
 
     /* add output */
-    cat_rule->output = malloc(strlen(output) + 1);;
+    tuint32 out_len = 0;
+    if (0 == strcmp(output, ""))
+    {
+        out_len = strlen(DEFAULT_OUTPUT);
+    }
+    else
+    {
+        out_len = strlen(output);
+    }
+    cat_rule->output = malloc(out_len + 1);;
     if (NULL != cat_rule->output)
     {
         if (0 == strcmp(output, ""))

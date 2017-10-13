@@ -7,7 +7,7 @@
 #include "../include/tlog/tlog.h"
 #include <time.h>
 
-char filename[40] = {0};
+char filename[128] = {0};
 
 TEST(TlogTest, Function)
 {
@@ -24,7 +24,6 @@ TEST(TlogTest, Function)
     tlog_error(cat1, "this is error");
 
     tlog_warn(cat2, "this is warn");
-
     tlog_fatal(cat3, "this is fatal");
 }
 
