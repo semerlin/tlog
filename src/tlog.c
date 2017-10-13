@@ -39,6 +39,8 @@ static thash_string *formats_kv = NULL;
 /* key = category name, value = category_node */
 static thash_string *category_detail = NULL;
 
+/* default configure file */
+static const tchar default_log[] = "[general]\n[format]\n[rules]\n*.*=>stdout";
 
 /****************************************************
  * functions 
@@ -118,12 +120,6 @@ static tint filter_config_file(tkeyfile *keyfile)
  */
 int tlog_init(const char *cfg_file)
 {
-    /* if there is no config file then load default config */
-    if (NULL == cfg_file)
-    {
-        return 0;
-    }
-
     tkeyfile *keyfile = t_keyfile_new();
     if (NULL == keyfile)
     {
@@ -132,10 +128,25 @@ int tlog_init(const char *cfg_file)
 
     /* load configure file */
     t_keyfile_use_last_sep(TRUE);
-    tint ret = t_keyfile_load_from_file(keyfile, cfg_file);
-    if (0 != ret)
+
+
+    tint ret = 0;
+    /* if there is no config file then load default config */
+    if (NULL == cfg_file)
     {
-        return ret;
+        ret = t_keyfile_load_from_data(keyfile, default_log);
+        if (0 != ret)
+        {
+            return ret;
+        }
+    }
+    else
+    {
+        ret = t_keyfile_load_from_file(keyfile, cfg_file);
+        if (0 != ret)
+        {
+            return ret;
+        }
     }
 
     /* filter configure file */
