@@ -32,7 +32,7 @@
  */
 void t_exit(tint code)
 {
-    /* use exit( instead _exit() if you want to flush I/O buffer)*/
+    /* use exit() instead _exit() if you want to flush I/O buffer)*/
     _exit(code);
 }
 
