@@ -1,7 +1,30 @@
+/**
+ * This file is part of the tlog Library.
+ *
+ * Copyright 2017, Huang Yang <elious.huang@gmail.com>. All rights reserved.
+ *
+ * See the COPYING file for the terms of usage and distribution.
+ */
 #include "thlist.h"
 #include "tassert.h"
 
 
+
+/****************************************************
+ * macros definition
+ ****************************************************/
+
+/****************************************************
+ * struct definition
+ ****************************************************/
+
+/****************************************************
+ * static variable 
+ ****************************************************/
+
+/****************************************************
+ * functions 
+ ****************************************************/
 /**
  * @brief insert node to hash list
  * @param head - hash list head

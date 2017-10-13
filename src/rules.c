@@ -1,3 +1,10 @@
+/**
+ * This file is part of the tlog Library.
+ *
+ * Copyright 2017, Huang Yang <elious.huang@gmail.com>. All rights reserved.
+ *
+ * See the COPYING file for the terms of usage and distribution.
+ */
 #include <string.h>
 #include "tkeyfile.h"
 #include "thash_string.h"
@@ -8,6 +15,9 @@
 #include "global.h"
 #include "tstring.h"
 
+/****************************************************
+ * macros definition
+ ****************************************************/
 
 /****************************************************
  * struct definition
@@ -19,11 +29,13 @@ typedef struct
     const thash_string *format_hash;
 }rule_userdata;
 
+/****************************************************
+ * static variable 
+ ****************************************************/
 
 /****************************************************
  * functions 
  ****************************************************/
-
 /**
  * @brief split rules string to level
  * @param name - category name string to split

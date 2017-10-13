@@ -1,13 +1,25 @@
-#include "tkeyfile.h"
+/**
+ * This file is part of the tlog Library.
+ *
+ * Copyright 2017, Huang Yang <elious.huang@gmail.com>. All rights reserved.
+ *
+ * See the COPYING file for the terms of usage and distribution.
+ */
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "tkeyfile.h"
 #include "tassert.h"
 #include "tshareptr.h"
 #include "thash_string.h"
 #include "tlist.h"
 #include "tstring.h"
+
+
+/****************************************************
+ * macros definition
+ ****************************************************/
 
 /****************************************************
  * struct definition
@@ -49,7 +61,6 @@ static tbool use_last_sep = FALSE;
 /****************************************************
  * functions
  ****************************************************/
-
 /**
  * @brief keyfile destroy callback function
  * @param data - keyfile handle

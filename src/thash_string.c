@@ -1,21 +1,42 @@
-#include "thash_string.h"
-#include "tassert.h"
+/**
+ * This file is part of the tlog Library.
+ *
+ * Copyright 2017, Huang Yang <elious.huang@gmail.com>. All rights reserved.
+ *
+ * See the COPYING file for the terms of usage and distribution.
+ */
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
 #include <errno.h>
+#include "thash_string.h"
+#include "tassert.h"
 
+/****************************************************
+ * macros definition
+ ****************************************************/
 #define DEFAULT_TABLE_SIZE    (10)
 #define REHASH_FACTOR         (1.2)
 
+/****************************************************
+ * struct definition
+ ****************************************************/
 struct _thash_string
 {
     tuint32 table_size;
+    /* rehash border */
     tuint32 max_element_size;
     tuint32 element_count;
     thlist_head *head;
 };
 
+/****************************************************
+ * static variable 
+ ****************************************************/
+
+/****************************************************
+ * functions 
+ ****************************************************/
 /**
  * @brief get string hash value
  * @param hash_string - hash table

@@ -1,9 +1,29 @@
+/**
+ * This file is part of the tlog Library.
+ *
+ * Copyright 2017, Huang Yang <elious.huang@gmail.com>. All rights reserved.
+ *
+ * See the COPYING file for the terms of usage and distribution.
+ */
 #include <stdio.h>
 #include "tassert.h"
 #include "tsysdeps.h"
 
+/****************************************************
+ * macros definition
+ ****************************************************/
 
+/****************************************************
+ * struct definition
+ ****************************************************/
 
+/****************************************************
+ * static variable 
+ ****************************************************/
+
+/****************************************************
+ * functions 
+ ****************************************************/
 #ifdef T_ENABLE_ASSERT
 /**
  * @brief assert function

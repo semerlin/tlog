@@ -1,3 +1,10 @@
+/**
+ * This file is part of the tlog Library.
+ *
+ * Copyright 2017, Huang Yang <elious.huang@gmail.com>. All rights reserved.
+ *
+ * See the COPYING file for the terms of usage and distribution.
+ */
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,7 +23,13 @@
 #include "category.h"
 #include "global.h"
 
+/****************************************************
+ * macros definition
+ ****************************************************/
 
+/****************************************************
+ * struct definition
+ ****************************************************/
 
 /****************************************************
  * static variable 
@@ -30,7 +43,6 @@ static thash_string *category_detail = NULL;
 /****************************************************
  * functions 
  ****************************************************/
-
 /**
  * @brief filter general group
  * @param keyfile - keyfile handle

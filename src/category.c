@@ -1,19 +1,28 @@
-#include "tkeyfile.h"
-#include "thash_string.h"
-#include "tslist.h"
-#include "tassert.h"
+/**
+ * This file is part of the tlog Library.
+ *
+ * Copyright 2017, Huang Yang <elious.huang@gmail.com>. All rights reserved.
+ *
+ * See the COPYING file for the terms of usage and distribution.
+ */
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "tkeyfile.h"
+#include "thash_string.h"
+#include "tslist.h"
+#include "tassert.h"
 #include "tstring.h"
 #include "global.h"
 #include "level.h"
 #include "format.h"
 #include "category.h"
 
-
+/****************************************************
+ * macros definition
+ ****************************************************/
 
 /****************************************************
  * struct definition
@@ -51,7 +60,9 @@ typedef struct
     tslist node;
 }category_name_node;
 
-
+/****************************************************
+ * static variable 
+ ****************************************************/
 
 /****************************************************
  * functions 

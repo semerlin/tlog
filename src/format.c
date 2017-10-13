@@ -1,3 +1,10 @@
+/**
+ * This file is part of the tlog Library.
+ *
+ * Copyright 2017, Huang Yang <elious.huang@gmail.com>. All rights reserved.
+ *
+ * See the COPYING file for the terms of usage and distribution.
+ */
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
@@ -8,6 +15,7 @@
 #include "thash_string.h"
 #include "global.h"
 #include "level.h"
+
 
 
 /****************************************************
@@ -57,6 +65,7 @@ typedef struct
 /****************************************************
  * static variable 
  ****************************************************/
+/* level upper string map */
 static tchar *upper_level[] = 
 {
     "DEBUG",
@@ -67,6 +76,7 @@ static tchar *upper_level[] =
     "FATAL"
 };
 
+/* level lower string map */
 static tchar *lower_level[] = 
 {
     "debug",
@@ -81,7 +91,6 @@ static tchar *lower_level[] =
 /****************************************************
  * functions 
  ****************************************************/
-
 /**
  * @brief write alignment data to buffer
  * @param split_single - split handle

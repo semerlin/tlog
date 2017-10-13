@@ -1,8 +1,30 @@
+/**
+ * This file is part of the tlog Library.
+ *
+ * Copyright 2017, Huang Yang <elious.huang@gmail.com>. All rights reserved.
+ *
+ * See the COPYING file for the terms of usage and distribution.
+ */
+#include <stdlib.h>
 #include "tshareptr.h"
 #include "tassert.h"
-#include <stdlib.h>
 
 
+/****************************************************
+ * macros definition
+ ****************************************************/
+
+/****************************************************
+ * struct definition
+ ****************************************************/
+
+/****************************************************
+ * static variable 
+ ****************************************************/
+
+/****************************************************
+ * functions 
+ ****************************************************/
 /**
  * @brief init shared pointer struct
  */

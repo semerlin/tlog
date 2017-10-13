@@ -1,8 +1,19 @@
+/**
+ * This file is part of the tlog Library.
+ *
+ * Copyright 2017, Huang Yang <elious.huang@gmail.com>. All rights reserved.
+ *
+ * See the COPYING file for the terms of usage and distribution.
+ */
 #include <string.h>
 #include "level.h"
 #include "../include/tlog/tlog.h"
 #include "tassert.h"
 
+
+/****************************************************
+ * macros definition
+ ****************************************************/
 
 /****************************************************
  * struct definition
@@ -23,7 +34,13 @@ struct
     {"", TLOG_DEBUG | TLOG_INFO | TLOG_NOTICE | TLOG_WARN | TLOG_ERROR | TLOG_FATAL}
 };
 
+/****************************************************
+ * static variable 
+ ****************************************************/
 
+/****************************************************
+ * functions 
+ ****************************************************/
 /**
  * @brief convert level string to level int value
  * @param level - level string

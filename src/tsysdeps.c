@@ -1,9 +1,31 @@
-#include "tsysdeps.h"
+/**
+ * This file is part of the tlog Library.
+ *
+ * Copyright 2017, Huang Yang <elious.huang@gmail.com>. All rights reserved.
+ *
+ * See the COPYING file for the terms of usage and distribution.
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <execinfo.h>
+#include "tsysdeps.h"
 
+/****************************************************
+ * macros definition
+ ****************************************************/
+
+/****************************************************
+ * struct definition
+ ****************************************************/
+
+/****************************************************
+ * static variable 
+ ****************************************************/
+
+/****************************************************
+ * functions 
+ ****************************************************/
 /**
  * @brief exit function of tlog
  * @param code - exit code
