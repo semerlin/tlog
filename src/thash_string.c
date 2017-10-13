@@ -7,7 +7,6 @@
  */
 #include <string.h>
 #include <stdlib.h>
-#include <math.h>
 #include <errno.h>
 #include "thash_string.h"
 #include "tassert.h"
@@ -56,6 +55,23 @@ static tuint32 t_hash_string_hash(const thash_string *hash_string, const char *k
 }
 
 /**
+ * @brief round data to the nearest interger
+ * @param data - data to round
+ * @return nearest interger
+ */
+static tint tround(tdouble data)
+{
+    if (data < 0)
+    {
+        return (tint)(data - 0.5);
+    }
+    else
+    {
+        return (tint)(data + 0.5);
+    }
+}
+
+/**
  * @brief create new hash table
  * @param table_size - hash table size
  * @return if create success return hash table pointer otherwise return NULL
@@ -72,7 +88,7 @@ static thash_string *t_hash_string_new_size(tuint32 table_size)
             hash->element_count = 0;
             tuint32 i = 0;
             tdouble max_size = REHASH_FACTOR * hash->table_size;
-            hash->max_element_size = round(max_size);
+            hash->max_element_size = tround(max_size);
             for (; i < table_size; ++i)
             {
                 t_hlist_init_head(&hash->head[i]);
@@ -488,7 +504,7 @@ void t_hash_string_empty(thash_string *hash_string, tfree_func free_func)
     hash_string->table_size = DEFAULT_TABLE_SIZE;
     hash_string->element_count = 0;
     tdouble max_size = REHASH_FACTOR * hash_string->table_size;
-    hash_string->max_element_size = round(max_size);
+    hash_string->max_element_size = tround(max_size);
 }
 
 
