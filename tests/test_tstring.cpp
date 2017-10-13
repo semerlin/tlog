@@ -168,15 +168,15 @@ TEST(TstringTest, Get)
 {
     char test_str[] = "asdfasdf\nsadfasdf\nasdf";
     char line[30];
-    EXPECT_EQ(8, t_string_get_line(line, test_str, 0));
+    EXPECT_EQ(8, t_string_get_line(line, test_str, 29, 0));
     EXPECT_STREQ("asdfasdf", line);
-    EXPECT_EQ(0, t_string_get_line(line, test_str, 8));
+    EXPECT_EQ(0, t_string_get_line(line, test_str, 29, 8));
     EXPECT_STREQ("", line);
-    EXPECT_EQ(6, t_string_get_line(line, test_str, 11));
+    EXPECT_EQ(6, t_string_get_line(line, test_str, 29, 11));
     EXPECT_STREQ("dfasdf", line);
-    EXPECT_EQ(4, t_string_get_line(line, test_str, 18));
+    EXPECT_EQ(4, t_string_get_line(line, test_str, 29, 18));
     EXPECT_STREQ("asdf", line);
-    EXPECT_EQ(-1, t_string_get_line(line, test_str, 22));
+    EXPECT_EQ(-1, t_string_get_line(line, test_str, 29, 22));
 }
 
 int main(int argc, char **argv)
