@@ -598,13 +598,13 @@ void t_string_remove_linebreak(const tchar *str, tchar *out)
 tint32 t_string_get_line(tchar *out, const tchar *buf, tuint32 max_size, tuint32 index)
 {
     T_ASSERT(NULL != buf);
-    T_ASSERT(index <= strlen(buf));
-    buf += index;
 
-    if ('\0' == *buf)
+    if (index >= strlen(buf))
     {
         return -1;
     }
+
+    buf += index;
 
     T_ASSERT(NULL != out);
     const tchar *head = out;
