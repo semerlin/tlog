@@ -98,6 +98,11 @@ static tchar *lower_level[] =
  */
 static tuint32 align_write(tchar *buf, const split_format_single *split_single)
 {
+    if (NULL == split_single->data)
+    {
+        return 0;
+    }
+
     tint data_len = strlen(split_single->data);
     tint valid_buf_len = -1;
 
@@ -221,6 +226,11 @@ static tuint32 write_time(tchar *buf, split_format_single *split_single,
 static tuint32 write_filename(tchar *buf, split_format_single *split_single,
         const preprocess_info *pre)
 {
+    if (NULL == pre->file)
+    {
+        return 0;
+    }
+
     tuint32 retlen = 0;
 
     const tchar *filename = NULL;
