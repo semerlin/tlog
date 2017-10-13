@@ -363,7 +363,7 @@ tint t_keyfile_load_from_file(tkeyfile *keyfile, const tchar *file)
     FILE *fp = fopen(file, "r");
     if (NULL == fp)
     {
-        return errno;
+        return -errno;
     }
 
     tchar line_buf[513];
@@ -420,6 +420,7 @@ tint t_keyfile_load_from_data(tkeyfile *keyfile, const tchar *buf)
         {
             break;
         }
+        index += len + 1;
     }
 
     return ret;
