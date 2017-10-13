@@ -8,9 +8,11 @@ set(SRC_LIST
     thlist.c
     thash_string.c
     tstring.c
+    tkeyfile.c
     level.c
     format.c
-    category.h)
+    category.c
+    rules.c)
 
 add_library(tlog SHARED ${SRC_LIST})
 
