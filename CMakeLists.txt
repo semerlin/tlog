@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 2.8.12)
 
 project (tlog)
 
-option(TLOG_BUILD_EXAMPLES "Build the tlog examples programs" OFF)
 option(TLOG_BUILD_TESTS "Build the tlog test programs" ON)
 
 #-------------------------------------------------
@@ -37,7 +36,11 @@ if(TLOG_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-if(TLOG_BUILD_TESTS)
-    add_subdirectory(tests)   
-endif()    
+#examples use tlog library, so we can't build it here
+#build it manual in examples folder after install tlog library
+#option(TLOG_BUILD_EXAMPLES "Build the tlog examples programs" OFF)
+
+#if(TLOG_BUILD_TESTS)
+#add_subdirectory(tests)   
+#endif()    
 
