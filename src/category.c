@@ -414,7 +414,11 @@ tlog_category *get_category(const thash_string *hash, const tchar *name)
     thash_string_node *string_node = t_hash_string_get(hash, name);
     if (NULL == string_node)
     {
-        return NULL;
+        string_node = t_hash_string_get(hash, "*");
+        if (NULL == string_node)
+        {
+            return NULL;
+        }
     }
 
     category_node *category = t_hash_string_entry(string_node, category_node, node);
