@@ -13,4 +13,12 @@ set(SRC_LIST
     category.h)
 
 add_library(tlog SHARED ${SRC_LIST})
+
+#-------------------------------------------------
+# install tlog
+#-------------------------------------------------
+install(TARGETS tlog
+    LIBRARY DESTINATION "lib")
+
+
     

@@ -23,6 +23,10 @@ else(CMAKE_BUILD_TYPE STREQUAL "Release")
     message(STATUS "CXX Flags:" ${CMAKE_CXX_FLAGS_RELEASE})
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
+#-------------------------------------------------
+# output path configure
+#-------------------------------------------------
+#set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
 #-------------------------------------------------
 # add main directory 
@@ -32,15 +36,25 @@ add_subdirectory(src)
 #-------------------------------------------------
 # add subdiectories
 #-------------------------------------------------
-if(TLOG_BUILD_EXAMPLES)
-    add_subdirectory(examples)
-endif()
+if(TLOG_BUILD_TESTS)
+    add_subdirectory(tests)   
+endif()    
+
+#-------------------------------------------------
+# install tlog
+#-------------------------------------------------
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/tlog
+    DESTINATION "include")
+
+
 
 #examples use tlog library, so we can't build it here
 #build it manual in examples folder after install tlog library
 #option(TLOG_BUILD_EXAMPLES "Build the tlog examples programs" OFF)
+#if(TLOG_BUILD_EXAMPLES)
+#    add_subdirectory(examples)
+#endif()
 
-#if(TLOG_BUILD_TESTS)
-#add_subdirectory(tests)   
-#endif()    
+
+
 
