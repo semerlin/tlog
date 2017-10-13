@@ -266,6 +266,90 @@ void t_keyfile_use_last_sep(tbool flag)
 }
 
 /**
+ * @brief parse line data ti keyfile
+ * @param keyfile - keyfile handle
+ * @param line - line data
+ */
+static tint t_keyfile_load_line(tkeyfile *keyfile, const tchar *line, group_node **cur_group, tbool *process_kv)
+{
+    T_ASSERT(NULL != keyfile);
+    T_ASSERT(NULL != line);
+    T_ASSERT(NULL != process_kv);
+
+    char trimmed[512];
+    char key[512];
+    char value[512];
+
+    kv_node *keyvalue_node = NULL;
+    thash_string_node *hash_node = NULL;
+
+    t_string_trimmed(line, trimmed);
+    if ('#' == trimmed[0]) /* comment check */
+    {
+        return 0;
+    }
+    else if (t_keyfile_parse_group(trimmed, key)) /* find group */
+    {
+        //check if already has this names group
+        group_node *node = t_keyfile_find_group(keyfile, key);
+        if (NULL == node)
+        {
+            //new group
+            node = t_keyfile_new_group_node(key);
+            if (NULL == node)
+            {
+                t_keyfile_free_internal(keyfile);
+                return -ENOMEM;
+            }
+            t_list_append(&keyfile->groups, &node->node);
+        }
+        *cur_group = node;
+        *process_kv = TRUE;
+    }
+    else if(t_keyfile_parse_key_value(trimmed, key, value))
+    {
+        if (*process_kv)
+        {
+            if (NULL == (*cur_group)->kv)
+            {
+                (*cur_group)->kv = t_hash_string_new();
+                if (NULL == (*cur_group)->kv)
+                {
+                    t_keyfile_free_internal(keyfile);
+                    return -ENOMEM;
+                }
+            }
+            //check if already has this key
+            hash_node = t_hash_string_get((*cur_group)->kv, key);
+            if (NULL == hash_node)
+            {
+                keyvalue_node = malloc(sizeof(kv_node));
+                if (NULL == keyvalue_node)
+                {
+                    t_keyfile_free_internal(keyfile);
+                    return -ENOMEM;
+                }
+                keyvalue_node->node.key = malloc(strlen(key) + 1);
+                keyvalue_node->value = malloc(strlen(value) + 1);
+                
+                if ((NULL == keyvalue_node->node.key) ||
+                    (NULL == keyvalue_node->value))
+                {
+                    t_keyfile_free_internal(keyfile);
+                    return -ENOMEM;
+                }
+
+                strcpy(keyvalue_node->node.key, key);
+                strcpy(keyvalue_node->value, value);
+                (*cur_group)->kv = t_hash_string_insert((*cur_group)->kv, &keyvalue_node->node);
+            }
+        }
+    }
+
+    return 0;
+}
+
+/**
  * @brief load keyfile from file
  * @param keyfile - keyfile handle
  * @param file - configure file name
@@ -274,15 +358,7 @@ void t_keyfile_use_last_sep(tbool flag)
 tint t_keyfile_load_from_file(tkeyfile *keyfile, const tchar *file)
 {
     T_ASSERT(NULL != keyfile);
-    char trimmed[512];
-    char key[512];
-    char value[512];
-    char *line_str = NULL;
-
-    if (NULL == file)
-    {
-        return -EINVAL;
-    }
+    T_ASSERT(NULL != file);
 
     FILE *fp = fopen(file, "r");
     if (NULL == fp)
@@ -290,85 +366,71 @@ tint t_keyfile_load_from_file(tkeyfile *keyfile, const tchar *file)
         return errno;
     }
 
+    tchar line_buf[513];
+    tchar *line_str = NULL;
     tbool process_keyvalue = FALSE;
     group_node *cur_group = NULL;
-    kv_node *keyvalue_node = NULL;
-    thash_string_node *hash_node = NULL;
+    tint ret = 0;
     while (1)
     {
-        line_str = fgets(key, 512, fp);
+        line_str = fgets(line_buf, 512, fp);
         if (NULL == line_str)
         {
             break;
         }
-        
-        t_string_trimmed(key, trimmed);
-        if ('#' == trimmed[0]) /* comment check */
-        {
-            continue;
-        }
-        else if (t_keyfile_parse_group(trimmed, key)) /* find group */
-        {
-            //check if already has this names group
-            group_node *node = t_keyfile_find_group(keyfile, key);
-            if (NULL == node)
-            {
-                //new group
-                node = t_keyfile_new_group_node(key);
-                if (NULL == node)
-                {
-                    t_keyfile_free_internal(keyfile);
-                    return -ENOMEM;
-                }
-                t_list_append(&keyfile->groups, &node->node);
-            }
-            cur_group = node;
-            process_keyvalue = TRUE;
-        }
-        else if(t_keyfile_parse_key_value(trimmed, key, value))
-        {
-            if (process_keyvalue)
-            {
-                if (NULL == cur_group->kv)
-                {
-                    cur_group->kv = t_hash_string_new();
-                    if (NULL == cur_group->kv)
-                    {
-                        t_keyfile_free_internal(keyfile);
-                        return -ENOMEM;
-                    }
-                }
-                //check if already has this key
-                hash_node = t_hash_string_get(cur_group->kv, key);
-                if (NULL == hash_node)
-                {
-                    keyvalue_node = malloc(sizeof(kv_node));
-                    if (NULL == keyvalue_node)
-                    {
-                        t_keyfile_free_internal(keyfile);
-                        return -ENOMEM;
-                    }
-                    keyvalue_node->node.key = malloc(strlen(key) + 1);
-                    keyvalue_node->value = malloc(strlen(value) + 1);
-                    
-                    if ((NULL == keyvalue_node->node.key) ||
-                        (NULL == keyvalue_node->value))
-                    {
-                        t_keyfile_free_internal(keyfile);
-                        return -ENOMEM;
-                    }
+        line_str[512] = '\0';
 
-                    strcpy(keyvalue_node->node.key, key);
-                    strcpy(keyvalue_node->value, value);
-                    cur_group->kv = t_hash_string_insert(cur_group->kv, &keyvalue_node->node);
-                }
-            }
+        ret = t_keyfile_load_line(keyfile, line_str, &cur_group, &process_keyvalue);
+        if (0 != ret)
+        {
+            break;
         }
     }
 
-    return 0;
+    return ret;
 }
 
+/**
+ * @brief load keyfile from memory buffer
+ * @param keyfile - keyfile handle
+ * @param buf - memory buffer
+ * @return error code, 0 means no error happend
+ */
+tint t_keyfile_load_from_data(tkeyfile *keyfile, const tchar *buf)
+{
+    T_ASSERT(NULL != keyfile);
+    T_ASSERT(NULL != buf);
+
+    tchar line_buf[513];
+    tbool process_keyvalue = FALSE;
+    group_node *cur_group = NULL;
+    tint ret = 0;
+    tint len;
+    tuint32 index = 0;
+    while (1)
+    {
+        len = t_string_get_line(line_buf, buf, 512, index);
+        if (-1 == len)
+        {
+            break;
+        }
+
+        ret = t_keyfile_load_line(keyfile, line_buf, &cur_group, &process_keyvalue);
+        if (0 != ret)
+        {
+            break;
+        }
+    }
+
+    return ret;
+}
+
+/**
+ * @brief find key-value node by key
+ * @param keyfile - keyfile handle
+ * @param group - key-value group name
+ * @param key - key name
+ */
 static kv_node *t_keyfile_find_kv(const tkeyfile *keyfile, const tchar *group,
         const tchar *key)
 {

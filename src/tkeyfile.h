@@ -19,6 +19,7 @@ T_EXTERN tkeyfile *t_keyfile_new(void);
 T_EXTERN void t_keyfile_free(tkeyfile *file);
 T_EXTERN void t_keyfile_use_last_sep(tbool flag);
 T_EXTERN tint t_keyfile_load_from_file(tkeyfile *keyfile, const tchar *file);
+T_EXTERN tint t_keyfile_load_from_data(tkeyfile *keyfile, const tchar *buf);
 T_EXTERN void t_keyfile_get_string(const tkeyfile *keyfile, const tchar *group, 
         const tchar *key, tchar *out, const tchar *default_value);
 T_EXTERN tint t_keyfile_get_int(const tkeyfile *keyfile, const tchar *group, 
