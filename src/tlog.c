@@ -126,9 +126,8 @@ int tlog_init(const char *cfg_file)
         return -ENOMEM;
     }
 
-    /* load configure file */
+    /* use last character to seperate key-value */
     t_keyfile_use_last_sep(TRUE);
-
 
     tint ret = 0;
     /* if there is no config file then load default config */
@@ -142,6 +141,7 @@ int tlog_init(const char *cfg_file)
     }
     else
     {
+        /* load configure file */
         ret = t_keyfile_load_from_file(keyfile, cfg_file);
         if (0 != ret)
         {
