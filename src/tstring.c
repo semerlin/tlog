@@ -588,3 +588,32 @@ void t_string_remove_linebreak(const tchar *str, tchar *out)
     strncpy(out, str, len);
     out[len] = '\0';
 }
+
+/**
+ * @brief get one line from buf
+ * @param out - output buffer
+ * @param buf - parse string
+ * @param index - parse start index
+ */
+tint32 t_string_get_line(tchar *out, const tchar *buf, tuint32 index)
+{
+    T_ASSERT(NULL != buf);
+    T_ASSERT(index <= strlen(buf));
+    buf += index;
+
+    if ('\0' == *buf)
+    {
+        return -1;
+    }
+
+    T_ASSERT(NULL != out);
+    const tchar *head = out;
+    while(('\0' != *buf) &&
+          ('\n' != *buf))
+    {
+        *out++ = *buf++;
+    }
+    *out = '\0';
+    return out - head;
+}
+
