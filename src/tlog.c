@@ -40,7 +40,7 @@ static thash_string *formats_kv = NULL;
 static thash_string *category_detail = NULL;
 
 /* default configure file */
-static const tchar default_log[] = "[general]\n[format]\n[rules]\n*.*=>stdout";
+static const tchar default_cfg[] = "[general]\n[format]\n[rules]\n*.*=>stdout";
 
 /****************************************************
  * functions 
@@ -114,11 +114,24 @@ static tint filter_config_file(tkeyfile *keyfile)
 }
 
 /**
- * @brief init tlog environment
- * @param cfg_file - configure file path
+ * @brief init tlog
+ * @param keyfile - keyfile handle
+ * @return error code, 0 means success
+ */
+tint tlog_internal_init(tkeyfile *keyfile)
+{
+    T_ASSERT(NULL != keyfile);
+
+    /* filter configure file */
+    return filter_config_file(keyfile);
+}
+
+/**
+ * @brief init tlog environment from configure file
+ * @param file - configure file path
  * @return error code, 0 means no error
  */
-int tlog_init(const char *cfg_file)
+tint tlog_init_from_file(const tchar *file)
 {
     tkeyfile *keyfile = t_keyfile_new();
     if (NULL == keyfile)
@@ -131,9 +144,9 @@ int tlog_init(const char *cfg_file)
 
     tint ret = 0;
     /* if there is no config file then load default config */
-    if (NULL == cfg_file)
+    if (NULL == file)
     {
-        ret = t_keyfile_load_from_data(keyfile, default_log);
+        ret = t_keyfile_load_from_data(keyfile, default_cfg);
         if (0 != ret)
         {
             return ret;
@@ -142,24 +155,51 @@ int tlog_init(const char *cfg_file)
     else
     {
         /* load configure file */
-        ret = t_keyfile_load_from_file(keyfile, cfg_file);
+        ret = t_keyfile_load_from_file(keyfile, file);
         if (0 != ret)
         {
             return ret;
         }
     }
 
-    /* filter configure file */
-    ret = filter_config_file(keyfile);
+    ret = tlog_internal_init(keyfile);
+
+    /* free keyfile */
+    t_keyfile_free(keyfile);
+    
+    return ret;
+}
+
+
+/**
+ * @brief init tlog environment from memory data buffer
+ * @param data - memory data buffer
+ * @return error code, 0 means no error
+ */
+tint tlog_init_from_data(const tchar *data)
+{
+    tkeyfile *keyfile = t_keyfile_new();
+    if (NULL == keyfile)
+    {
+        return -ENOMEM;
+    }
+
+    /* use last character to seperate key-value */
+    t_keyfile_use_last_sep(TRUE);
+
+    const tchar *cfg_data = ((NULL == data) ? default_cfg : data);
+    tint ret = t_keyfile_load_from_data(keyfile, cfg_data);
     if (0 != ret)
     {
         return ret;
     }
 
+    ret = tlog_internal_init(keyfile);
+
     /* free keyfile */
     t_keyfile_free(keyfile);
     
-    return 0;
+    return ret;
 }
 
 

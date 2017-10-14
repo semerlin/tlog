@@ -11,7 +11,7 @@ char filename[128] = {0};
 
 TEST(TlogTest, Function)
 {
-    ASSERT_EQ(0, tlog_init(filename));
+    ASSERT_EQ(0, tlog_init_from_file(filename));
     const tlog_category *cat1 = tlog_get_category("test1");
     const tlog_category *cat2 = tlog_get_category("test2");
     const tlog_category *cat3 = tlog_get_category("test3");

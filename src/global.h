@@ -19,7 +19,7 @@
 #define DEFAULT_LEVEL            "*"
 #define DEFAULT_CATEGORY_NAME    "*"
 #define DEFAULT_FORMAT_NAME      "default"
-#define DEFAULT_FORMAT           "%d(%y-%m-%d %T) %5V [%f:%L] %m%n"
+#define DEFAULT_FORMAT           "%d(%Y-%m-%d %T) %-6V [%F:%L] %m%n"
 
 
 #endif /* _GLOBAL_H_ */

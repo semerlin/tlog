@@ -30,7 +30,7 @@ TEST(FormatTest, Format)
     ASSERT_EQ(0, filter_format(keyfile, &format));
 
     EXPECT_STREQ(DEFAULT_FORMAT, get_format(format, "default"));
-    EXPECT_STREQ("%d(%y-%m-%d %T) %5V %m%n", get_format(format, "simple"));
+    EXPECT_STREQ("%d(%Y-%m-%d %T) %6V %m%n", get_format(format, "simple"));
 }
 
 
