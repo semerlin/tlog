@@ -197,14 +197,18 @@ static tuint32 write_time(tchar *buf, split_format_single *split_single,
         const preprocess_info *pre)
 {
     time_t lt = time(NULL);
-    struct tm *ltm = localtime(&lt);
+    struct tm ltm;
+    if (NULL == localtime_r(&lt, &ltm))
+    {
+        return 0;
+    }
     tuint32 retlen = 0;
 
     if ((split_single->width_min > 0) || 
         (split_single->width_max >= 0))
     {
         tchar temp_buf[SPLIT_MAX_LEN + 1];
-        strftime(temp_buf, SPLIT_MAX_LEN, split_single->data, ltm);
+        strftime(temp_buf, SPLIT_MAX_LEN, split_single->data, &ltm);
         temp_buf[SPLIT_MAX_LEN] = '\0';
         split_single->data = temp_buf;
         retlen = align_write(buf, split_single);
@@ -212,7 +216,7 @@ static tuint32 write_time(tchar *buf, split_format_single *split_single,
     }
     else
     {
-        retlen = strftime(buf, SPLIT_MAX_LEN, split_single->data, ltm);
+        retlen = strftime(buf, SPLIT_MAX_LEN, split_single->data, &ltm);
     }
 
     return retlen;
