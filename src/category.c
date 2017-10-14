@@ -437,13 +437,11 @@ tlog_category *get_category(const thash_string *hash, const tchar *name)
  */
 void category_gen_log(const tlog_category *cat, const tchar *file,
         tint line, const tchar *func, const tchar *line_str,
-        tuint32 level, const tchar *fmt, va_list args)
+        tuint32 level, const tchar *msg)
 {
     T_ASSERT(NULL != cat);
-    tchar user_msg[256];
     tchar msg_buf[512];
-    vsprintf(user_msg, fmt, args);
-    preprocess_info pre = {file, func, line, line_str, level, user_msg};
+    preprocess_info pre = {file, func, line, line_str, level, msg};
     tuint32 count = 0;
     for (tuint32 i = 0; i < cat->count; ++i)
     {

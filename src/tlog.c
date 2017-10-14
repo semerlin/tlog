@@ -232,9 +232,11 @@ void tlog(const tlog_category *cat, const char *file,
 {
     if (NULL != cat)
     {
+        tchar user_msg[256] = {0};
         va_list args;
         va_start(args, fmt);
-        category_gen_log(cat, file, line, func, line_str, level, fmt, args);
+        vsprintf(user_msg, fmt, args);
+        category_gen_log(cat, file, line, func, line_str, level, user_msg);
         va_end(args);
     }
 }
