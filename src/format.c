@@ -9,6 +9,7 @@
 #include <string.h>
 #include <errno.h>
 #include <time.h>
+#include <sys/time.h>
 #include "format.h"
 #include "tassert.h"
 #include "tstring.h"
@@ -216,6 +217,60 @@ static tuint32 write_time(tchar *buf, split_format_single *split_single,
 
     return retlen;
 }
+
+/**
+ * @brief write millsecond time to buffer
+ * @param split_single - split handle
+ * @param pre - preprocess information handle
+ * @return success written length
+ */
+static tuint32 write_time_ms(tchar *buf, split_format_single *split_single,
+        const preprocess_info *pre)
+{
+    struct timeval tv;
+    if (0 == gettimeofday(&tv, NULL))
+    {
+        tchar temp_buf[4];
+        tuint32 ms = tv.tv_usec / 1000;
+        temp_buf[0] = ms / 100 + '0';
+        temp_buf[1] = ms / 10 % 10 + '0';
+        temp_buf[2] = ms % 10+ '0';
+        temp_buf[3] = '\0';
+        strcpy(buf, temp_buf);
+        return 3;
+    }
+
+    return 0;
+}
+
+/**
+ * @brief write microsecond time to buffer
+ * @param split_single - split handle
+ * @param pre - preprocess information handle
+ * @return success written length
+ */
+static tuint32 write_time_us(tchar *buf, split_format_single *split_single,
+        const preprocess_info *pre)
+{
+    struct timeval tv;
+    if (0 == gettimeofday(&tv, NULL))
+    {
+        tchar temp_buf[7];
+        temp_buf[0] = tv.tv_usec / 100000 + '0';
+        temp_buf[1] = tv.tv_usec / 10000 % 10 + '0';
+        temp_buf[2] = tv.tv_usec / 1000 % 10 + '0';
+        temp_buf[3] = tv.tv_usec / 100 % 10 + '0';
+        temp_buf[4] = tv.tv_usec / 10 % 10 + '0';
+        temp_buf[5] = tv.tv_usec % 10 + '0';
+        temp_buf[6] = '\0';
+        strcpy(buf, temp_buf);
+        return 6;
+    }
+
+    return 0;
+}
+
+
 
 /**
  * @brief write short filename to buffer
@@ -510,44 +565,50 @@ static split_format *format_to_split_quick(const tchar *format, tuint32 count)
                 continue;
             }
 
+            tbool need_align = FALSE;
             while((format[cur_index] != '\0') && 
                   (('.' == format[cur_index]) ||
                   ((format[cur_index] >= '0') &&
                   (format[cur_index] <= '9'))))
             {
+                need_align = TRUE;
                 cur_index ++;
             }
 
-            /* get width value, max is 99 */
-            tchar dig_min_buf[3] = "99";
-            tchar dig_max_buf[3] = "99";
+            /* get align */
             tint dig_min = 0;
             tint dig_max = -1;
-            tint dot_index = t_string_find_char(format + last_index, 0, '.', TRUE);
-            if (-1 == dot_index)
+            if (need_align)
             {
-                if (cur_index - last_index <= 2)
+                /* get width value, max is 99 */
+                tchar dig_min_buf[3] = "99";
+                tchar dig_max_buf[3] = "99";
+                tint dot_index = t_string_find_char(format + last_index, 0, '.', TRUE);
+                if (-1 == dot_index)
                 {
-                    strncpy(dig_min_buf, format + last_index, cur_index - last_index);
-                    dig_min_buf[cur_index - last_index] = '\0';
+                    if (cur_index - last_index <= 2)
+                    {
+                        strncpy(dig_min_buf, format + last_index, cur_index - last_index);
+                        dig_min_buf[cur_index - last_index] = '\0';
+                    }
+                    t_string_to_int(dig_min_buf, &dig_min);
                 }
-                t_string_to_int(dig_min_buf, &dig_min);
-            }
-            else
-            {
-                if (dot_index <= 2)
+                else
                 {
-                    strncpy(dig_min_buf, format + last_index, dot_index);
-                    dig_min_buf[dot_index] = '\0';
-                }
-                t_string_to_int(dig_min_buf, &dig_min);
+                    if (dot_index <= 2)
+                    {
+                        strncpy(dig_min_buf, format + last_index, dot_index);
+                        dig_min_buf[dot_index] = '\0';
+                    }
+                    t_string_to_int(dig_min_buf, &dig_min);
 
-                if (cur_index - dot_index <= 3)
-                {
-                    strncpy(dig_max_buf, format + last_index + dot_index + 1, cur_index - dot_index - 1);
-                    dig_max_buf[cur_index - dot_index - 1] = '\0';
+                    if (cur_index - dot_index <= 3)
+                    {
+                        strncpy(dig_max_buf, format + last_index + dot_index + 1, cur_index - dot_index - 1);
+                        dig_max_buf[cur_index - dot_index - 1] = '\0';
+                    }
+                    t_string_to_int(dig_max_buf, &dig_max);
                 }
-                t_string_to_int(dig_max_buf, &dig_max);
             }
 
             switch(format[cur_index])
@@ -568,6 +629,18 @@ static split_format *format_to_split_quick(const tchar *format, tuint32 count)
                 splits->splits[split_count].write_buf = write_time;
                 cur_index += temp_index + 1;
             }
+                break;
+            /* millsecond */
+            case 'S':
+                splits->splits[split_count].data = NULL;
+                splits->splits[split_count].write_buf = write_time_ms;
+                cur_index ++;
+                break;
+            /* microsecond */
+            case 'M':
+                splits->splits[split_count].data = NULL;
+                splits->splits[split_count].write_buf = write_time_us;
+                cur_index ++;
                 break;
             /* file name */
             case 'f':
@@ -840,12 +913,11 @@ tbool format_validation(const tchar *format, tuint32 *count)
                     ret = FALSE;
                     break;
                 }
-            }
-
-            while((format[cur_index] >= '0') &&
-                  (format[cur_index] <= '9'))
-            {
-                cur_index ++;
+                while((format[cur_index] >= '0') &&
+                      (format[cur_index] <= '9'))
+                {
+                    cur_index ++;
+                }
             }
 
             /* validate */
@@ -887,6 +959,10 @@ tbool format_validation(const tchar *format, tuint32 *count)
             case 'V':
             /* level:DEBUG */
             case 'v':
+            /* ms */
+            case 'S':
+            /* us */
+            case 'M':
                 split_count ++;
                 cur_index ++;
                 break;
