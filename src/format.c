@@ -343,6 +343,25 @@ static tuint32 write_line(tchar *buf, split_format_single *split_single,
 }
 
 /**
+ * @brief write function string to buffer
+ * @param split_single - split handle
+ * @param pre - preprocess information handle
+ * @return success written length
+ */
+static tuint32 write_function(tchar *buf, split_format_single *split_single,
+        const preprocess_info *pre)
+{
+    tuint32 retlen = 0;
+
+    split_single->data = (tchar *)pre->func;
+    retlen = align_write(buf, split_single);
+    split_single->data = NULL;
+
+    return retlen;
+}
+
+
+/**
  * @brief write user message to buffer
  * @param split_single - split handle
  * @param pre - preprocess information handle
@@ -660,6 +679,12 @@ static split_format *format_to_split_quick(const tchar *format, tuint32 count)
                 splits->splits[split_count].write_buf = write_line;
                 cur_index ++;
                 break;
+            /* __func__ */
+            case 'U':
+                splits->splits[split_count].data = NULL;
+                splits->splits[split_count].write_buf = write_function;
+                cur_index ++;
+                break;
             /* user input message */
             case 'm':
                 splits->splits[split_count].data = NULL;
@@ -951,6 +976,8 @@ tbool format_validation(const tchar *format, tuint32 *count)
             case 'F':
             /* __LINE__ */
             case 'L':
+            /* __func __*/
+            case 'U':
             /* user input message */
             case 'm':
             /* \n */
