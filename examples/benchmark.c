@@ -142,17 +142,21 @@ static void test_pipeline(unsigned int time)
 
 int main(int argc, char **argv)
 {
-    char *endptr = NULL, *str = NULL;
     unsigned int time = DEFAULT_TIME;
-    long val = 0;
     if (argc > 1)
     {
+        time = atoi(argv[1]);
+#if 0
+        /* TODO find this code core dump reason */
+        char *endptr = NULL, *str = NULL;
+        long val = 0;
         str = argv[1];
         val = strtol(str, &endptr, 10);
         if ((0 == errno) && (endptr != str))
         {
             time = val;
         }
+#endif
     }
     benchmark_init();
     tlog_init_from_data(benchmark_cfg);
