@@ -42,6 +42,7 @@ typedef struct
 /* keyfile structure */
 struct _tkeyfile
 {
+    tbool use_last_sep;
     tshareptr ptr;
     tlist groups;
 };
@@ -56,7 +57,6 @@ typedef struct
 /****************************************************
  * static variable
  ****************************************************/
-static tbool use_last_sep = FALSE;
 
 /****************************************************
  * functions
@@ -79,6 +79,7 @@ tkeyfile *t_keyfile_new()
     tkeyfile *keyfile = (tkeyfile *)malloc(sizeof(tkeyfile));
     if (NULL != keyfile)
     {
+        keyfile->use_last_sep = FALSE;
         t_shareptr_init((tshareptr *)keyfile, t_keyfile_destroy, keyfile);
         t_list_init_head(&keyfile->groups);
     }
@@ -212,17 +213,23 @@ static tbool t_keyfile_parse_group(const tchar *data, tchar *group)
 
 /**
  * @brief find key and value in string
+ * @param keyfile - keyfile handle
  * @param data - trimmed parse string
  * @param key - output key name
  * @param value - output value name
  * @return TRUE: find key and value
  *         FALSE: no key or value find
  */
-static tbool t_keyfile_parse_key_value(const tchar *data, 
+static tbool t_keyfile_parse_key_value(const tkeyfile *keyfile, const tchar *data, 
         tchar *key, tchar *value)
 {
+    T_ASSERT(NULL != keyfile);
+    T_ASSERT(NULL != data);
+    T_ASSERT(NULL != key);
+    T_ASSERT(NULL != value);
+
     tint index = -1;
-    if (use_last_sep)
+    if (keyfile->use_last_sep)
     {
         index = t_string_find_char_reverse(data, 0, '=', TRUE);
     }
@@ -257,12 +264,13 @@ static tbool t_keyfile_parse_key_value(const tchar *data,
 
 /**
  * @brief use last '=' to seperate key and value
+ * @param keyfile - keyfile handle
  * @param TRUE: use
  *        FALSE: usr first '='
  */
-void t_keyfile_use_last_sep(tbool flag)
+void t_keyfile_use_last_sep(tkeyfile *keyfile, tbool flag)
 {
-    use_last_sep = flag;
+    keyfile->use_last_sep = flag;
 }
 
 /**
@@ -306,7 +314,7 @@ static tint t_keyfile_load_line(tkeyfile *keyfile, const tchar *line, group_node
         *cur_group = node;
         *process_kv = TRUE;
     }
-    else if(t_keyfile_parse_key_value(trimmed, key, value))
+    else if(t_keyfile_parse_key_value(keyfile, trimmed, key, value))
     {
         if (*process_kv)
         {

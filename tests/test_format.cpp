@@ -22,7 +22,7 @@ TEST(FormatTest, Format)
 {
     tkeyfile *keyfile = t_keyfile_new();
     ASSERT_NE((void *)0, keyfile);
-    t_keyfile_use_last_sep(TRUE);
+    t_keyfile_use_last_sep(keyfile, TRUE);
     ASSERT_EQ(0, t_keyfile_load_from_file(keyfile, filename));
     thash_string *format = format_new();
     ASSERT_NE((void *)0, format);
