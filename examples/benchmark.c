@@ -147,7 +147,7 @@ int main(int argc, char **argv)
     {
         time = atoi(argv[1]);
 #if 0
-        /* TODO find this code core dump reason */
+        /* TODO find this code core dump on 32bits machine reason */
         char *endptr = NULL, *str = NULL;
         long val = 0;
         str = argv[1];
