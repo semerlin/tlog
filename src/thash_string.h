@@ -34,7 +34,7 @@ T_EXTERN tbool t_hash_string_contain(const thash_string *hash_string, const char
 T_EXTERN tuint32 t_hash_string_count(const thash_string *hash_string);
 T_EXTERN tuint32 t_hash_string_capacity(const thash_string *hash_string);
 T_EXTERN void t_hash_string_free(thash_string *hash_string, tfree_func free_func);
-T_EXTERN void t_hash_string_empty(thash_string *hash_string, tfree_func free_func);
+T_EXTERN void t_hash_string_clear(thash_string *hash_string, tfree_func free_func);
 
 /**
  * @brief get string hash node entry

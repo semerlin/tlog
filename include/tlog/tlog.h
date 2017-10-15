@@ -33,6 +33,7 @@ typedef enum
 typedef struct _tlog_category tlog_category;
 
 extern int tlog_open(const char *name, tlog_source source);
+extern void tlog_close(void);
 extern const tlog_category *tlog_get_category(const char *name);
 extern void tlog(const tlog_category *cat, const char *file,
         long line, const char *func, const char *line_str,

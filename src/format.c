@@ -432,6 +432,26 @@ thash_string *format_new(void)
 }
 
 /**
+ * @brief free split format memory space
+ * @param split - split format handle
+ * @param length - split format length
+ */
+static void split_format_free(split_format *split)
+{
+    T_ASSERT(NULL != split);
+    for (tuint32 i = 0; i < split->count; ++i)
+    {
+        if (NULL != split->splits[i].data)
+        {
+            free(split->splits[i].data);
+        }
+    }
+
+    free(split->splits);
+    free(split);
+}
+
+/**
  * @brief free format hash table
  * @param data - format node
  */
@@ -453,7 +473,18 @@ static void free_format(void *data)
 void format_free(thash_string *format)
 {
     T_ASSERT(NULL != format);
-    t_hash_string_empty(format, free_format);
+    t_hash_string_free(format, free_format);
+    free(format);
+}
+
+/**
+ * @brief clear format hash table
+ * @param format - format hash table
+ */
+void format_clear(thash_string *format)
+{
+    T_ASSERT(NULL != format);
+    t_hash_string_clear(format, free_format);
 }
 
 /**
@@ -857,7 +888,7 @@ tint filter_format(const tkeyfile *keyfile, thash_string **hash)
 
     if (0 != t_hash_string_count(*hash))
     {
-        t_hash_string_empty(*hash, free_format);
+        t_hash_string_clear(*hash, free_format);
     }
 
     /* check group exists first */
@@ -1026,27 +1057,6 @@ tbool format_validation(const tchar *format, tuint32 *count)
 
     return ret;
 }
-
-/**
- * @brief free split format memory space
- * @param split - split format handle
- * @param length - split format length
- */
-void split_format_free(split_format *split)
-{
-    T_ASSERT(NULL != split);
-    for (tuint32 i = 0; i < split->count; ++i)
-    {
-        if (NULL != split->splits[i].data)
-        {
-            free(split->splits[i].data);
-        }
-    }
-
-    free(split->splits);
-    free(split);
-}
-
 
 /**
  * @brief split format

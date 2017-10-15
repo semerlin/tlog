@@ -147,13 +147,22 @@ static tint name_count(void *key, void *value, void *userdata)
  * @param data - category hash node 
  * @param userdata - userdata
  */
-static tint category_free(void *data, void *userdata)
+static tint category_free_internal(void *data, void *userdata)
 {
     T_ASSERT(NULL != data);
     thash_string_node *string_node = (thash_string_node *)data;
     category_node *cat_node = t_hash_string_entry(string_node, category_node, node);
     free(cat_node->category.name);
+    for (tuint32 i = 0; i < cat_node->category.count; ++i)
+    {
+        if (NULL != cat_node->category.rules[i].fd)
+        {
+            fclose(cat_node->category.rules[i].fd);
+        }
+    }
     free(cat_node->category.rules);
+    free(string_node->key);
+    free(cat_node);
     return 0;
 }
 
@@ -193,10 +202,19 @@ static category_node *add_category_node(thash_string **hash, const tchar *name, 
         {
             *hash = t_hash_string_insert(*hash, &cat_node->node);
             cat_node->category.count = 0;
+            for (tuint32 i = 0; i < count; ++i)
+            {
+                cat_node->category.rules[i].level = TLOG_DEBUG;
+                cat_node->category.rules[i].format = NULL;
+                cat_node->category.rules[i].splits = NULL;
+                cat_node->category.rules[i].output = NULL;
+                cat_node->category.rules[i].fd = NULL;
+            }
         }
         else
         {
             free(cat_node->category.name);
+            free(cat_node->category.rules);
             free(cat_node);
             return NULL;
         }
@@ -241,7 +259,7 @@ tint categories_init(const tkeyfile *keyfile, thash_string **hash)
                 if (NULL == cat_node)
                 {
                     t_slist_free(&name_head, free_name_list);
-                    t_hash_string_foreach(*hash, category_free, NULL);
+                    t_hash_string_foreach(*hash, category_free_internal, NULL);
                     return -ENOMEM;
                 }
             }
@@ -254,6 +272,23 @@ tint categories_init(const tkeyfile *keyfile, thash_string **hash)
     return err;
 }
 
+
+/**
+ * @brief free category memory
+ * @param cat_hash - category hash table
+ */
+void category_free(thash_string *cat_hash)
+{
+    T_ASSERT(NULL != cat_hash);
+    t_hash_string_foreach(cat_hash, category_free_internal, NULL);
+    free(cat_hash);
+}
+
+/**
+ * @brief validation output format string
+ * @param output - output format string
+ * @return validation status
+ */
 static tbool output_format_validation(const tchar *output)
 {
     T_ASSERT(NULL != output);
@@ -355,11 +390,17 @@ tint add_category(thash_string *cat_hash, const thash_string *format_hash,
     cat_rule->level = log_level_convert(level);
 
     /* add format */
+    if (0 == strcmp("", format))
+    {
+        format = DEFAULT_FORMAT_NAME;
+    }
     cat_rule->format = get_format(format_hash, format);
+    T_ASSERT(NULL != cat_rule->format);
     if (NULL == cat_rule->format)
     {
-        cat_rule->format = DEFAULT_FORMAT;
-        format = DEFAULT_FORMAT_NAME;
+        return -EINVAL;
+        //cat_rule->format = DEFAULT_FORMAT;
+        //format = DEFAULT_FORMAT_NAME;
     }
     cat_rule->splits = get_format_split(format_hash, format);
 

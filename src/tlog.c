@@ -71,43 +71,37 @@ static tint filter_group_general(tkeyfile *keyfile)
 static tint filter_config_file(tkeyfile *keyfile)
 {
     T_ASSERT(NULL != keyfile);
+    T_ASSERT(NULL == category_detail);
     tint err = 0;
 
+    category_detail = t_hash_string_new();
     if (NULL == category_detail)
     {
-        category_detail = t_hash_string_new();
-        if (NULL == category_detail)
-        {
-            return -ENOMEM;
-        }
-
-        formats_kv = format_new();
-        if (NULL == formats_kv)
-        {
-            return -ENOMEM;
-        }
-
-        err = filter_group_general(keyfile);
-        if (0 != err)
-        {
-            return err;
-        }
-
-        err = filter_format(keyfile, &formats_kv);
-        if (0 != err)
-        {
-            return err;
-        }
-
-        err = filter_rules(keyfile, formats_kv, &category_detail);
-        if (0 != err)
-        {
-            return err;
-        }
+        return -ENOMEM;
     }
-    else
+
+    formats_kv = format_new();
+    if (NULL == formats_kv)
     {
-        return -EEXIST;
+        return -ENOMEM;
+    }
+
+    err = filter_group_general(keyfile);
+    if (0 != err)
+    {
+        return err;
+    }
+
+    err = filter_format(keyfile, &formats_kv);
+    if (0 != err)
+    {
+        return err;
+    }
+
+    err = filter_rules(keyfile, formats_kv, &category_detail);
+    if (0 != err)
+    {
+        return err;
     }
 
     return 0;
@@ -134,6 +128,11 @@ tint tlog_internal_init(tkeyfile *keyfile)
  */
 tint tlog_open(const tchar *name, tlog_source source)
 {
+    if (NULL != category_detail)
+    {
+        return -EEXIST;
+    }
+
     tkeyfile *keyfile = t_keyfile_new();
     if (NULL == keyfile)
     {
@@ -141,7 +140,7 @@ tint tlog_open(const tchar *name, tlog_source source)
     }
 
     /* use last character to seperate key-value */
-    t_keyfile_use_last_sep(TRUE);
+    t_keyfile_use_last_sep(keyfile, TRUE);
 
     tint ret = 0;
     switch(source)
@@ -182,6 +181,15 @@ tint tlog_open(const tchar *name, tlog_source source)
     t_keyfile_free(keyfile);
     
     return ret;
+}
+
+/**
+ * @brief close tlog
+ */
+void tlog_close()
+{
+    category_free(category_detail);
+    format_free(formats_kv);
 }
 
 /**

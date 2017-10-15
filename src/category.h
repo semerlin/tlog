@@ -15,6 +15,7 @@
 T_BEGIN_DECLS
 
 T_EXTERN tint categories_init(const tkeyfile *keyfile, thash_string **hash);
+T_EXTERN void category_free(thash_string *cat_hash);
 T_EXTERN tint add_category(thash_string *cat_hash, const thash_string *format_hash, 
         const tchar *name, const tchar *level, 
         const tchar *format, const tchar *output);
