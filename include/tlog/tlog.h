@@ -29,11 +29,20 @@ extern int tlog_init_from_file(const char *file);
 extern int tlog_init_from_data(const char *data);
 extern const tlog_category *tlog_get_category(const char *name);
 extern void tlog(const tlog_category *cat, const char *file,
-        int line, const char *func, const char *line_str,
+        long line, const char *func, const char *line_str,
         int level, const char *fmt, ...);
 
 #define _STR(s)   #s 
 #define STR(s)    _STR(s)
+
+/* function name */
+#if defined (__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
+    #define __func__ __FUNCTION__
+#elif defined(__GNUC__)
+    #define __func__ __PRETTY_FUNCTION__
+#else
+    #define __func__ "<unknown>"
+#endif
 
 #define tlog_debug(cat, ...) \
     tlog(cat, __FILE__, __LINE__, __func__, STR(__LINE__), TLOG_DEBUG, __VA_ARGS__)

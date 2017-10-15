@@ -21,7 +21,7 @@ typedef struct
 {
     const tchar *file;
     const tchar *func;
-    tint line;
+    tlong line;
     const tchar *line_str;
     tuint32 level;
     const tchar *user_msg;

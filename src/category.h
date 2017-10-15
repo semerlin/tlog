@@ -21,7 +21,7 @@ T_EXTERN tint add_category(thash_string *cat_hash, const thash_string *format_ha
 T_EXTERN tlog_category *get_category(const thash_string *hash, 
         const tchar *name);
 T_EXTERN void category_gen_log(const tlog_category *cat, const tchar *file, 
-        tint line, const tchar *func, const tchar *line_str,
+        tlong line, const tchar *func, const tchar *line_str,
         tuint32 level, const tchar *msg);
 
 T_EXTERN void print_category(const thash_string *hash);

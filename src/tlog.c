@@ -227,7 +227,7 @@ const tlog_category *tlog_get_category(const tchar *name)
  * @param fmt - user log message
  */
 void tlog(const tlog_category *cat, const char *file,
-        int line, const char *func, const tchar *line_str,
+        long line, const char *func, const tchar *line_str,
         int level, const char *fmt, ...)
 {
     if (NULL != cat)
