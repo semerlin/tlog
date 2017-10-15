@@ -190,6 +190,8 @@ void tlog_close()
 {
     category_free(category_detail);
     format_free(formats_kv);
+    category_detail = NULL;
+    formats_kv = NULL;
 }
 
 /**
