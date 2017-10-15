@@ -146,6 +146,10 @@ int main(int argc, char **argv)
     if (argc > 1)
     {
         time = atoi(argv[1]);
+        if (time <= 0)
+        {
+            time = DEFAULT_TIME;
+        }
 #if 0
         /* TODO find this code core dump on 32bits machine reason */
         char *endptr = NULL, *str = NULL;
