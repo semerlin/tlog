@@ -163,7 +163,7 @@ int main(int argc, char **argv)
 #endif
     }
     benchmark_init();
-    tlog_init_from_data(benchmark_cfg);
+    tlog_open(benchmark_cfg, TLOG_MEM);
 
     test_pipeline(time);
     test_stdout(time);

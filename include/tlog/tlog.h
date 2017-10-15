@@ -22,11 +22,17 @@ typedef enum
     TLOG_FATAL = 0x2005,
 }tlog_level;
 
+typedef enum
+{
+    TLOG_FILE,
+    TLOG_MEM,
+    TLOG_DEFAULT,
+}tlog_source;
+
 
 typedef struct _tlog_category tlog_category;
 
-extern int tlog_init_from_file(const char *file);
-extern int tlog_init_from_data(const char *data);
+extern int tlog_open(const char *name, tlog_source source);
 extern const tlog_category *tlog_get_category(const char *name);
 extern void tlog(const tlog_category *cat, const char *file,
         long line, const char *func, const char *line_str,

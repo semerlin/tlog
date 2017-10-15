@@ -127,11 +127,12 @@ tint tlog_internal_init(tkeyfile *keyfile)
 }
 
 /**
- * @brief init tlog environment from configure file
- * @param file - configure file path
+ * @brief init tlog environment from configure data
+ * @param name - configure data
+ * @param source - name source
  * @return error code, 0 means no error
  */
-tint tlog_init_from_file(const tchar *file)
+tint tlog_open(const tchar *name, tlog_source source)
 {
     tkeyfile *keyfile = t_keyfile_new();
     if (NULL == keyfile)
@@ -143,65 +144,45 @@ tint tlog_init_from_file(const tchar *file)
     t_keyfile_use_last_sep(TRUE);
 
     tint ret = 0;
-    /* if there is no config file then load default config */
-    if (NULL == file)
+    switch(source)
     {
+    case TLOG_FILE:
+        if (NULL == name)
+        {
+            ret = -EINVAL;
+        }
+        else
+        {
+            /* load configure file */
+            ret = t_keyfile_load_from_file(keyfile, name);
+        }
+        break;
+    case TLOG_MEM:
+        if (NULL == name)
+        {
+            ret = -EINVAL;
+        }
+        else
+        {
+            ret = t_keyfile_load_from_data(keyfile, name);
+        }
+        break;
+    case TLOG_DEFAULT:
+    default:
         ret = t_keyfile_load_from_data(keyfile, default_cfg);
-        if (0 != ret)
-        {
-            return ret;
-        }
-    }
-    else
-    {
-        /* load configure file */
-        ret = t_keyfile_load_from_file(keyfile, file);
-        if (0 != ret)
-        {
-            return ret;
-        }
+        break;
     }
 
-    ret = tlog_internal_init(keyfile);
+    if (0 == ret)
+    {
+        ret = tlog_internal_init(keyfile);
+    }
 
     /* free keyfile */
     t_keyfile_free(keyfile);
     
     return ret;
 }
-
-
-/**
- * @brief init tlog environment from memory data buffer
- * @param data - memory data buffer
- * @return error code, 0 means no error
- */
-tint tlog_init_from_data(const tchar *data)
-{
-    tkeyfile *keyfile = t_keyfile_new();
-    if (NULL == keyfile)
-    {
-        return -ENOMEM;
-    }
-
-    /* use last character to seperate key-value */
-    t_keyfile_use_last_sep(TRUE);
-
-    const tchar *cfg_data = ((NULL == data) ? default_cfg : data);
-    tint ret = t_keyfile_load_from_data(keyfile, cfg_data);
-    if (0 != ret)
-    {
-        return ret;
-    }
-
-    ret = tlog_internal_init(keyfile);
-
-    /* free keyfile */
-    t_keyfile_free(keyfile);
-    
-    return ret;
-}
-
 
 /**
  * @brief get category named 'name'
