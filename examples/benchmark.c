@@ -15,6 +15,8 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <limits.h>
+#include <sys/utsname.h>
+#include <string.h>
 
 
 #define DEFAULT_TIME  5
@@ -36,9 +38,21 @@ static void alarm_act(int sig)
  */
 static void benchmark_init(void)
 {
+    /* regiter alarm signal */
     struct sigaction act;
     act.sa_handler = &alarm_act;
     sigaction(SIGALRM, &act, 0);
+
+    /* print test environment */
+    fprintf(stdout, "\e[32mtest environment:\e[0m\n");
+    struct utsname name;
+    if (0 == uname(&name))
+    {
+        fprintf(stdout, "system:  %s\n", name.sysname);
+        fprintf(stdout, "release: %s\n", name.release);
+        fprintf(stdout, "version: %s\n", name.version);
+        fprintf(stdout, "machine: %s\n", name.machine);
+    }
 }
 
 static int calc_speed(const struct timeval *start, 
@@ -162,8 +176,15 @@ int main(int argc, char **argv)
         }
 #endif
     }
+
     benchmark_init();
-    tlog_open(benchmark_cfg, TLOG_MEM);
+    fprintf(stdout, "\n");
+    int err = tlog_open(benchmark_cfg, TLOG_MEM);
+    if (0 != err)
+    {
+        fprintf(stdout, "\e[31mopen tlog failed: %s\e[0m\n", strerror(-err));
+        exit(1);
+    }
 
     test_pipeline(time);
     test_stdout(time);
