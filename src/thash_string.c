@@ -462,11 +462,11 @@ void t_hash_string_free(thash_string *hash_string, tfree_func free_func)
 
 
 /**
- * @brief free all node in hash table then free hash table memory
+ * @brief free all node in hash table
  * @param hash_string - hash table 
  * @param free_func - resource free function
  */
-void t_hash_string_empty(thash_string *hash_string, tfree_func free_func)
+void t_hash_string_clear(thash_string *hash_string, tfree_func free_func)
 {
     T_ASSERT(NULL != hash_string);
 
