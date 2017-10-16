@@ -474,7 +474,6 @@ void format_free(thash_string *format)
 {
     T_ASSERT(NULL != format);
     t_hash_string_free(format, free_format);
-    free(format);
 }
 
 /**
