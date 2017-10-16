@@ -37,7 +37,7 @@ extern void tlog_close(void);
 extern const tlog_category *tlog_get_category(const char *name);
 extern void tlog(const tlog_category *cat, const char *file,
         long line, const char *func, const char *line_str,
-        int level, const char *fmt, ...);
+        int level, const char *fmt, ...) __attribute__ ((__format__ (__printf__, 7, 8)));
 
 #define _STR(s)   #s 
 #define STR(s)    _STR(s)
