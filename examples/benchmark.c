@@ -29,7 +29,6 @@ static const char benchmark_cfg[] = "[general]\n[format]\nstdfmt=\"%d(%Y-%m-%d %
 /* timeout signal process */
 static void alarm_act(int sig)
 {
-    signal(SIGALRM, &alarm_act);
     is_testing = false;
 }
 
@@ -40,13 +39,10 @@ static void alarm_act(int sig)
 static void benchmark_init(void)
 {
     /* regiter alarm signal */
-#if 0
-    /* TODO: this signal process method will cause core dump */
     struct sigaction act;
     act.sa_handler = &alarm_act;
+    act.sa_flags = SA_ONSTACK;
     sigaction(SIGALRM, &act, 0);
-#endif
-    signal(SIGALRM, &alarm_act);
 
     /* print test environment */
     fprintf(stdout, "\e[32mtest environment:\e[0m\n");
