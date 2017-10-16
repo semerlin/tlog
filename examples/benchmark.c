@@ -29,6 +29,7 @@ static const char benchmark_cfg[] = "[general]\n[format]\nstdfmt=\"%d(%Y-%m-%d %
 /* timeout signal process */
 static void alarm_act(int sig)
 {
+    signal(SIGALRM, &alarm_act);
     is_testing = false;
 }
 
@@ -39,9 +40,13 @@ static void alarm_act(int sig)
 static void benchmark_init(void)
 {
     /* regiter alarm signal */
+#if 0
+    /* TODO: this signal process method will cause core dump */
     struct sigaction act;
     act.sa_handler = &alarm_act;
     sigaction(SIGALRM, &act, 0);
+#endif
+    signal(SIGALRM, &alarm_act);
 
     /* print test environment */
     fprintf(stdout, "\e[32mtest environment:\e[0m\n");
@@ -159,13 +164,6 @@ int main(int argc, char **argv)
     unsigned int time = DEFAULT_TIME;
     if (argc > 1)
     {
-        time = atoi(argv[1]);
-        if (time <= 0)
-        {
-            time = DEFAULT_TIME;
-        }
-#if 0
-        /* TODO find this code core dump on 32bits machine reason */
         char *endptr = NULL, *str = NULL;
         long val = 0;
         str = argv[1];
@@ -174,7 +172,6 @@ int main(int argc, char **argv)
         {
             time = val;
         }
-#endif
     }
 
     benchmark_init();
