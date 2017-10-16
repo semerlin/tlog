@@ -186,9 +186,11 @@ int main(int argc, char **argv)
         exit(1);
     }
 
-    test_pipeline(time);
     test_stdout(time);
     test_file(time);
+    test_pipeline(time);
+
+    tlog_close();
 
     return 0;
 }
