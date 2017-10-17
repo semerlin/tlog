@@ -188,10 +188,17 @@ tint tlog_open(const tchar *name, tlog_source source)
  */
 void tlog_close()
 {
-    category_free(category_detail);
-    format_free(formats_kv);
-    category_detail = NULL;
-    formats_kv = NULL;
+    if (NULL != category_detail)
+    {
+        category_free(category_detail);
+        category_detail = NULL;
+    }
+
+    if (NULL != formats_kv)
+    {
+        format_free(formats_kv);
+        formats_kv = NULL;
+    }
 }
 
 /**
