@@ -15,9 +15,11 @@ TEST(TlogTest, Function)
     const tlog_category *cat1 = tlog_get_category("test1");
     const tlog_category *cat2 = tlog_get_category("test2");
     const tlog_category *cat3 = tlog_get_category("test3");
+    const tlog_category *cat4 = tlog_get_category("test4");
     ASSERT_NE((void *)0, cat1);
     ASSERT_NE((void *)0, cat2);
     ASSERT_NE((void *)0, cat3);
+    ASSERT_NE((void *)0, cat4);
 
     tlog_debug(cat1, "this is debug");
     tlog_info(cat1, "this is info");
@@ -25,6 +27,8 @@ TEST(TlogTest, Function)
 
     tlog_warn(cat2, "this is warn");
     tlog_fatal(cat3, "this is fatal");
+
+    tlog_notice(cat4, "this is notice");
 }
 
 

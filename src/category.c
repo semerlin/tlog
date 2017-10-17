@@ -10,6 +10,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <time.h>
 #include "tkeyfile.h"
 #include "thash_string.h"
 #include "tslist.h"
@@ -158,6 +159,7 @@ static tint category_free_internal(void *data, void *userdata)
         if (NULL != cat_node->category.rules[i].fd)
         {
             fclose(cat_node->category.rules[i].fd);
+            free(cat_node->category.rules[i].output);
         }
     }
     free(cat_node->category.rules);
@@ -292,6 +294,7 @@ void category_free(thash_string *cat_hash)
 static tbool output_format_validation(const tchar *output)
 {
     T_ASSERT(NULL != output);
+    tint ret = TRUE;
     if ('>' == *output)
     {
         if ((0 == strcmp(">stdout", output)) ||
@@ -318,8 +321,99 @@ static tbool output_format_validation(const tchar *output)
 
         return TRUE;
     }
+    else
+    {
+        tuint32 out_index = 0;
 
-    return TRUE;
+        while ('\0' != output[out_index])
+        {
+            if ('%' != output[out_index])
+            {
+                out_index ++;
+            }
+            else
+            {
+                out_index ++;
+                switch (output[out_index])
+                {
+                case 'd':
+                {
+                    out_index ++;
+                    if ('(' == output[out_index])
+                    {
+                        out_index ++;
+                        tint index = t_string_find_char(output, out_index, ')', TRUE);
+                        if (-1 != index)
+                        {
+                            out_index += index + 1;
+                        }
+                        else
+                        {
+                            ret = FALSE;
+                        }
+                    }
+                    else
+                    {
+                        ret = FALSE;
+                    }
+                }
+                    break;
+                default:
+                    ret = FALSE;
+                    break;
+                }
+            }
+
+            if (!ret)
+            {
+                break;
+            }
+        }
+    }
+
+    return ret;
+}
+
+/**
+ * @brief convert output name
+ * @param name - name output
+ * @param output - output format
+ * @return error code, 0 means no error
+ */
+static tint output_convert_quick(tchar *name, const tchar *output)
+{
+    T_ASSERT(NULL != name);
+    T_ASSERT(NULL != output);
+
+    tint name_index = 0, out_index = 0;
+
+    while ('\0' != output[out_index])
+    {
+        if ('%' != output[out_index])
+        {
+            name[name_index] = output[out_index];
+            name_index ++;
+            out_index ++;
+        }
+        else
+        {
+            out_index += 3;
+            tint index = t_string_find_char(output, out_index, ')', TRUE);
+            tchar time_str[32];
+            strncpy(time_str, output + out_index, index);
+            time_str[index] = '\0';
+            out_index += index + 1;
+            time_t tm = time(NULL);
+            struct tm ltm;
+            if (NULL != localtime_r(&tm, &ltm))
+            {
+                name_index += strftime(name + name_index, 99, time_str, &ltm);
+            }
+        }
+    }
+
+    name[name_index] = '\0';
+    return 0;
 }
 
 /**
@@ -354,10 +448,20 @@ static FILE *get_output_fd(const tchar *output)
         else
         {
             /* file */
-            return fopen(output, "a");
+            tchar filename[256];
+            if (0 == output_convert_quick(filename, output))
+            {
+                return fopen(filename, "a");
+            }
+            else
+            {
+                errno = -EINVAL;
+                return NULL;
+            }
         }
     }
 
+    errno = -EINVAL;
     return NULL;
 }
 
@@ -429,7 +533,7 @@ tint add_category(thash_string *cat_hash, const thash_string *format_hash,
         cat_rule->fd = get_output_fd(output);
         if (NULL == cat_rule->fd)
         {
-            return -EINVAL;
+            return errno;
         }
     }
     else
