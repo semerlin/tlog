@@ -24,7 +24,7 @@
 static unsigned char is_testing = false;
 
 /* configure buffer */
-static const char benchmark_cfg[] = "[general]\n[format]\nstdfmt=\"%d(%F %T) %-6V [%F:%L] %m\"\n[rules]\nstd.*=stdfmt;>stdout\nfile.*=/tmp/tlog_benchmark.log\npipe.*=| cat > /dev/null\n";
+static const char benchmark_cfg[] = "[general]\n[format]\nstdfmt=\"%d(%F %T) %-6V [%F:%L:%U] %m\"\n[rules]\nstd.*=stdfmt;>stdout\nfile.*=/tmp/tlog_benchmark.log\npipe.*=| cat > /dev/null\n";
 
 /* timeout signal process */
 static void alarm_act(int sig)
