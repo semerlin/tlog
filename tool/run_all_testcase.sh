@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #############################################################################
 # Copyright 2017, Huang Yang <elious.huang@gmail.com>. All rights reserved.
