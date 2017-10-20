@@ -1,0 +1,15 @@
+ver 0.4:
+	add configure file validation script
+	output function name as default
+
+ver 0.3:
+	support create log file by day
+	fix some bugs
+
+ver 0.2:
+	add tlog_close interface
+	fix some bugs
+
+ver 0.1:
+	support log output to stdout, file and pipeline
+	support configure file
