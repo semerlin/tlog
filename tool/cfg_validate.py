@@ -12,6 +12,7 @@ import sys
 
 in_group = False
 group_name = ""
+formats = []
 
 def printinfo(level, line, string, info):
     print("[%s : %d] %s: %s" % (level, line, string, info))
@@ -45,6 +46,158 @@ def parse_group(line, data):
                     else:
                         printinfo("warning", line, data, "unkown group %s" % group_name)
 
+def format_validation(line, line_data, data): 
+    cur_index = 0
+    last_index = 0
+    num = 0
+    while 1:
+        last_index = cur_index;
+        cur_index = data.find('%', last_index)
+
+        if -1 != cur_index:
+            cur_index += 1
+
+            # skip digital and %
+            if '-' == data[cur_index]:
+                cur_index += 1
+            elif '%' == data[cur_index]:
+                cur_index += 1
+                continue
+
+            # skip digital
+            if '.' == data[cur_index]:
+                printinfo("error", line, line_data, "need number after \'-\'")
+                break
+
+            while data[cur_index] >= '0' and data[cur_index] <= '9':
+                cur_index += 1
+
+            if '.' == data[cur_index]:
+                cur_index += 1
+                if data[cur_index] < '0' or data[cur_index] > '9':
+                    printinfo("error", line, line_data, "need number after \'.\'")
+                    break
+
+                while data[cur_index] >= '0' and data[cur_index] <= '9':
+                    cur_index += 1
+            # validate
+            if data[cur_index] == 'd':
+                cur_index += 1
+                if '(' == data[cur_index]:
+                    temp_index = data.find(')', cur_index)
+                    if -1 == temp_index:
+                        printinfo("error", line, line_data, "missing \')\' after \'%d\'")
+                    else:
+                        cur_index = temp_index + 1
+                else:
+                    printinfo("error", line, line_data, "missing \'(\' after \'%d\'")
+            elif data[cur_index] == 'f' or \
+                 data[cur_index] == 'F' or \
+                 data[cur_index] == 'L' or \
+                 data[cur_index] == 'U' or \
+                 data[cur_index] == 'm' or \
+                 data[cur_index] == 'n' or \
+                 data[cur_index] == 'V' or \
+                 data[cur_index] == 'v' or \
+                 data[cur_index] == 'S' or \
+                 data[cur_index] == 'M':
+                cur_index += 1
+            else:
+                printinfo("error", line, line_data, "unknown command \'%%%s\'" % data[cur_index])
+        else:
+            break
+
+
+def output_validation(line, line_data, data):
+    if '>' == data[0]:
+        if ">stdout" == data or ">stderr" == data:
+            pass
+        else:
+            printinfo("error", line, line_data, "unknown output \'%s\'" % data)
+    elif '|' == data[0]:
+        index = 1
+        while index < len(data):
+            if ' ' == data[index]:
+                index += 1
+
+        if index >= len(data):
+            printinfo("error", line, line_data, "need pipeline output path after \'|\'")
+        else:
+            pass
+    else:
+        index = 0
+        while index < len(data):
+            if '%' != data[index]:
+                index += 1
+            else:
+                index += 1
+                if 'd' == data[index]:
+                    index += 1
+                    if '(' == data[index]:
+                        index += 1
+                        cur_index = data.find(')', index)
+                        if -1 != cur_index:
+                            index = cur_index + 1
+                        else:
+                            printinfo("error", line_data, data, "missing \')\' after %%")
+                            break
+                    else:
+                        printinfo("error", line_data, data, "missing \'(\' after %%d")
+                        break
+                else:
+                    printinfo("error", line, data, "unknown command \'%%s\'" % data[index])
+                    break
+
+def is_valid_format(value):
+    global formats
+    for fmt in formats:
+        if fmt == value:
+            return True
+
+    return False
+
+    
+
+def rules_validation(line, data, key, value):
+    if key.find('.', 0) != -1:
+        kv = key.split('.', 2)
+        level = kv[1]
+    else:
+        level = '*'
+
+    level = level.strip()
+    level = level.lower()
+    if level == 'debug' or \
+       level == 'info' or \
+       level == 'notice' or \
+       level == 'warn' or \
+       level == 'error' or \
+       level == 'fatal' or \
+       level == '*':
+       pass
+    else:
+        printinfo("error", line, data, "unknown level \'%s\'" % level)
+
+    fmt = ""
+    output = ""
+    if value.find(';', 0) != -1:
+        kv = value.split(';', 2)
+        fmt = kv[0]
+        output = kv[1]
+    else:
+        fmt = "default"
+        output = value
+
+    fmt = fmt.strip()
+    output = output.strip()
+    global formats
+    formats.append("default")
+    if not is_valid_format(fmt):
+        printinfo("error", line, data, "unknown format \'%s\'" % fmt)
+        
+    output_validation(line, data, output)
+
+
 
 def parse_kv(line, data):
     #check if is group
@@ -57,13 +210,17 @@ def parse_kv(line, data):
         else:
             kv = data.split('=', 2)
             key = kv[0]
+            key = key.strip()
             value = kv[1]
+            value = value.strip()
             if group_name == "general":
                 pass
             elif group_name == "format":
-                pass
+                format_validation(line, data, value)
+                global formats
+                formats.append(key)
             else:
-                pass
+                rules_validation(line, data, key, value)
 
 
 if __name__ == '__main__':
