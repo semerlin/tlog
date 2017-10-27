@@ -196,7 +196,7 @@ static tbool t_keyfile_parse_group(const tchar *data, tchar *group)
     {
         return FALSE;
     }
-    tint end_index = t_string_find_char_reverse(data, 0, ']', TRUE);
+    tint end_index = t_string_find_char_reverse(data, strlen(data) - 1, ']', TRUE);
     if (-1 != end_index)
     {
         if (1 < end_index)
@@ -231,7 +231,7 @@ static tbool t_keyfile_parse_key_value(const tkeyfile *keyfile, const tchar *dat
     tint index = -1;
     if (keyfile->use_last_sep)
     {
-        index = t_string_find_char_reverse(data, 0, '=', TRUE);
+        index = t_string_find_char_reverse(data, strlen(data) - 1, '=', TRUE);
     }
     else
     {

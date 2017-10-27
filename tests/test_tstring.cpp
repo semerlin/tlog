@@ -7,14 +7,6 @@
 #include "../src/tstring.h"
 
 
-T_EXTERN tbool t_string_contain_char(const tchar *str, tchar check, tbool cs);
-T_EXTERN tint t_string_find_char(const tchar *str, tuint32 index, tchar check, tbool cs);
-T_EXTERN tint t_string_find_char_reverse(const tchar *str, tuint32 index, tchar check, tbool cs);
-T_EXTERN tbool t_string_contain_string(const tchar *str, const tchar *check, tbool cs);
-T_EXTERN tint t_string_find_string(const tchar *str, tuint32 index, const tchar *check, tbool cs);
-T_EXTERN tint t_string_find_string_reverse(const tchar *str, tuint32 index, const tchar *check, tbool cs);
-
-
 #ifdef T_ENABLE_ASSERT
 TEST(TstringTest, Death)
 {
@@ -81,28 +73,28 @@ TEST(TstringTest, Find)
 {
     char test_str[] = "abcabc123abcdef12345acbkkkkk";
     EXPECT_EQ(0, t_string_find_char(test_str, 0, 'a', TRUE));
-    EXPECT_EQ(2, t_string_find_char(test_str, 1, 'a', TRUE));
+    EXPECT_EQ(3, t_string_find_char(test_str, 1, 'a', TRUE));
     EXPECT_EQ(14, t_string_find_char(test_str, 0, 'F', FALSE));
     EXPECT_EQ(6, t_string_find_char(test_str, 0, '1', TRUE));
     EXPECT_EQ(-1, t_string_find_char(test_str, 0, 'X', TRUE));
 
-    EXPECT_EQ(20, t_string_find_char_reverse(test_str, 0, 'a', TRUE));
-    EXPECT_EQ(2, t_string_find_char_reverse(test_str, 18, 'a', TRUE));
-    EXPECT_EQ(20, t_string_find_char_reverse(test_str, 0, 'A', FALSE));
+    EXPECT_EQ(0, t_string_find_char_reverse(test_str, 0, 'a', TRUE));
+    EXPECT_EQ(9, t_string_find_char_reverse(test_str, 18, 'a', TRUE));
+    EXPECT_EQ(0, t_string_find_char_reverse(test_str, 0, 'A', FALSE));
     EXPECT_EQ(-1, t_string_find_char_reverse(test_str, 0, 'X', TRUE));
 
     EXPECT_EQ(0, t_string_find_string(test_str, 0, "abc", TRUE));
-    EXPECT_EQ(2, t_string_find_string(test_str, 1, "abc", TRUE));
+    EXPECT_EQ(3, t_string_find_string(test_str, 1, "abc", TRUE));
     EXPECT_EQ(20, t_string_find_string(test_str, 0, "ACB", FALSE));
     EXPECT_EQ(-1, t_string_find_string(test_str, 0, "jj", TRUE));
     EXPECT_EQ(-1, t_string_find_string(test_str, 0, 
                 "jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj", TRUE));
 
-    EXPECT_EQ(9, t_string_find_string_reverse(test_str, 0, "abc", TRUE));
-    EXPECT_EQ(8, t_string_find_string_reverse(test_str, 1, "abc", TRUE));
-    EXPECT_EQ(20, t_string_find_string_reverse(test_str, 0, "ACB", FALSE));
-    EXPECT_EQ(-1, t_string_find_string_reverse(test_str, 0, "jj", TRUE));
-    EXPECT_EQ(-1, t_string_find_string_reverse(test_str, 0, 
+    EXPECT_EQ(0, t_string_find_string_reverse(test_str, 2, "abc", TRUE));
+    EXPECT_EQ(3, t_string_find_string_reverse(test_str, 6, "abc", TRUE));
+    EXPECT_EQ(20, t_string_find_string_reverse(test_str, strlen(test_str) - 1, "ACB", FALSE));
+    EXPECT_EQ(-1, t_string_find_string_reverse(test_str, strlen(test_str) - 1, "jj", TRUE));
+    EXPECT_EQ(-1, t_string_find_string_reverse(test_str, strlen(test_str) - 1, 
                 "jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj", TRUE));
 }
 

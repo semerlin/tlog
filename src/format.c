@@ -293,7 +293,7 @@ static tuint32 write_filename(tchar *buf, split_format_single *split_single,
     tuint32 retlen = 0;
 
     const tchar *filename = NULL;
-    tint index = t_string_find_char_reverse(pre->file, 0, '/', TRUE);
+    tint index = t_string_find_char_reverse(pre->file, strlen(pre->file) - 1, '/', TRUE);
     if (-1 != index)
     {
         filename = pre->file + index + 1;
@@ -576,7 +576,7 @@ static split_format *format_to_split_quick(const tchar *format, tuint32 count)
         char_index = t_string_find_char(format, last_index, '%', TRUE);
         if (-1 != char_index)
         {
-            cur_index += char_index;
+            cur_index = char_index;
             if (0 != char_index)
             {
                 /* add message string */
@@ -672,15 +672,16 @@ static split_format *format_to_split_quick(const tchar *format, tuint32 count)
                 cur_index += 2;
                 tint temp_index = t_string_find_char(format, cur_index, ')', TRUE);
                 /* add time */
-                splits->splits[split_count].data = malloc(temp_index + 1);
+                tint len = temp_index - cur_index;
+                splits->splits[split_count].data = malloc(len + 1);
                 if (NULL == splits->splits[split_count].data)
                 {
                     goto ERROR;
                 }
-                strncpy(splits->splits[split_count].data, format + cur_index, temp_index);
-                splits->splits[split_count].data[temp_index] = '\0';
+                strncpy(splits->splits[split_count].data, format + cur_index, len);
+                splits->splits[split_count].data[len] = '\0';
                 splits->splits[split_count].write_buf = write_time;
-                cur_index += temp_index + 1;
+                cur_index = temp_index + 1;
             }
                 break;
             /* millsecond */
@@ -935,7 +936,6 @@ tbool format_validation(const tchar *format, tuint32 *count)
             {
                 split_count ++;
             }
-            cur_index += last_index;
             cur_index ++;
 
             /* skip digital and % */
@@ -996,7 +996,7 @@ tbool format_validation(const tchar *format, tuint32 *count)
                     else
                     {
                         split_count ++;
-                        cur_index += temp_index + 1;
+                        cur_index = temp_index + 1;
                     }
                 }
                 else

@@ -345,7 +345,7 @@ static tbool output_format_validation(const tchar *output)
                         tint index = t_string_find_char(output, out_index, ')', TRUE);
                         if (-1 != index)
                         {
-                            out_index += index + 1;
+                            out_index = index + 1;
                         }
                         else
                         {
@@ -400,9 +400,9 @@ static tint output_convert_quick(tchar *name, const tchar *output)
             out_index += 3;
             tint index = t_string_find_char(output, out_index, ')', TRUE);
             tchar time_str[32];
-            strncpy(time_str, output + out_index, index);
+            strncpy(time_str, output + out_index, index - out_index);
             time_str[index] = '\0';
-            out_index += index + 1;
+            out_index = index + 1;
             time_t tm = time(NULL);
             struct tm ltm;
             if (NULL != localtime_r(&tm, &ltm))

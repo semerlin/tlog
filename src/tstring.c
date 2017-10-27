@@ -124,10 +124,10 @@ tint t_string_find_char(const tchar *str, tuint32 index, tchar check, tbool cs)
     T_ASSERT(index <= str_len);
 #endif
 
+    const tchar *origin = str;
     str += index;
     tchar cur = 0;
     tint ret = -1;
-    const tchar *origin = str;
     while(0 != (cur = *str))
     {
         cur = (cs ? cur : tolower(cur));
@@ -161,12 +161,13 @@ tint t_string_find_char_reverse(const tchar *str, tuint32 index, tchar check, tb
     T_ASSERT(index <= str_len);
 #endif
 
-    str += index;
+    const tchar *origin = str;
+    tuint32 len = index + 1;
     tchar cur = 0;
     tint ret = -1;
-    const tchar *origin = str;
-    while(0 != (cur = *str))
+    while(len > 0)
     {
+        cur = *str;
         cur = (cs ? cur : tolower(cur));
         check = (cs ? check : tolower(check));
         if (cur == check)
@@ -174,6 +175,7 @@ tint t_string_find_char_reverse(const tchar *str, tuint32 index, tchar check, tb
             ret = str - origin;
         }
         str++;
+        len--;
     }
 
     return ret;
@@ -226,7 +228,7 @@ tbool t_string_contain_string(const tchar *str, const tchar *check, tbool cs)
     T_ASSERT(NULL != str);
     T_ASSERT(NULL != check);
 
-    tint index = -1;
+    tint index = 0;
     tint check_len = strlen(check);
     tbool ret = FALSE;
     if (check_len > strlen(str))
@@ -237,7 +239,7 @@ tbool t_string_contain_string(const tchar *str, const tchar *check, tbool cs)
     {
         while(1)
         {
-            index = t_string_find_char(str, 0, *check, cs);
+            index = t_string_find_char(str, index + 1, *check, cs);
             if (-1 != index)
             {
                 if (!cs)
@@ -257,8 +259,6 @@ tbool t_string_contain_string(const tchar *str, const tchar *check, tbool cs)
                     }
 
                 }
-
-                str += (index + 1);
             }
             else
             {
@@ -289,27 +289,25 @@ tint t_string_find_string(const tchar *str, tuint32 index, const tchar *check, t
     T_ASSERT(index <= str_len);
 #endif
 
-    tint char_index = 0;
+    tint char_index = index;
     tint check_len = strlen(check);
     tint ret = -1;
-    if (check_len > strlen(str))
+    if (check_len > strlen(str + index))
     {
         return -1;
     }
     else
     {
-        str += index;
-        const tchar *origin = str;
-        while(-1 != char_index)
+        while(1)
         {
-            char_index = t_string_find_char(str, 0, *check, cs);
+            char_index = t_string_find_char(str, char_index, *check, cs);
             if (-1 != char_index)
             {
                 if (!cs)
                 {
                     if (0 == strncasecmp(str + char_index, check, check_len))
                     {
-                        ret = str + char_index - origin;
+                        ret = char_index;
                         break;
                     }
                 }
@@ -317,13 +315,16 @@ tint t_string_find_string(const tchar *str, tuint32 index, const tchar *check, t
                 {
                     if (0 == strncmp(str + char_index, check, check_len))
                     {
-                        ret = str + char_index - origin;
+                        ret = char_index;
                         break;
                     }
 
                 }
-
-                str += (char_index + 1);
+                char_index ++;
+            }
+            else
+            {
+                break;
             }
         }
     }
@@ -350,39 +351,42 @@ tint t_string_find_string_reverse(const tchar *str, tuint32 index, const tchar *
     T_ASSERT(index <= str_len);
 #endif
 
-    tint char_index = 0;
+    tint char_index = index;
     tint check_len = strlen(check);
     tint ret = -1;
-    if (check_len > strlen(str))
+    if (check_len > (char_index + 1))
     {
         return -1;
     }
     else
     {
-        str += index;
-        const tchar *origin = str;
-        while(-1 != char_index)
+        while(1)
         {
-            char_index = t_string_find_char(str, 0, *check, cs);
+            char_index = t_string_find_char_reverse(str, char_index, *check, cs);
             if (-1 != char_index)
             {
                 if (!cs)
                 {
                     if (0 == strncasecmp(str + char_index, check, check_len))
                     {
-                        ret = str + char_index - origin;
+                        ret = char_index;
+                        break;
                     }
                 }
                 else
                 {
                     if (0 == strncmp(str + char_index, check, check_len))
                     {
-                        ret = str + char_index - origin;
+                        ret = char_index;
+                        break;
                     }
 
                 }
-
-                str += (char_index + 1);
+                char_index ++;
+            }
+            else
+            {
+                break;
             }
         }
     }
