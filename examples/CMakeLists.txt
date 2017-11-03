@@ -17,6 +17,11 @@ if (TLOG_FOUND)
     add_executable(benchmark benchmark.c)
     target_link_libraries(benchmark ${TLOG_LIBRARY})
 
+    #thread
+    add_executable(thread thread.c)
+    target_link_libraries(thread ${TLOG_LIBRARY} pthread)
+
+
 endif (TLOG_FOUND)
 
 
