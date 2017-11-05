@@ -32,7 +32,7 @@ TEST(FormatTest, Format)
 
     EXPECT_STREQ(DEFAULT_FORMAT, get_format(format, "default"));
     EXPECT_STREQ("%d(%y-%m-%d %T) %6V %m%n", get_format(format, "simple"));
-    EXPECT_STREQ("%d(%Y-%m-%d %T).%S %6V [%f:%U:%L] %m%n", get_format(format, "complex"));
+    EXPECT_STREQ("%d(%Y-%m-%d %T).%S %6V [pid:%p tid:%t] [%f:%U:%L] %m%n", get_format(format, "complex"));
 }
 
 
