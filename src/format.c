@@ -11,6 +11,9 @@
 #include <time.h>
 #include <sys/time.h>
 #include <pthread.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include "format.h"
 #include "tassert.h"
 #include "tstring.h"
@@ -445,6 +448,76 @@ static tuint32 write_level_upper(tchar *buf, split_format_single *split_single,
     return retlen;
 }
 
+/**
+ * @brief write thread id
+ * @param split_single - split handle
+ * @param pre - preprocess information handle
+ * @return success written length
+ */
+static tuint32 write_tid(tchar *buf, split_format_single *split_single,
+        const preprocess_info *pre)
+{
+    tuint32 retlen = 0;
+
+    tchar tid[24];
+    pthread_t id = pthread_self();
+    sprintf(tid, "%lu", (tulong)id);
+    pthread_mutex_lock(split_single->mutex);
+    split_single->data = tid;
+    retlen = align_write(buf, split_single);
+    split_single->data = NULL;
+    pthread_mutex_unlock(split_single->mutex);
+
+    return retlen;
+}
+
+/**
+ * @brief write upper level data to buffer
+ * @param split_single - split handle
+ * @param pre - preprocess information handle
+ * @return success written length
+ */
+static tuint32 write_tid_hex(tchar *buf, split_format_single *split_single,
+        const preprocess_info *pre)
+{
+    tuint32 retlen = 0;
+
+    tchar tid[24];
+    pthread_t id = pthread_self();
+    sprintf(tid, "0x%lx", (tulong)id);
+    pthread_mutex_lock(split_single->mutex);
+    split_single->data = tid;
+    retlen = align_write(buf, split_single);
+    split_single->data = NULL;
+    pthread_mutex_unlock(split_single->mutex);
+
+    return retlen;
+}
+
+/**
+ * @brief write upper level data to buffer
+ * @param split_single - split handle
+ * @param pre - preprocess information handle
+ * @return success written length
+ */
+static tuint32 write_pid(tchar *buf, split_format_single *split_single,
+        const preprocess_info *pre)
+{
+    tuint32 retlen = 0;
+
+    tchar pid[24];
+    pid_t id = getpid();
+    sprintf(pid, "%lu", (tulong)id);
+    pthread_mutex_lock(split_single->mutex);
+    split_single->data = pid;
+    retlen = align_write(buf, split_single);
+    split_single->data = NULL;
+    pthread_mutex_unlock(split_single->mutex);
+
+    return retlen;
+}
+
+
 
 /**
  * @brief new format hash table
@@ -778,6 +851,24 @@ static split_format *format_to_split_quick(const tchar *format, tuint32 count)
                 splits->splits[split_count].write_buf = write_level_lower;
                 cur_index ++;
                 break;
+            /*hex tid*/
+            case 't':
+                splits->splits[split_count].data = NULL;
+                splits->splits[split_count].write_buf = write_tid_hex;
+                cur_index ++;
+                break;
+            /* tid */
+            case 'T':
+                splits->splits[split_count].data = NULL;
+                splits->splits[split_count].write_buf = write_tid;
+                cur_index ++;
+                break;
+            /* pid */
+            case 'p':
+                splits->splits[split_count].data = NULL;
+                splits->splits[split_count].write_buf = write_pid;
+                cur_index ++;
+                break;
             /* error happend */
             default:
                 /* should not reach here */
@@ -1052,6 +1143,12 @@ tbool format_validation(const tchar *format, tuint32 *count)
             case 'S':
             /* us */
             case 'M':
+            /* hex tid */
+            case 't':
+            /* tid */
+            case 'T':
+            /* pid */
+            case 'p':
                 split_count ++;
                 cur_index ++;
                 break;
