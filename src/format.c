@@ -10,6 +10,7 @@
 #include <errno.h>
 #include <time.h>
 #include <sys/time.h>
+#include <pthread.h>
 #include "format.h"
 #include "tassert.h"
 #include "tstring.h"
@@ -45,6 +46,8 @@ struct _split_format_single
     /* -1: unlimit */
     tint8 width_max;
     splitformat_write write_buf;
+
+    pthread_mutex_t *mutex;
 };
 
 struct _split_format
@@ -208,15 +211,20 @@ static tuint32 write_time(tchar *buf, split_format_single *split_single,
         (split_single->width_max >= 0))
     {
         tchar temp_buf[SPLIT_MAX_LEN + 1];
+        pthread_mutex_lock(split_single->mutex);
+        tchar *tmp = split_single->data;
         strftime(temp_buf, SPLIT_MAX_LEN, split_single->data, &ltm);
         temp_buf[SPLIT_MAX_LEN] = '\0';
         split_single->data = temp_buf;
         retlen = align_write(buf, split_single);
-        split_single->data = NULL;
+        split_single->data = tmp;
+        pthread_mutex_unlock(split_single->mutex);
     }
     else
     {
+        pthread_mutex_lock(split_single->mutex);
         retlen = strftime(buf, SPLIT_MAX_LEN, split_single->data, &ltm);
+        pthread_mutex_unlock(split_single->mutex);
     }
 
     return retlen;
@@ -303,9 +311,11 @@ static tuint32 write_filename(tchar *buf, split_format_single *split_single,
         filename = pre->file;
     }
 
+    pthread_mutex_lock(split_single->mutex);
     split_single->data = (tchar *)filename;
     retlen = align_write(buf, split_single);
     split_single->data = NULL;
+    pthread_mutex_unlock(split_single->mutex);
 
     return retlen;
 }
@@ -321,9 +331,11 @@ static tuint32 write_filename_full(tchar *buf, split_format_single *split_single
 {
     tuint32 retlen = 0;
 
+    pthread_mutex_lock(split_single->mutex);
     split_single->data = (tchar *)pre->file;
     retlen = align_write(buf, split_single);
     split_single->data = NULL;
+    pthread_mutex_unlock(split_single->mutex);
 
     return retlen;
 }
@@ -339,9 +351,11 @@ static tuint32 write_line(tchar *buf, split_format_single *split_single,
 {
     tuint32 retlen = 0;
 
+    pthread_mutex_lock(split_single->mutex);
     split_single->data = (tchar *)pre->line_str;
     retlen = align_write(buf, split_single);
     split_single->data = NULL;
+    pthread_mutex_unlock(split_single->mutex);
 
     return retlen;
 }
@@ -357,9 +371,11 @@ static tuint32 write_function(tchar *buf, split_format_single *split_single,
 {
     tuint32 retlen = 0;
 
+    pthread_mutex_lock(split_single->mutex);
     split_single->data = (tchar *)pre->func;
     retlen = align_write(buf, split_single);
     split_single->data = NULL;
+    pthread_mutex_unlock(split_single->mutex);
 
     return retlen;
 }
@@ -376,9 +392,11 @@ static tuint32 write_message(tchar *buf, split_format_single *split_single,
 {
     tuint32 retlen = 0;
 
+    pthread_mutex_lock(split_single->mutex);
     split_single->data = (tchar *)pre->user_msg;
     retlen = align_write(buf, split_single);
     split_single->data = NULL;
+    pthread_mutex_unlock(split_single->mutex);
 
     return retlen;
 }
@@ -395,9 +413,12 @@ static tuint32 write_level_lower(tchar *buf, split_format_single *split_single,
     tuint32 retlen = 0;
 
     T_ASSERT((pre->level & LEVEL_INDEX_MASK) < 6);
+
+    pthread_mutex_lock(split_single->mutex);
     split_single->data = lower_level[pre->level & LEVEL_INDEX_MASK];
     retlen = align_write(buf, split_single);
     split_single->data = NULL;
+    pthread_mutex_unlock(split_single->mutex);
 
     return retlen;
 }
@@ -414,9 +435,12 @@ static tuint32 write_level_upper(tchar *buf, split_format_single *split_single,
     tuint32 retlen = 0;
 
     T_ASSERT((pre->level & LEVEL_INDEX_MASK) < 6);
+
+    pthread_mutex_lock(split_single->mutex);
     split_single->data = upper_level[pre->level & LEVEL_INDEX_MASK];
     retlen = align_write(buf, split_single);
     split_single->data = NULL;
+    pthread_mutex_unlock(split_single->mutex);
 
     return retlen;
 }
@@ -444,6 +468,8 @@ static void split_format_free(split_format *split)
         if (NULL != split->splits[i].data)
         {
             free(split->splits[i].data);
+            pthread_mutex_destroy(split->splits[i].mutex);
+            free(split->splits[i].mutex);
         }
     }
 
@@ -565,6 +591,8 @@ static split_format *format_to_split_quick(const tchar *format, tuint32 count)
         splits->splits[i].align = 1;
         splits->splits[i].width_min = 0;
         splits->splits[i].width_max = -1;
+        splits->splits[i].mutex = malloc(sizeof(pthread_mutex_t));
+        pthread_mutex_init(splits->splits[i].mutex, NULL);
     }
 
     tint format_len = strlen(format);
