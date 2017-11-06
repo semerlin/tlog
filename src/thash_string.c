@@ -160,10 +160,9 @@ tint t_hash_string_init_node(thash_string_node *node, const char *key)
     if (NULL != key)
     {
         /* new key */
-        tchar *temp_key = malloc(strlen(key) + 1);
-        if (NULL != temp_key)
+        node->key = malloc(strlen(key) + 1);
+        if (NULL != node->key)
         {
-            node->key = temp_key;
             strcpy(node->key, key);
         }
         else
