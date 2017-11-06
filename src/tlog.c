@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <pthread.h>
 #include "../include/tlog/tlog.h"
 #include "ttypes.h"
 #include "tassert.h"
@@ -38,6 +39,7 @@
 static thash_string *formats_kv = NULL;
 /* key = category name, value = category_node */
 static thash_string *category_detail = NULL;
+/* mdc */
 
 /* default configure file */
 static const tchar default_cfg[] = "[general]\n[format]\n[rules]\n*.*=>stdout";
@@ -175,6 +177,9 @@ tint tlog_open(const tchar *name, tlog_source source)
     if (0 == ret)
     {
         ret = tlog_internal_init(keyfile);
+        if (0 == ret)
+        {
+        }
     }
 
     /* free keyfile */
@@ -237,6 +242,43 @@ void tlog(const tlog_category *cat, const char *file,
         category_gen_log(cat, file, line, func, line_str, level, user_msg);
         va_end(args);
     }
+}
+
+
+/**
+ * @brief put mdc key-value to hash table
+ * @param key - key string
+ * @param value - value string
+ * @return error code, 0 means no error
+ */
+int tlog_put_mdc(const char *key, const char *value)
+{
+    return 0;
+}
+
+/**
+ * @brief get mdc value
+ * @param key - key string
+ * @return value string
+ */
+char *tlog_get_mdc(const char *key)
+{
+    return NULL;
+}
+
+/**
+ * @brief remove mdc value
+ * @param key - key string
+ */
+void tlog_remove_mdc(const char *key)
+{
+}
+
+/**
+ * @brief clean all mdc key-value
+ */
+void zlog_clean_mdc(void)
+{
 }
 
 

@@ -39,6 +39,13 @@ extern void tlog(const tlog_category *cat, const char *file,
         long line, const char *func, const char *line_str,
         int level, const char *fmt, ...) __attribute__ ((__format__ (__printf__, 7, 8)));
 
+/* mdc interface */
+extern int tlog_put_mdc(const char *key, const char *value);
+extern char *tlog_get_mdc(const char *key);
+extern void tlog_remove_mdc(const char *key);
+extern void zlog_clean_mdc(void);
+
+
 #define _STR(s)   #s 
 #define STR(s)    _STR(s)
 
