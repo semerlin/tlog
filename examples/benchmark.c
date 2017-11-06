@@ -158,15 +158,24 @@ static void test_pipeline(unsigned int time)
 int main(int argc, char **argv)
 {
     unsigned int time = DEFAULT_TIME;
-    if (argc > 1)
+    char *endptr = NULL;
+    int opt;
+    long val = 0;
+    while (-1 != (opt = getopt(argc, argv, "t:")))
     {
-        char *endptr = NULL, *str = NULL;
-        long val = 0;
-        str = argv[1];
-        val = strtol(str, &endptr, 10);
-        if ((0 == errno) && (endptr != str))
+        switch (opt)
         {
-            time = val;
+        case 't':
+            val = strtol(optarg, &endptr, 10);
+            if ((0 == errno) && (endptr != optarg))
+            {
+                time = val;
+            }
+            break;
+        default:
+            fprintf(stderr, "Usage: %s [-t nsecs]\n", argv[0]);
+            exit(EXIT_FAILURE);
+            break;
         }
     }
 
