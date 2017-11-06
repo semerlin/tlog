@@ -194,5 +194,5 @@ int main(int argc, char **argv)
 
     tlog_close();
 
-    return 0;
+    exit(EXIT_SUCCESS);
 }
