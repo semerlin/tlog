@@ -517,7 +517,17 @@ static tuint32 write_pid(tchar *buf, split_format_single *split_single,
     return retlen;
 }
 
-
+/**
+ * @brief write mdc info to buffer
+ * @param split_single - split handle
+ * @param pre - preprocess information handle
+ * @return success written length
+ */
+static tuint32 write_mdc(tchar *buf, split_format_single *split_single,
+        const preprocess_info *pre)
+{
+    return 0;
+}
 
 /**
  * @brief new format hash table
@@ -869,6 +879,25 @@ static split_format *format_to_split_quick(const tchar *format, tuint32 count)
                 splits->splits[split_count].write_buf = write_pid;
                 cur_index ++;
                 break;
+            /* MDC */
+            case 'X':
+            {
+                cur_index += 2;
+                tint temp_index = t_string_find_char(format, cur_index, ')', TRUE);
+                /* add mdc parameter */
+                tint len = temp_index - cur_index;
+                splits->splits[split_count].data = malloc(len + 1);
+                if (NULL == splits->splits[split_count].data)
+                {
+                    goto ERROR;
+                }
+                strncpy(splits->splits[split_count].data, format + cur_index, len);
+                splits->splits[split_count].data[len] = '\0';
+                splits->splits[split_count].write_buf = write_mdc;
+                cur_index = temp_index + 1;
+            }
+                break;
+
             /* error happend */
             default:
                 /* should not reach here */
@@ -1151,6 +1180,28 @@ tbool format_validation(const tchar *format, tuint32 *count)
             case 'p':
                 split_count ++;
                 cur_index ++;
+                break;
+            /* MDC */
+            case 'X':
+                cur_index ++;
+                if ('(' == format[cur_index])
+                {
+                    tint temp_index = t_string_find_char(format, cur_index, ')', TRUE);
+                    if (-1 == temp_index)
+                    {
+                        ret = FALSE;
+                        break;
+                    }
+                    else
+                    {
+                        split_count ++;
+                        cur_index = temp_index + 1;
+                    }
+                }
+                else
+                {
+                    ret = FALSE;
+                }
                 break;
             /* error happend */
             default:
