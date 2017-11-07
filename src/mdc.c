@@ -143,6 +143,7 @@ tint mdc_put(mdc *pmdc, const tchar *key, const tchar *value)
                     {
                         free(hash_node->value);
                         hash_node->value = tmp_value;
+                        strcpy(hash_node->value, value);
                         return 0;
                     }
                 }
@@ -258,6 +259,7 @@ void mdc_remove(mdc *pmdc, const tchar *key)
                     free(list_node);
                 }
             }
+            break;
         }
     }
 }

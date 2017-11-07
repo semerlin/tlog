@@ -103,6 +103,18 @@ if (GTEST_FOUND)
                                  ${COMMON_SRC_LIST})
     target_link_libraries(test_format ${LIB_LIST})
 
+    #test mdc 
+    add_executable(test_mdc test_mdc.cpp 
+                                 ../src/thlist.c
+                                 ../src/tlist.c
+                                 ../src/tshareptr.c
+                                 ../src/tstring.c
+                                 ../src/thash_string.c
+                                 ../src/mdc.c
+                                 ${COMMON_SRC_LIST})
+    target_link_libraries(test_mdc ${LIB_LIST})
+
+
 
 endif (GTEST_FOUND)
 
