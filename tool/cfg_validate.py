@@ -81,16 +81,16 @@ def format_validation(line, line_data, data):
                 while data[cur_index] >= '0' and data[cur_index] <= '9':
                     cur_index += 1
             # validate
-            if data[cur_index] == 'd':
+            if data[cur_index] == 'd' or data[cur_index] == 'X':
                 cur_index += 1
                 if '(' == data[cur_index]:
                     temp_index = data.find(')', cur_index)
                     if -1 == temp_index:
-                        printinfo("error", line, line_data, "missing \')\' after \'%d\'")
+                        printinfo("error", line, line_data, "missing \')\' after \'%%%s\'" % data[cur_index])
                     else:
                         cur_index = temp_index + 1
                 else:
-                    printinfo("error", line, line_data, "missing \'(\' after \'%d\'")
+                    printinfo("error", line, line_data, "missing \'(\' after \'%%%s\'" % data[cur_index])
             elif data[cur_index] == 'f' or \
                  data[cur_index] == 'F' or \
                  data[cur_index] == 'L' or \
@@ -100,8 +100,21 @@ def format_validation(line, line_data, data):
                  data[cur_index] == 'V' or \
                  data[cur_index] == 'v' or \
                  data[cur_index] == 'S' or \
-                 data[cur_index] == 'M':
+                 data[cur_index] == 'M' or \
+                 data[cur_index] == 't' or \
+                 data[cur_index] == 'p' or \
+                 data[cur_index] == 'T':
                 cur_index += 1
+            elif data[cur_index] == 'X':
+                cur_index += 1
+                if '(' == data[cur_index]:
+                    temp_index = data.find(')', cur_index)
+                    if -1 == temp_index:
+                        printinfo("error", line, line_data, "missing \')\' after \'%X\'")
+                    else:
+                        cur_index = temp_index + 1
+                else:
+                    printinfo("error", line, line_data, "missing \'(\' after \'%X\'")
             else:
                 printinfo("error", line, line_data, "unknown command \'%%%s\'" % data[cur_index])
         else:
@@ -119,6 +132,8 @@ def output_validation(line, line_data, data):
         while index < len(data):
             if ' ' == data[index]:
                 index += 1
+            else:
+                break;
 
         if index >= len(data):
             printinfo("error", line, line_data, "need pipeline output path after \'|\'")
@@ -131,7 +146,7 @@ def output_validation(line, line_data, data):
                 index += 1
             else:
                 index += 1
-                if 'd' == data[index]:
+                if 'd' == data[index] or 'X' == data[index]:
                     index += 1
                     if '(' == data[index]:
                         index += 1
@@ -142,10 +157,10 @@ def output_validation(line, line_data, data):
                             printinfo("error", line_data, data, "missing \')\' after %%")
                             break
                     else:
-                        printinfo("error", line_data, data, "missing \'(\' after %%d")
+                        printinfo("error", line_data, data, "missing \'(\' after %%%s" % data[index])
                         break
                 else:
-                    printinfo("error", line, data, "unknown command \'%%s\'" % data[index])
+                    printinfo("error", line, data, "unknown command \'%%%s\'" % data[index])
                     break
 
 def is_valid_format(value):
@@ -219,8 +234,10 @@ def parse_kv(line, data):
                 format_validation(line, data, value)
                 global formats
                 formats.append(key)
-            else:
+            elif group_name == "rules":
                 rules_validation(line, data, key, value)
+            else:
+                pass
 
 
 if __name__ == '__main__':
