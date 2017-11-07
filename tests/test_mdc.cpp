@@ -10,7 +10,6 @@
 #include "../src/global.h"
 
 
-static pthread_t tid1, tid2, tid3;
 mdc *g_mdc = NULL;
 char *value1, *value2, *value3;
 
@@ -69,6 +68,7 @@ TEST(MdcTest, Mdc)
 
 TEST(MdcTest, MultiThread)
 {
+    pthread_t tid1, tid2, tid3;
     g_mdc = mdc_new();
     ASSERT_NE((void *)0, g_mdc);
     ASSERT_EQ(0, mdc_put(g_mdc, "a1", "thread0"));

@@ -11,6 +11,7 @@
 #include "ttypes.h"
 #include "tkeyfile.h"
 #include "thash_string.h"
+#include "mdc.h"
 
 T_BEGIN_DECLS
 
@@ -25,6 +26,7 @@ typedef struct
     const tchar *line_str;
     tuint32 level;
     const tchar *user_msg;
+    const mdc *mdc_handle;
 }preprocess_info;
 
 T_EXTERN thash_string *format_new(void);

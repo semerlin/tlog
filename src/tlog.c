@@ -31,6 +31,7 @@
 /****************************************************
  * struct definition
  ****************************************************/
+
 /****************************************************
  * static variable 
  ****************************************************/
@@ -251,7 +252,7 @@ void tlog(const tlog_category *cat, const char *file,
         va_list args;
         va_start(args, fmt);
         vsprintf(user_msg, fmt, args);
-        category_gen_log(cat, file, line, func, line_str, level, user_msg);
+        category_gen_log(cat, file, line, func, line_str, level, user_msg, mdc_map);
         va_end(args);
     }
 }

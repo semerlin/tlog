@@ -526,7 +526,18 @@ static tuint32 write_pid(tchar *buf, split_format_single *split_single,
 static tuint32 write_mdc(tchar *buf, split_format_single *split_single,
         const preprocess_info *pre)
 {
-    return 0;
+    tuint32 retlen = 0;
+    pthread_mutex_lock(split_single->mutex);
+    tchar *val = mdc_get(pre->mdc_handle, split_single->data);
+    if (NULL != val)
+    {
+        tchar *tmp = split_single->data;
+        split_single->data = val;
+        retlen = align_write(buf, split_single);
+        split_single->data = tmp;
+    }
+    pthread_mutex_unlock(split_single->mutex);
+    return retlen;
 }
 
 /**

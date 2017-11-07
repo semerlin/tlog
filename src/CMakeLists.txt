@@ -9,11 +9,11 @@ set(SRC_LIST
     thash_string.c
     tstring.c
     tkeyfile.c
+    mdc.c
     level.c
     format.c
     category.c
-    rules.c
-    mdc.c)
+    rules.c)
 
 add_library(tlog SHARED ${SRC_LIST})
 

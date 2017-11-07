@@ -99,6 +99,7 @@ if (GTEST_FOUND)
                                  ../src/tstring.c
                                  ../src/thash_string.c
                                  ../src/tkeyfile.c
+                                 ../src/mdc.c
                                  ../src/format.c
                                  ${COMMON_SRC_LIST})
     target_link_libraries(test_format ${LIB_LIST})

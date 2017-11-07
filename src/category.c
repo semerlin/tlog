@@ -578,15 +578,16 @@ tlog_category *get_category(const thash_string *hash, const tchar *name)
  * @param func - function name
  * @param line_str - line string
  * @param level - level 
+ * @param pmdc - mdc handle
  * @param fmt - user message
  */
 void category_gen_log(const tlog_category *cat, const tchar *file,
         tlong line, const tchar *func, const tchar *line_str,
-        tuint32 level, const tchar *msg)
+        tuint32 level, const tchar *msg, const mdc *pmdc)
 {
     T_ASSERT(NULL != cat);
     tchar msg_buf[512];
-    preprocess_info pre = {file, func, line, line_str, level, msg};
+    preprocess_info pre = {file, func, line, line_str, level, msg, pmdc};
     tuint32 count = 0;
     for (tuint32 i = 0; i < cat->count; ++i)
     {
