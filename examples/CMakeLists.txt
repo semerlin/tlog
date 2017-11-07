@@ -21,6 +21,10 @@ if (TLOG_FOUND)
     add_executable(thread thread.c)
     target_link_libraries(thread ${TLOG_LIBRARY} pthread)
 
+    #hello
+    add_executable(hello hello.c)
+    target_link_libraries(hello ${TLOG_LIBRARY})
+
 
 endif (TLOG_FOUND)
 
