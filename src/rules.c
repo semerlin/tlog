@@ -135,14 +135,8 @@ tint filter_rules(const tkeyfile *keyfile, const thash_string *format_hash, thas
     /* check rules group key-value count */
     if (0 == t_keyfile_key_count(keyfile, GROUP_NAME_RULES))
     {
-        const tchar *format = get_format(format_hash, DEFAULT_FORMAT_NAME);
-        if (NULL == format)
-        {
-            format = DEFAULT_FORMAT;
-        }
- 
         err = add_category(*cat_hash, format_hash, DEFAULT_CATEGORY_NAME, DEFAULT_LEVEL,
-                format, DEFAULT_OUTPUT);
+                DEFAULT_FORMAT_NAME, DEFAULT_OUTPUT);
     }
     else
     {
