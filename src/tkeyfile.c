@@ -589,7 +589,10 @@ tint t_keyfile_group_foreach(const tkeyfile *keyfile, const tchar *group_name,
     if (NULL != group)
     {
         kv_userdata data = {kv_func, userdata};
-        err = t_hash_string_foreach(group->kv, hash_string_foreach, &data);
+        if (NULL != group->kv)
+        {
+            err = t_hash_string_foreach(group->kv, hash_string_foreach, &data);
+        }
     }
 
     return err;
@@ -642,12 +645,14 @@ void t_keyfile_key_names(const tkeyfile *keyfile, const tchar *group_name, tchar
 
     if (NULL != group)
     {
-        t_hash_string_keys(group->kv, keys);
+        if (NULL != group->kv)
+        {
+            t_hash_string_keys(group->kv, keys);
+            return ;
+        }
     }
-    else
-    {
-        keys[0] = NULL;
-    }
+
+    keys[0] = NULL;
 }
 
 /**
@@ -673,7 +678,7 @@ tuint32 t_keyfile_key_count(const tkeyfile *keyfile, const tchar *group_name)
     T_ASSERT(NULL != group_name);
 
     tlist *node;
-    group_node *group;
+    group_node *group = NULL;
     t_list_foreach(node, &keyfile->groups) 
     {
         group = t_list_entry(node, group_node, node);
@@ -686,13 +691,13 @@ tuint32 t_keyfile_key_count(const tkeyfile *keyfile, const tchar *group_name)
 
     if (NULL != group)
     {
-        return t_hash_string_count(group->kv);
-    }
-    else
-    {
-        return 0;
+        if (NULL != group->kv)
+        {
+            return t_hash_string_count(group->kv);
+        }
     }
 
+    return 0;
 }
 
 /**
