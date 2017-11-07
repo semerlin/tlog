@@ -36,6 +36,11 @@ T_EXTERN const split_format *get_format_split(const thash_string *hash, const tc
 T_EXTERN tbool format_validation(const tchar *format, tuint32 *count);
 T_EXTERN split_format *format_to_split(const tchar *format);
 T_EXTERN tuint32 format_split_to_string(tchar *buf, const split_format *splits, const preprocess_info *pre);
+T_EXTERN tint format_put_mdc(const tchar *key, const tchar *value);
+T_EXTERN tchar *format_get_mdc(const tchar *key);
+T_EXTERN void format_remove_mdc(const tchar *key);
+T_EXTERN void format_clean_mdc(void);
+
 
 T_END_DECLS
 

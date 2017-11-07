@@ -12,7 +12,8 @@ set(SRC_LIST
     level.c
     format.c
     category.c
-    rules.c)
+    rules.c
+    mdc.c)
 
 add_library(tlog SHARED ${SRC_LIST})
 

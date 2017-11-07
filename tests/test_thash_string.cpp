@@ -25,7 +25,6 @@ TEST(Thash_stringTest, Death)
     EXPECT_DEATH(t_hash_string_insert(hash_string, NULL), "");
     EXPECT_DEATH(t_hash_string_remove(NULL, "aa"), "");
     EXPECT_DEATH(t_hash_string_remove(hash_string, NULL), "");
-    EXPECT_DEATH(t_hash_string_remove_node(NULL), "");
     EXPECT_DEATH(t_hash_string_get(NULL, "aa"), "");
     EXPECT_DEATH(t_hash_string_get(hash_string, NULL), "");
     EXPECT_DEATH(t_hash_string_contain(NULL, "aa"), "");

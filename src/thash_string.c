@@ -273,18 +273,6 @@ thash_string_node *t_hash_string_remove(thash_string *hash_string, const char *k
     return string_node;
 }
 
-
-/**
- * @brief remove node from hash table
- * @param node - node to remove
- */
-void t_hash_string_remove_node(thash_string_node *node)
-{
-    T_ASSERT(NULL != node);
-
-    t_hlist_remove(&node->node);
-}
-
 /**
  * @brief get hash node which key euqals to key in hash table
  * @param hash_string - hash table

@@ -26,7 +26,6 @@ T_EXTERN thash_string_node *t_hash_string_new_node(const tchar *key);
 T_EXTERN thash_string *t_hash_string_new(void);
 T_EXTERN thash_string *t_hash_string_insert(thash_string *hash_string, thash_string_node *node);
 T_EXTERN thash_string_node *t_hash_string_remove(thash_string *hash_string, const char *key);
-T_EXTERN void t_hash_string_remove_node(thash_string_node *node);
 T_EXTERN thash_string_node *t_hash_string_get(const thash_string *hash_string, const char *key);
 T_EXTERN void t_hash_string_keys(const thash_string *hash_string, char **keys);
 T_EXTERN tint t_hash_string_foreach(const thash_string *hash_string, thash_func hash_func, void *userdata);
