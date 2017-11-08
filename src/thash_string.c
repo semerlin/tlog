@@ -14,7 +14,7 @@
 /****************************************************
  * macros definition
  ****************************************************/
-#define DEFAULT_TABLE_SIZE    (10)
+#define DEFAULT_TABLE_SIZE    (16)
 #define REHASH_FACTOR         (1.2)
 
 /****************************************************
@@ -50,7 +50,7 @@ static tuint32 t_hash_string_hash(const thash_string *hash_string, const char *k
         hash_val = (hash_val << 5) + *key++;
     }
 
-    return hash_val % hash_string->table_size;
+    return hash_val & (hash_string->table_size - 1);
 
 }
 
@@ -355,13 +355,13 @@ tint t_hash_string_foreach(const thash_string *hash_string, thash_func hash_func
                 err = hash_func(string_node, userdata);
                 if (0 != err)
                 {
-                    break;
+                    return err;
                 }
             }
         }
     }
 
-    return err;
+    return 0;
 }
 
 /**

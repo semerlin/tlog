@@ -57,8 +57,8 @@ TEST(Thash_stringTest, Insert)
     }
     t_hash_string_keys(hash_string, key);
 
-    EXPECT_EQ(0, strcmp(key[0], "1234567"));
-    EXPECT_EQ(0, strcmp(key[1], "abc"));
+    EXPECT_EQ(0, strcmp(key[0], "abc"));
+    EXPECT_EQ(0, strcmp(key[1], "1234567"));
     EXPECT_EQ(0, strcmp(key[2], "defhh"));
 
     for (int i = 0; i < 5; ++i)
@@ -107,7 +107,7 @@ TEST(Thash_stringTest, Rehash)
     thash_string_node *node;
 
     char str_val[4] = {0, 0, 0, 0};
-    for (int i = 0; i < 12; ++i)
+    for (int i = 0; i < 19; ++i)
     {
         node = new thash_string_node;
         node->key = new char[8];
@@ -117,17 +117,17 @@ TEST(Thash_stringTest, Rehash)
     }
     
 
-    EXPECT_EQ(12, t_hash_string_count(hash_string));
-    EXPECT_EQ(10, t_hash_string_capacity(hash_string));
+    EXPECT_EQ(19, t_hash_string_count(hash_string));
+    EXPECT_EQ(16, t_hash_string_capacity(hash_string));
 
     node = new thash_string_node;
     node->key = new char[8];
-    int_to_string(12, str_val);
+    int_to_string(19, str_val);
     strcpy(node->key, str_val);
     hash_string = t_hash_string_insert(hash_string, node);
 
-    EXPECT_EQ(13, t_hash_string_count(hash_string));
-    EXPECT_EQ(20, t_hash_string_capacity(hash_string));
+    EXPECT_EQ(20, t_hash_string_count(hash_string));
+    EXPECT_EQ(32, t_hash_string_capacity(hash_string));
 }
 
 

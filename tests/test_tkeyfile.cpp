@@ -141,12 +141,12 @@ TEST(TkeyfileTest, Function)
     }
     t_keyfile_key_names(keyfile, groups[0], keys);
 
-    EXPECT_STREQ("flag2", keys[0]);
-    EXPECT_STREQ("flag3", keys[1]);
-    EXPECT_STREQ("flag4", keys[2]);
-    EXPECT_STREQ("flag5", keys[3]);
-    EXPECT_STREQ("flag6", keys[4]);
-    EXPECT_STREQ("flag1", keys[5]);
+    EXPECT_STREQ("flag1", keys[0]);
+    EXPECT_STREQ("flag2", keys[1]);
+    EXPECT_STREQ("flag3", keys[2]);
+    EXPECT_STREQ("flag4", keys[3]);
+    EXPECT_STREQ("flag5", keys[4]);
+    EXPECT_STREQ("flag6", keys[5]);
 
     EXPECT_EQ(5, t_keyfile_group_count(keyfile));
     EXPECT_EQ(6, t_keyfile_key_count(keyfile, groups[0]));
