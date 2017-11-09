@@ -1,3 +1,8 @@
+ver 0.6:
+    add examples
+	hasten hash speed
+	fix some bugs
+
 ver 0.5:
 	support multi-thread
 	support mdc feature
