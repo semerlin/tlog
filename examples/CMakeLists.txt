@@ -25,6 +25,9 @@ if (TLOG_FOUND)
     add_executable(hello hello.c)
     target_link_libraries(hello ${TLOG_LIBRARY})
 
+    #mdc
+    add_executable(mdc mdc.c)
+    target_link_libraries(mdc ${TLOG_LIBRARY} pthread)
 
 endif (TLOG_FOUND)
 
