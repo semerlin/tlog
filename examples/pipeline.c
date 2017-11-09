@@ -10,21 +10,21 @@
 
 int main(int argc, char **argv)
 {
-    int err = tlog_open("./hello.conf", TLOG_FILE);
+    int err = tlog_open("./pipeline.conf", TLOG_FILE);
     if (0 != err)
     {
-        fprintf(stderr, "open tlog failed: \"hello.conf\" %s\n", strerror(-err));
+        fprintf(stderr, "open tlog failed: \"pipeline.conf\" %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
 
 
-    const tlog_category *hello = tlog_get_category("hello");
-    if (NULL == hello)
+    const tlog_category *pipeline = tlog_get_category("pipeline");
+    if (NULL == pipeline)
     {
-        fprintf(stderr, "missing category \"hello\"\n");
+        fprintf(stderr, "missing category \"pipeline\"\n");
         exit(EXIT_FAILURE);
     }
-    tlog_debug(hello, "hello world");
+    tlog_debug(pipeline, "this is pipeline example");
 
     exit(EXIT_SUCCESS);
 }

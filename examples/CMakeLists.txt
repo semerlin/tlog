@@ -29,6 +29,19 @@ if (TLOG_FOUND)
     add_executable(mdc mdc.c)
     target_link_libraries(mdc ${TLOG_LIBRARY} pthread)
 
+    #terminal
+    add_executable(terminal terminal.c)
+    target_link_libraries(terminal ${TLOG_LIBRARY})
+
+    #file
+    add_executable(file file.c)
+    target_link_libraries(file ${TLOG_LIBRARY})
+
+    #pipeline
+    add_executable(pipeline pipeline.c)
+    target_link_libraries(pipeline ${TLOG_LIBRARY})
+
+
 endif (TLOG_FOUND)
 
 

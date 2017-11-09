@@ -10,21 +10,21 @@
 
 int main(int argc, char **argv)
 {
-    int err = tlog_open("./hello.conf", TLOG_FILE);
+    int err = tlog_open("./terminal.conf", TLOG_FILE);
     if (0 != err)
     {
-        fprintf(stderr, "open tlog failed: \"hello.conf\" %s\n", strerror(-err));
+        fprintf(stderr, "open tlog failed: \"terminal.conf\" %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
 
 
-    const tlog_category *hello = tlog_get_category("hello");
-    if (NULL == hello)
+    const tlog_category *terminal = tlog_get_category("terminal");
+    if (NULL == terminal)
     {
-        fprintf(stderr, "missing category \"hello\"\n");
+        fprintf(stderr, "missing category \"terminal\"\n");
         exit(EXIT_FAILURE);
     }
-    tlog_debug(hello, "hello world");
+    tlog_debug(terminal, "this is terminal example");
 
     exit(EXIT_SUCCESS);
 }

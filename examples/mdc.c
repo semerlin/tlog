@@ -48,6 +48,11 @@ int main(int argc, char **argv)
     }
 
     cat = tlog_get_category("mdc");
+    if (NULL == cat)
+    {
+        fprintf(stderr, "missing category \"mdc\"\n");
+        exit(EXIT_FAILURE);
+    }
 
     pthread_t tid1, tid2, tid3;
 
