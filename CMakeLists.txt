@@ -4,6 +4,8 @@ project (tlog)
 
 option(TLOG_BUILD_TESTS "Build the tlog test programs" ON)
 
+find_package(Threads REQUIRED)
+
 #-------------------------------------------------
 # compiler flags 
 #-------------------------------------------------
