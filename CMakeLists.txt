@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 2.8.12)
 
 project (tlog)
 
+set(VERSION_MAJOR    0)
+set(VERSION_MINOR    6)
+set(REVISION_NUMBER  0)
+set(BUILD_NUMBER     0)
+
 option(BUILD_SHARED "Build tlog shared library" OFF)
 option(BUILD_TESTS "Build tlog unit tests programs" ON)
 
