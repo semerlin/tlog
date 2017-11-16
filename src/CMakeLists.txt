@@ -20,6 +20,7 @@ set(SRC_LIST
 #-------------------------------------------------
 if (BUILD_SHARED)
     add_library(tlog SHARED ${SRC_LIST})
+    set_target_properties(tlog PROPERTIES VERSION 0.6 SOVERSION 0)
     install(TARGETS tlog
         LIBRARY DESTINATION "lib")
 else (BUILD_SHARED)
