@@ -15,13 +15,17 @@ set(SRC_LIST
     category.c
     rules.c)
 
-add_library(tlog SHARED ${SRC_LIST})
-
 #-------------------------------------------------
-# install tlog
+# build and install tlog
 #-------------------------------------------------
-install(TARGETS tlog
-    LIBRARY DESTINATION "lib")
+if (BUILD_SHARED)
+    add_library(tlog SHARED ${SRC_LIST})
+    install(TARGETS tlog
+        LIBRARY DESTINATION "lib")
+else (BUILD_SHARED)
+    add_library(tlog STATIC ${SRC_LIST})
+    install(TARGETS tlog
+        ARCHIVE DESTINATION "lib")
+endif (BUILD_SHARED)
 
 
-    
