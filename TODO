@@ -1,4 +1,7 @@
-1 complete configure file check script
-2 self error log
+1 self error log
+2 add thread support configuration definition
+3 support hexadecimal and decimal convert and output 
+4 support per output log file size configuration
+5 process support
 
 
