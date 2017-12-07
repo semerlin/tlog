@@ -3,5 +3,6 @@
 3 support hexadecimal and decimal convert and output 
 4 support per output log file size configuration
 5 process support
+6 support sync file at intervals
 
 
