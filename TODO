@@ -4,5 +4,6 @@
 4 support per output log file size configuration
 5 process support
 6 support sync file at intervals
+7 support dynamic set output level
 
 
